@@ -8,20 +8,30 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, resetPassword } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim()) {
       toast({
-        title: "Missing fields",
-        description: "Please enter both email and password",
+        title: "Missing email",
+        description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isForgotPassword && !password.trim()) {
+      toast({
+        title: "Missing password",
+        description: "Please enter your password",
         variant: "destructive",
       });
       return;
@@ -30,21 +40,39 @@ const AuthForm = () => {
     setLoading(true);
 
     try {
-      const { error } = isLogin 
-        ? await signIn(email, password)
-        : await signUp(email, password);
+      if (isForgotPassword) {
+        const { error } = await resetPassword(email);
+        
+        if (error) {
+          toast({
+            title: "Reset password failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Check your email",
+            description: "We've sent you a password reset link",
+          });
+          setIsForgotPassword(false);
+        }
+      } else {
+        const { error } = isLogin 
+          ? await signIn(email, password)
+          : await signUp(email, password);
 
-      if (error) {
-        toast({
-          title: isLogin ? "Sign in failed" : "Sign up failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else if (!isLogin) {
-        toast({
-          title: "Check your email",
-          description: "We've sent you a confirmation link",
-        });
+        if (error) {
+          toast({
+            title: isLogin ? "Sign in failed" : "Sign up failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        } else if (!isLogin) {
+          toast({
+            title: "Check your email",
+            description: "We've sent you a confirmation link",
+          });
+        }
       }
     } catch (error: any) {
       toast({
@@ -62,10 +90,18 @@ const AuthForm = () => {
       <Card className="w-full max-w-md p-8 bg-gradient-card shadow-card border-0">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isForgotPassword 
+              ? "Reset Password" 
+              : isLogin 
+                ? "Welcome Back" 
+                : "Create Account"}
           </h1>
           <p className="text-muted-foreground">
-            {isLogin ? "Sign in to access your notes" : "Sign up to get started"}
+            {isForgotPassword 
+              ? "Enter your email to reset your password" 
+              : isLogin 
+                ? "Sign in to access your notes" 
+                : "Sign up to get started"}
           </p>
         </div>
 
@@ -82,40 +118,67 @@ const AuthForm = () => {
             />
           </div>
           
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10 pr-10"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
+          {!isForgotPassword && (
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="pl-10 pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          )}
           
           <Button 
             type="submit" 
             className="w-full" 
             disabled={loading}
           >
-            {loading ? "Loading..." : (isLogin ? "Sign In" : "Sign Up")}
+            {loading 
+              ? "Loading..." 
+              : isForgotPassword 
+                ? "Send Reset Link" 
+                : isLogin 
+                  ? "Sign In" 
+                  : "Sign Up"}
           </Button>
         </form>
         
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 space-y-2">
+          {!isForgotPassword && isLogin && (
+            <button
+              onClick={() => setIsForgotPassword(true)}
+              className="text-sm text-muted-foreground hover:text-foreground block w-full"
+            >
+              Forgot your password?
+            </button>
+          )}
+          
           <button
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              if (isForgotPassword) {
+                setIsForgotPassword(false);
+              } else {
+                setIsLogin(!isLogin);
+              }
+            }}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
-            {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+            {isForgotPassword 
+              ? "Back to sign in" 
+              : isLogin 
+                ? "Don't have an account? Sign up" 
+                : "Already have an account? Sign in"}
           </button>
         </div>
       </Card>
