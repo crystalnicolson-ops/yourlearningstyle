@@ -6,10 +6,13 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  subscribed: boolean;
+  subscriptionLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any }>;
+  checkSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,14 +29,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [subscribed, setSubscribed] = useState(false);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+
+  const checkSubscription = async () => {
+    if (!session) {
+      setSubscribed(false);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Subscription check error:', error);
+        setSubscribed(false);
+      } else {
+        setSubscribed(data?.subscribed || false);
+      }
+    } catch (error) {
+      console.error('Subscription check failed:', error);
+      setSubscribed(false);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Check subscription when auth state changes
+        if (session) {
+          // Delay to ensure session is fully established
+          setTimeout(() => checkSubscription(), 1000);
+        } else {
+          setSubscribed(false);
+        }
       }
     );
 
@@ -42,6 +83,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      if (session) {
+        setTimeout(() => checkSubscription(), 1000);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -85,10 +130,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     session,
     loading,
+    subscribed,
+    subscriptionLoading,
     signIn,
     signUp,
     signOut,
     resetPassword,
+    checkSubscription,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

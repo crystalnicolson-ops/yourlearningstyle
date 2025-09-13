@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import Hero from "@/components/Hero";
+import { supabase } from "@/integrations/supabase/client";
+import Hero from "@/components/NotesHero";
 import NotesUpload from "@/components/NotesUpload";
 import NotesList from "@/components/NotesList";
-import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
 
 const Index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const { user, loading, signOut } = useAuth();
+  const { user, session, loading, signOut, subscribed, subscriptionLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleNoteAdded = () => {
@@ -18,9 +18,28 @@ const Index = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    navigate('/landing');
   };
 
-  if (loading) {
+  const handleManageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal', {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Error opening customer portal:', error);
+    }
+  };
+
+  if (loading || subscriptionLoading) {
     return (
       <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
         <div className="text-white text-xl">Loading...</div>
@@ -28,84 +47,45 @@ const Index = () => {
     );
   }
 
-  if (!user) {
-    return (
-      <div>
-        <Hero />
-        
-        {/* Auth prompt section */}
-        <div className="bg-background py-16">
-          <div className="container mx-auto px-6">
-            <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Ready to Upload Your Notes?
-              </h2>
-              <p className="text-muted-foreground text-lg mb-8">
-                Sign in or create an account to start uploading and organizing your learning materials
-              </p>
-              <Button 
-                size="lg" 
-                onClick={() => navigate('/auth')}
-                className="min-w-48"
-              >
-                <User className="mr-2 h-5 w-5" />
-                Sign In / Sign Up
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  // If no user or no subscription, redirect to landing
+  if (!user || !subscribed) {
+    return <Navigate to="/landing" replace />;
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-primary">
       <Hero />
       
-      {/* User info bar */}
-      <div className="bg-muted/30 border-b">
-        <div className="container mx-auto px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4" />
-              <span>Signed in as {user.email}</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSignOut}
-              className="text-muted-foreground hover:text-foreground"
+      {/* User Info Bar */}
+      <div className="bg-gradient-card border-b border-white/10 p-4">
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <div className="text-foreground">
+            Welcome back, <span className="font-semibold">{user.email}</span>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleManageSubscription} 
+              variant="outline"
+              className="text-sm"
             >
-              <LogOut className="h-4 w-4 mr-2" />
+              Manage Subscription
+            </Button>
+            <Button 
+              onClick={handleSignOut} 
+              variant="outline"
+              className="text-sm"
+            >
               Sign Out
             </Button>
           </div>
         </div>
       </div>
-      
-      {/* Notes Section */}
-      <div className="bg-background py-16">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Your Learning Notes
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Upload and organize your study materials and notes
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <NotesUpload onNoteAdded={handleNoteAdded} />
-              </div>
-              
-              <div>
-                <NotesList refreshTrigger={refreshTrigger} />
-              </div>
-            </div>
-          </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="space-y-8">
+          <NotesUpload onNoteAdded={handleNoteAdded} />
+          <NotesList refreshTrigger={refreshTrigger} />
         </div>
       </div>
     </div>
