@@ -1,52 +1,68 @@
-import React, { useState, useRef } from 'react';
+import { useState } from "react";
+import { Upload, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Upload, FileText, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
-interface NotesUploadProps {
-  onUploadSuccess?: () => void;
-}
-
-const NotesUpload = ({ onUploadSuccess }: NotesUploadProps) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
-      if (!title) {
-        setTitle(selectedFile.name.replace(/\.[^/.]+$/, ''));
+      // Check file size (10MB max)
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 10MB",
+          variant: "destructive",
+        });
+        return;
       }
+      setFile(selectedFile);
     }
   };
 
-  const handleUpload = async () => {
+  const uploadFile = async (file: File, userId: string) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}/${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('notes')
+      .upload(fileName, file);
+    
+    if (error) throw error;
+    return data.path;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!title.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a title for your note.",
+        title: "Title required",
+        description: "Please enter a title for your note",
         variant: "destructive",
       });
       return;
     }
 
-    setUploading(true);
+    setIsUploading(true);
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         toast({
-          title: "Authentication Required",
-          description: "Please sign in to upload notes.",
+          title: "Authentication required",
+          description: "Please sign in to upload notes",
           variant: "destructive",
         });
         return;
@@ -56,142 +72,124 @@ const NotesUpload = ({ onUploadSuccess }: NotesUploadProps) => {
       let fileName = null;
       let fileType = null;
 
-      // Upload file if selected
       if (file) {
-        const fileExt = file.name.split('.').pop();
-        const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('notes')
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
+        const filePath = await uploadFile(file, user.id);
+        const { data } = supabase.storage
           .from('notes')
           .getPublicUrl(filePath);
-
-        fileUrl = publicUrl;
+        
+        fileUrl = data.publicUrl;
         fileName = file.name;
         fileType = file.type;
       }
 
-      // Create note record
-      const { error: insertError } = await supabase
+      const { error } = await supabase
         .from('notes')
-        .insert({
-          user_id: user.id,
-          title: title.trim(),
-          content: content.trim() || null,
-          file_url: fileUrl,
-          file_name: fileName,
-          file_type: fileType,
-        });
+        .insert([
+          {
+            user_id: user.id,
+            title: title.trim(),
+            content: content.trim() || null,
+            file_url: fileUrl,
+            file_name: fileName,
+            file_type: fileType,
+          }
+        ]);
 
-      if (insertError) throw insertError;
+      if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Note uploaded successfully!",
+        title: "Note uploaded successfully",
+        description: "Your note has been saved",
       });
 
       // Reset form
-      setTitle('');
-      setContent('');
+      setTitle("");
+      setContent("");
       setFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+      
+      // Reset file input
+      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
 
-      onUploadSuccess?.();
-    } catch (error) {
-      console.error('Upload error:', error);
+      onNoteAdded();
+    } catch (error: any) {
       toast({
-        title: "Upload Failed",
-        description: "Failed to upload note. Please try again.",
+        title: "Upload failed",
+        description: error.message || "Failed to upload note",
         variant: "destructive",
       });
     } finally {
-      setUploading(false);
-    }
-  };
-
-  const removeFile = () => {
-    setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      setIsUploading(false);
     }
   };
 
   return (
     <Card className="p-6 bg-gradient-card shadow-card border-0">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Upload className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold text-foreground">Upload Notes</h3>
-        </div>
-
+      <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+        <Upload className="h-5 w-5" />
+        Upload Note
+      </h3>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium text-foreground mb-2 block">
-            Title *
-          </label>
           <Input
+            placeholder="Note title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter note title..."
-            className="bg-background"
+            className="w-full"
           />
         </div>
-
+        
         <div>
-          <label className="text-sm font-medium text-foreground mb-2 block">
-            Content (Optional)
-          </label>
           <Textarea
+            placeholder="Note content (optional)..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Add your notes here..."
-            className="bg-background min-h-[100px]"
+            className="w-full min-h-[100px]"
           />
         </div>
-
+        
         <div>
-          <label className="text-sm font-medium text-foreground mb-2 block">
-            File (Optional)
-          </label>
-          <div className="space-y-2">
+          <div className="flex items-center gap-4">
             <Input
-              ref={fileInputRef}
+              id="file-upload"
               type="file"
               onChange={handleFileSelect}
-              className="bg-background file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground"
-              accept=".pdf,.doc,.docx,.txt,.md,.jpg,.jpeg,.png,.gif"
+              accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg"
+              className="w-full"
             />
             {file && (
-              <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-foreground flex-1">{file.name}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={removeFile}
-                  className="h-6 w-6 p-0"
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setFile(null);
+                  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                  if (fileInput) fileInput.value = '';
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             )}
           </div>
+          {file && (
+            <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+              <FileText className="h-4 w-4" />
+              <span>{file.name} ({Math.round(file.size / 1024)}KB)</span>
+            </div>
+          )}
         </div>
-
-        <Button
-          onClick={handleUpload}
-          disabled={uploading || !title.trim()}
+        
+        <Button 
+          type="submit" 
+          disabled={isUploading || !title.trim()}
           className="w-full"
         >
-          {uploading ? "Uploading..." : "Upload Note"}
+          {isUploading ? "Uploading..." : "Upload Note"}
         </Button>
-      </div>
+      </form>
     </Card>
   );
 };
