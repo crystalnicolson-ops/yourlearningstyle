@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Target, Users, Zap } from "lucide-react";
+import { Eye, Headphones, BookOpen, Hand, Zap, Target } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -14,13 +14,13 @@ const Hero = () => {
         {/* Header */}
         <header className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Sparkles className="h-8 w-8 text-white" />
+            <Eye className="h-8 w-8 text-white" />
             <h1 className="text-5xl md:text-6xl font-bold text-white">
               Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Discover your unique learning style and unlock your full potential with personalized study strategies
+            Discover your VARK learning style and unlock your full potential with personalized study strategies
           </p>
         </header>
 
@@ -39,39 +39,51 @@ const Hero = () => {
         </div>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="p-8 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Sparkles className="h-8 w-8 text-white" />
+              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Eye className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Visual Learning</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Learn best through diagrams, charts, images, and visual aids that help you understand and retain information effectively.
+              <h3 className="text-xl font-bold text-foreground mb-3">Visual</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Learning through seeing
               </p>
             </div>
           </Card>
 
-          <Card className="p-8 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Users className="h-8 w-8 text-white" />
+              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Headphones className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Social Learning</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Thrive in group settings, discussions, and collaborative environments where you can learn from and with others.
+              <h3 className="text-xl font-bold text-foreground mb-3">Auditory</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Learning through hearing
               </p>
             </div>
           </Card>
 
-          <Card className="p-8 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="h-8 w-8 text-white" />
+              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Kinesthetic Learning</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Learn through hands-on activities, movement, and physical interaction with your learning materials and environment.
+              <h3 className="text-xl font-bold text-foreground mb-3">Reading/Writing</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Learning through text
+              </p>
+            </div>
+          </Card>
+
+          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+            <div className="text-center">
+              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Hand className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-3">Kinesthetic</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Learning through doing/movement
               </p>
             </div>
           </Card>
@@ -88,8 +100,8 @@ const Hero = () => {
               <div className="text-white/80 text-lg">Students Helped</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">12</div>
-              <div className="text-white/80 text-lg">Learning Styles</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">4</div>
+              <div className="text-white/80 text-lg">VARK Learning Styles</div>
             </div>
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold text-white mb-2">95%</div>
