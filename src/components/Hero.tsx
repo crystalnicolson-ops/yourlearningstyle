@@ -16,11 +16,11 @@ const Hero = () => {
           <div className="flex items-center justify-center gap-2 mb-6">
             <Sparkles className="h-8 w-8 text-white" />
             <h1 className="text-5xl md:text-6xl font-bold text-white">
-              Dream<span className="text-pink-200">Builder</span>
+              Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Transform your ideas into reality with our powerful tools and creative solutions
+            Discover your unique learning style and unlock your full potential with personalized study strategies
           </p>
         </header>
 
@@ -29,11 +29,11 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button size="lg" variant="default" className="min-w-48">
               <Zap className="mr-2 h-5 w-5" />
-              Get Started Free
+              Take Quiz (Free)
             </Button>
             <Button size="lg" variant="secondary" className="min-w-48">
               <Target className="mr-2 h-5 w-5" />
-              Learn More
+              Explore Styles
             </Button>
           </div>
         </div>
@@ -45,9 +45,9 @@ const Hero = () => {
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Sparkles className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Creative Tools</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Visual Learning</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Access powerful design tools that bring your creative vision to life with intuitive interfaces and advanced features.
+                Learn best through diagrams, charts, images, and visual aids that help you understand and retain information effectively.
               </p>
             </div>
           </Card>
@@ -57,9 +57,9 @@ const Hero = () => {
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Team Collaboration</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Social Learning</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Work seamlessly with your team using real-time collaboration features and shared workspaces.
+                Thrive in group settings, discussions, and collaborative environments where you can learn from and with others.
               </p>
             </div>
           </Card>
@@ -69,9 +69,9 @@ const Hero = () => {
               <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Target className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">Smart Results</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Kinesthetic Learning</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Get intelligent insights and recommendations that help you achieve better results faster than ever before.
+                Learn through hands-on activities, movement, and physical interaction with your learning materials and environment.
               </p>
             </div>
           </Card>
@@ -80,24 +80,24 @@ const Hero = () => {
         {/* Stats Section */}
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-            Trusted by Creators Worldwide
+            Helping Students Learn Better
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">10K+</div>
-              <div className="text-white/80 text-lg">Active Users</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">25K+</div>
+              <div className="text-white/80 text-lg">Students Helped</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">500+</div>
-              <div className="text-white/80 text-lg">Projects Created</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">12</div>
+              <div className="text-white/80 text-lg">Learning Styles</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">99%</div>
-              <div className="text-white/80 text-lg">Satisfaction Rate</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">95%</div>
+              <div className="text-white/80 text-lg">Improved Performance</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">24/7</div>
-              <div className="text-white/80 text-lg">Support</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">Free</div>
+              <div className="text-white/80 text-lg">Assessment</div>
             </div>
           </div>
         </div>
