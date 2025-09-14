@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { FileText, Download, Trash2, Calendar } from "lucide-react";
+import { FileText, Download, Trash2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote } from "@/lib/guestNotes";
+import LearningStyleTransform from "./LearningStyleTransform";
 
 interface Note {
   id: string;
@@ -21,6 +22,8 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
+  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
+  const [transformedContent, setTransformedContent] = useState<Record<string, { content: string; style: string }>>({});
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -142,6 +145,25 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
     }
   };
 
+  const toggleExpanded = (noteId: string) => {
+    setExpandedNotes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(noteId)) {
+        newSet.delete(noteId);
+      } else {
+        newSet.add(noteId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleTransformed = (noteId: string, content: string, style: string) => {
+    setTransformedContent(prev => ({
+      ...prev,
+      [noteId]: { content, style }
+    }));
+  };
+
   if (loading) {
     return (
       <Card className="p-6 bg-gradient-card shadow-card border-0">
@@ -163,57 +185,106 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
   return (
     <div className="space-y-4">
-      {notes.map((note) => (
-        <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
-          <div className="flex items-start justify-between flex-wrap">
-            <div className="flex-1">
-              <h4 className="font-semibold text-foreground mb-2">{note.title}</h4>
-              
-              {note.content && (
-                <p className="text-muted-foreground text-sm mb-3 line-clamp-3">
-                  {note.content}
-                </p>
-              )}
-              
-              {note.file_name && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                  <FileText className="h-4 w-4" />
-                  <span>{note.file_name}</span>
+      {notes.map((note) => {
+        const isExpanded = expandedNotes.has(note.id);
+        const hasContent = note.content && note.content.trim().length > 0;
+        const transformed = transformedContent[note.id];
+        
+        return (
+          <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
+            <div className="flex items-start justify-between flex-wrap">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h4 className="font-semibold text-foreground">{note.title}</h4>
+                  {hasContent && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleExpanded(note.id)}
+                      className="p-1 h-auto"
+                    >
+                      {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  )}
                 </div>
-              )}
-              
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
-                <span>{new Date(note.created_at).toLocaleDateString()}</span>
+                
+                {note.content && !isExpanded && (
+                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                    {note.content}
+                  </p>
+                )}
+                
+                {note.file_name && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                    <FileText className="h-4 w-4" />
+                    <span>{note.file_name}</span>
+                  </div>
+                )}
+                
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                  <Calendar className="h-3 w-3" />
+                  <span>{new Date(note.created_at).toLocaleDateString()}</span>
+                </div>
               </div>
-            </div>
-            
-            <div className="mt-3 flex items-center gap-2 flex-wrap w-full justify-end">
-              {note.file_url && (
+              
+              <div className="mt-3 flex items-center gap-2 flex-wrap w-full justify-end">
+                {note.file_url && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                    className="flex items-center gap-1"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Download</span>
+                  </Button>
+                )}
+                
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                  onClick={() => handleDelete(note.id, note.file_url)}
                   className="flex items-center gap-1"
                 >
-                  <Download className="h-4 w-4" />
-                  <span>Download</span>
+                  <Trash2 className="h-4 w-4" />
+                  <span>Delete</span>
                 </Button>
-              )}
-              
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => handleDelete(note.id, note.file_url)}
-                className="flex items-center gap-1"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span>Delete</span>
-              </Button>
+              </div>
             </div>
-          </div>
-        </Card>
-      ))}
+
+            {/* Expanded content section */}
+            {isExpanded && hasContent && (
+              <div className="mt-4 space-y-4 border-t border-border pt-4">
+                {/* Original content */}
+                <div>
+                  <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
+                  <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
+                    {note.content}
+                  </div>
+                </div>
+
+                {/* Learning style transformation */}
+                <LearningStyleTransform
+                  content={note.content}
+                  onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+                />
+
+                {/* Transformed content */}
+                {transformed && (
+                  <div>
+                    <h5 className="font-medium text-sm text-foreground mb-2">
+                      Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
+                    </h5>
+                    <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
+                      {transformed.content}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </Card>
+        );
+      })}
     </div>
   );
 };

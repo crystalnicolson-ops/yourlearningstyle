@@ -1,1 +1,4 @@
 project_id = "vxohmauydonsetwznhcn"
+
+[functions.transform-learning-style]
+verify_jwt = false
