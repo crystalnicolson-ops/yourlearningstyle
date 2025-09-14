@@ -8,6 +8,7 @@ import Landing from "./pages/Landing";
 import Success from "./pages/Success";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/landing" element={<Landing />} />
           <Route path="/success" element={<Success />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
