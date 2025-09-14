@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getGuestNotes, deleteGuestNote } from "@/lib/guestNotes";
 
 interface Note {
   id: string;
@@ -19,6 +20,7 @@ interface Note {
 const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -26,10 +28,23 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        setNotes([]);
+        setIsGuest(true);
+        const guest = getGuestNotes();
+        const mapped: Note[] = guest.map((g) => ({
+          id: g.id,
+          title: g.title,
+          content: g.content,
+          file_url: g.file_data_url,
+          file_name: g.file_name,
+          file_type: g.file_type,
+          created_at: g.created_at,
+          updated_at: g.updated_at,
+        }));
+        setNotes(mapped);
         return;
       }
 
+      setIsGuest(false);
       const { data, error } = await supabase
         .from('notes')
         .select('*')
@@ -55,6 +70,16 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
   const handleDownload = async (fileUrl: string, fileName: string) => {
     try {
+      if (fileUrl.startsWith('data:')) {
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = fileUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
       const response = await fetch(fileUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -77,6 +102,13 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
   const handleDelete = async (noteId: string, fileUrl: string | null) => {
     try {
+      if (isGuest) {
+        deleteGuestNote(noteId);
+        setNotes((prev) => prev.filter((n) => n.id !== noteId));
+        toast({ title: "Note deleted" });
+        return;
+      }
+
       // Delete file from storage if it exists
       if (fileUrl) {
         const filePath = fileUrl.split('/').pop();

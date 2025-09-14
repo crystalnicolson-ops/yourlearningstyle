@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { addGuestNote } from "@/lib/guestNotes";
 
 const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -56,22 +57,67 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
 
     setIsUploading(true);
 
+    const readFileAsDataURL = (f: File) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(f);
+      });
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      let fileUrl: string | null = null;
+      let fileName: string | null = null;
+      let fileType: string | null = null;
+
       if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to upload notes",
-          variant: "destructive",
+        // Guest mode: store locally
+        if (file) {
+          // Limit guest file size to ~1MB to avoid storage issues
+          if (file.size > 1024 * 1024) {
+            toast({
+              title: "Guest upload limit",
+              description: "In guest mode, files up to 1MB are supported.",
+              variant: "destructive",
+            });
+            setIsUploading(false);
+            return;
+          }
+          const dataUrl = await readFileAsDataURL(file);
+          fileUrl = dataUrl;
+          fileName = file.name;
+          fileType = file.type;
+        }
+
+        addGuestNote({
+          id: crypto.randomUUID(),
+          title: title.trim(),
+          content: content.trim() || null,
+          file_data_url: fileUrl,
+          file_name: fileName,
+          file_type: fileType,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         });
+
+        toast({
+          title: "Saved locally (guest mode)",
+          description: "Your note is stored in this browser.",
+        });
+
+        // Reset form
+        setTitle("");
+        setContent("");
+        setFile(null);
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        onNoteAdded();
         return;
       }
 
-      let fileUrl = null;
-      let fileName = null;
-      let fileType = null;
-
+      // Authenticated flow (Supabase)
       if (file) {
         const filePath = await uploadFile(file, user.id);
         const { data } = supabase.storage
