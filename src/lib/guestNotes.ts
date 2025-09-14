@@ -32,3 +32,12 @@ export const deleteGuestNote = (id: string) => {
   const notes = getGuestNotes().filter((n) => n.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 };
+
+export const updateGuestNote = (id: string, updates: Partial<GuestNote>) => {
+  const notes = getGuestNotes();
+  const idx = notes.findIndex((n) => n.id === id);
+  if (idx !== -1) {
+    notes[idx] = { ...notes[idx], ...updates, updated_at: new Date().toISOString() } as GuestNote;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  }
+};

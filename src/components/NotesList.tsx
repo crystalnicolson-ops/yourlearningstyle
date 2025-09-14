@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { getGuestNotes, deleteGuestNote } from "@/lib/guestNotes";
+import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
 
 interface Note {
@@ -164,6 +164,40 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
     }));
   };
 
+  const extractTextForNote = async (note: Note) => {
+    try {
+      toast({ title: 'Extracting text...', description: note.file_name || undefined });
+      const { data, error } = await supabase.functions.invoke('extract-file-text', {
+        body: {
+          fileUrl: note.file_url,
+          fileType: note.file_type,
+          fileName: note.file_name,
+        },
+      });
+      if (error) throw error;
+      const extracted = (data?.extractedText || '').trim();
+      if (!extracted) {
+        toast({ title: 'No text found', description: 'Could not extract text from the file.', variant: 'destructive' });
+        return;
+      }
+
+      if (isGuest) {
+        updateGuestNote(note.id, { content: extracted });
+      } else {
+        const { error: updateError } = await supabase
+          .from('notes')
+          .update({ content: extracted })
+          .eq('id', note.id);
+        if (updateError) throw updateError;
+      }
+
+      setNotes(prev => prev.map(n => (n.id === note.id ? { ...n, content: extracted } : n)));
+      toast({ title: 'Text extracted', description: 'You can now transform this note.' });
+    } catch (err: any) {
+      console.error('Extract failed:', err);
+      toast({ title: 'Extraction failed', description: err.message || 'Unable to extract text', variant: 'destructive' });
+    }
+  };
   if (loading) {
     return (
       <Card className="p-6 bg-gradient-card shadow-card border-0">
@@ -225,6 +259,20 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
                   <Calendar className="h-3 w-3" />
                   <span>{new Date(note.created_at).toLocaleDateString()}</span>
                 </div>
+
+                {!hasContent && note.file_url && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                    <span>This note has no text content yet.</span>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="h-7 px-2"
+                      onClick={() => extractTextForNote(note)}
+                    >
+                      Extract text
+                    </Button>
+                  </div>
+                )}
               </div>
               
               <div className="mt-3 flex items-center gap-2 flex-wrap w-full justify-end">
@@ -270,11 +318,6 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
                  content={note.content || ""}
                  onTransformed={(content, style) => handleTransformed(note.id, content, style)}
                />
-               {!hasContent && (
-                 <p className="mt-2 text-xs text-muted-foreground">
-                   This note has no text yet. Add text content to enable transformation.
-                 </p>
-               )}
              </div>
 
              {transformed && (
