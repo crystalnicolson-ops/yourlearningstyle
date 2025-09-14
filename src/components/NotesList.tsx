@@ -188,35 +188,10 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
               </div>
             </div>
             
-            <div className="hidden sm:flex items-center gap-2 ml-4 flex-shrink-0">
+            <div className="mt-3 flex items-center gap-2 flex-wrap w-full justify-end">
               {note.file_url && (
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDownload(note.file_url!, note.file_name!)}
-                  className="flex items-center gap-1"
-                >
-                  <Download className="h-4 w-4" />
-                  <span className="hidden sm:inline">Download</span>
-                </Button>
-              )}
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDelete(note.id, note.file_url)}
-                className="text-destructive hover:text-destructive flex items-center gap-1"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Delete</span>
-              </Button>
-            </div>
-
-            {/* Mobile actions */}
-            <div className="w-full flex items-center gap-2 justify-end mt-3 sm:hidden">
-              {note.file_url && (
-                <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
                   onClick={() => handleDownload(note.file_url!, note.file_name!)}
                   className="flex items-center gap-1"
@@ -227,10 +202,10 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
               )}
               
               <Button
-                variant="outline"
+                variant="default"
                 size="sm"
                 onClick={() => handleDelete(note.id, note.file_url)}
-                className="text-destructive hover:text-destructive flex items-center gap-1"
+                className="flex items-center gap-1"
               >
                 <Trash2 className="h-4 w-4" />
                 <span>Delete</span>
