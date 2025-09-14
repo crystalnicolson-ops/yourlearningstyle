@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
-import { VisualGenerator } from "./VisualGenerator";
+import { FabricVisualGenerator } from "./FabricVisualGenerator";
 import { VisualData } from "@/lib/visualGenerator";
 
 interface Note {
@@ -331,7 +331,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
              </div>
 
              <div className="mt-4">
-               <VisualGenerator
+               <FabricVisualGenerator
                  content={note.content || ""}
                  title={note.title}
                  onGenerated={(visual) => handleVisualGenerated(note.id, visual)}
