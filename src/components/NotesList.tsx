@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
+import { VisualGenerator } from "./VisualGenerator";
+import { VisualData } from "@/lib/visualGenerator";
 
 interface Note {
   id: string;
@@ -24,6 +26,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const [isGuest, setIsGuest] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
   const [transformedContent, setTransformedContent] = useState<Record<string, { content: string; style: string }>>({});
+  const [generatedVisuals, setGeneratedVisuals] = useState<Record<string, VisualData>>({});
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -161,6 +164,13 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
     setTransformedContent(prev => ({
       ...prev,
       [noteId]: { content, style }
+    }));
+  };
+
+  const handleVisualGenerated = (noteId: string, visual: VisualData) => {
+    setGeneratedVisuals(prev => ({
+      ...prev,
+      [noteId]: visual
     }));
   };
 
@@ -317,6 +327,14 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
                <LearningStyleTransform
                  content={note.content || ""}
                  onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+               />
+             </div>
+
+             <div className="mt-4">
+               <VisualGenerator
+                 content={note.content || ""}
+                 title={note.title}
+                 onGenerated={(visual) => handleVisualGenerated(note.id, visual)}
                />
              </div>
 
