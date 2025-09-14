@@ -118,6 +118,8 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
       }
 
       // Authenticated flow (Supabase)
+      let extractedContent = content.trim();
+      
       if (file) {
         const filePath = await uploadFile(file, user.id);
         const { data } = supabase.storage
@@ -127,6 +129,27 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         fileUrl = data.publicUrl;
         fileName = file.name;
         fileType = file.type;
+
+        // Extract text from file if no manual content provided
+        if (!extractedContent) {
+          try {
+            const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
+              body: {
+                fileUrl: fileUrl,
+                fileType: file.type,
+                fileName: file.name
+              }
+            });
+
+            if (extractError) throw extractError;
+            if (extractData?.extractedText) {
+              extractedContent = extractData.extractedText;
+            }
+          } catch (error) {
+            console.error('Text extraction failed:', error);
+            // Continue without extracted text
+          }
+        }
       }
 
       const { error } = await supabase
@@ -135,7 +158,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           {
             user_id: user.id,
             title: title.trim(),
-            content: content.trim() || null,
+            content: extractedContent || null,
             file_url: fileUrl,
             file_name: fileName,
             file_type: fileType,

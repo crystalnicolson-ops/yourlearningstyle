@@ -2,3 +2,6 @@ project_id = "vxohmauydonsetwznhcn"
 
 [functions.transform-learning-style]
 verify_jwt = false
+
+[functions.extract-file-text]
+verify_jwt = false
