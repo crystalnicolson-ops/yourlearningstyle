@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { transformContentLocally } from "@/lib/localLearningStyleTransform";
 
 interface LearningStyleTransformProps {
   content: string;
@@ -29,21 +29,15 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     setIsTransforming(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('transform-learning-style', {
-        body: {
-          content: content,
-          learningStyle: selectedStyle
-        }
-      });
-
-      if (error) throw error;
-
-      onTransformed(data.transformedContent, selectedStyle);
+      // Using local transformation - completely free!
+      const transformedContent = transformContentLocally(content, selectedStyle);
+      
+      onTransformed(transformedContent, selectedStyle);
       
       const styleLabel = learningStyles.find(s => s.value === selectedStyle)?.label;
       toast({
         title: "Content transformed!",
-        description: `Adapted for ${styleLabel} learning style`,
+        description: `Adapted for ${styleLabel} learning style (Free version)`,
       });
     } catch (error: any) {
       console.error('Transform error:', error);
