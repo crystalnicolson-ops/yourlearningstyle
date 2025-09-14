@@ -265,14 +265,17 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
                </div>
              )}
 
-             {hasContent && (
-               <div className="mt-4">
-                 <LearningStyleTransform
-                   content={note.content}
-                   onTransformed={(content, style) => handleTransformed(note.id, content, style)}
-                 />
-               </div>
-             )}
+             <div className="mt-4">
+               <LearningStyleTransform
+                 content={note.content || ""}
+                 onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+               />
+               {!hasContent && (
+                 <p className="mt-2 text-xs text-muted-foreground">
+                   This note has no text yet. Add text content to enable transformation.
+                 </p>
+               )}
+             </div>
 
              {transformed && (
                <div className="mt-4">
