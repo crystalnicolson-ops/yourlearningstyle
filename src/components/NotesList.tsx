@@ -188,24 +188,27 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2 ml-4">
+            <div className="flex items-center gap-2 ml-4 flex-shrink-0">
               {note.file_url && (
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                  className="flex items-center gap-1"
                 >
                   <Download className="h-4 w-4" />
+                  <span className="hidden sm:inline">Download</span>
                 </Button>
               )}
               
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => handleDelete(note.id, note.file_url)}
-                className="text-destructive hover:text-destructive"
+                className="text-destructive hover:text-destructive flex items-center gap-1"
               >
                 <Trash2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </div>
           </div>
