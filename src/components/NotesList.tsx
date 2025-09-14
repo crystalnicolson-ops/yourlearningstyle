@@ -253,36 +253,39 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
             </div>
 
             {/* Expanded content section */}
-            {isExpanded && hasContent && (
-              <div className="mt-4 space-y-4 border-t border-border pt-4">
-                {/* Original content */}
-                <div>
-                  <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
-                  <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
-                    {note.content}
-                  </div>
-                </div>
+             {isExpanded && hasContent && (
+               <div className="mt-4 space-y-4 border-t border-border pt-4">
+                 {/* Original content */}
+                 <div>
+                   <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
+                   <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
+                     {note.content}
+                   </div>
+                 </div>
+               </div>
+             )}
 
-                {/* Learning style transformation */}
-                <LearningStyleTransform
-                  content={note.content}
-                  onTransformed={(content, style) => handleTransformed(note.id, content, style)}
-                />
+             {hasContent && (
+               <div className="mt-4">
+                 <LearningStyleTransform
+                   content={note.content}
+                   onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+                 />
+               </div>
+             )}
 
-                {/* Transformed content */}
-                {transformed && (
-                  <div>
-                    <h5 className="font-medium text-sm text-foreground mb-2">
-                      Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
-                    </h5>
-                    <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
-                      {transformed.content}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </Card>
+             {transformed && (
+               <div className="mt-4">
+                 <h5 className="font-medium text-sm text-foreground mb-2">
+                   Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
+                 </h5>
+                 <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
+                   {transformed.content}
+                 </div>
+               </div>
+             )}
+
+           </Card>
         );
       })}
     </div>
