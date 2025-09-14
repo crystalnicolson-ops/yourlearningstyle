@@ -165,7 +165,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
     <div className="space-y-4">
       {notes.map((note) => (
         <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between flex-wrap">
             <div className="flex-1">
               <h4 className="font-semibold text-foreground mb-2">{note.title}</h4>
               
@@ -188,7 +188,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-2 ml-4 flex-shrink-0">
               {note.file_url && (
                 <Button
                   variant="outline"
@@ -209,6 +209,31 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
               >
                 <Trash2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Delete</span>
+              </Button>
+            </div>
+
+            {/* Mobile actions */}
+            <div className="w-full flex items-center gap-2 justify-end mt-3 sm:hidden">
+              {note.file_url && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                  className="flex items-center gap-1"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download</span>
+                </Button>
+              )}
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleDelete(note.id, note.file_url)}
+                className="text-destructive hover:text-destructive flex items-center gap-1"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
               </Button>
             </div>
           </div>
