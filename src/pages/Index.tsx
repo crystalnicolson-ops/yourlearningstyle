@@ -47,9 +47,9 @@ const Index = () => {
     );
   }
 
-  // If no user or no subscription, redirect to landing
-  if (!user || !subscribed) {
-    return <Navigate to="/landing" replace />;
+  // If no user, redirect to auth
+  if (!user) {
+    return <Navigate to="/auth" replace />;
   }
 
   return (
