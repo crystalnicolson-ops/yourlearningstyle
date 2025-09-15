@@ -267,14 +267,23 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
                   </div>
 
                   {!hasContent && note.file_url && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                      <span>
+                    <div className="flex items-center justify-between gap-3 text-xs mb-3">
+                      <span className="text-muted-foreground">
                         {note.file_name?.toLowerCase().endsWith('.pdf')
-                          ? 'PDF text extraction not yet supported - please copy/paste content manually'
+                          ? 'PDF uploaded — text extraction not supported yet'
                           : note.file_name?.toLowerCase().endsWith('.doc')
-                          ? 'Legacy .doc files are not supported - please re-save as .docx'
-                          : 'No text content could be extracted from this file type'}
+                          ? 'Legacy .doc is not supported — please re-save as .docx'
+                          : note.file_name?.toLowerCase().endsWith('.docx')
+                          ? 'DOCX detected — click Extract text to process'
+                          : 'File uploaded — click Extract text to process'}
                       </span>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => extractTextForNote(note)}
+                      >
+                        Extract text
+                      </Button>
                     </div>
                   )}
                 </div>
