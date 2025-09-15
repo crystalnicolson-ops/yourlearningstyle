@@ -164,39 +164,46 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
       const speechText = String(transformData.transformedContent || '').slice(0, 4000);
       
-      // Try browser speech synthesis first (free!)
+      // Prefer cloud TTS first for higher quality
+      try {
+        const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
+          body: { 
+            text: speechText,
+            voice: selectedVoice
+          }
+        });
+
+        if (audioError) throw audioError;
+
+        if (audioData?.audioBase64) {
+          setUseBrowserSpeech(false);
+          setAudioBase64(audioData.audioBase64);
+          onTransformed(transformData.transformedContent, 'audio');
+          toast({
+            title: 'Audio created!',
+            description: 'Using high-quality cloud voice',
+          });
+          setIsProcessing(null);
+          return;
+        }
+      } catch (_) {
+        // fallthrough to browser speech
+      }
+      
+      // Fallback to free browser speech if cloud TTS is unavailable
       if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
         setUseBrowserSpeech(true);
         setAudioBase64('browser-speech'); // Special marker for browser speech
-        
         onTransformed(transformData.transformedContent, 'audio');
-        
         toast({
-          title: "Audio ready!",
-          description: "Using free browser speech",
+          title: 'Audio ready!',
+          description: 'Using free browser speech (cloud TTS unavailable)',
         });
-        
         setIsProcessing(null);
         return;
       }
-      
-      // Fallback to cloud TTS (OpenAI is cheaper than ElevenLabs)
-      const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
-        body: { 
-          text: speechText,
-          voice: selectedVoice
-        }
-      });
 
-      if (audioError) throw audioError;
-
-      setAudioBase64(audioData.audioBase64);
-      onTransformed(transformData.transformedContent, 'audio');
-      
-      toast({
-        title: "Audio created!",
-        description: "Using cloud TTS (OpenAI fallback if ElevenLabs fails)",
-      });
+      throw new Error('Unable to generate audio: cloud TTS failed and browser speech is not available.');
     } catch (error: any) {
       toast({
         title: "Audio creation failed",
