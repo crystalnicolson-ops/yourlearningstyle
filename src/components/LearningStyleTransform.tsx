@@ -109,6 +109,42 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     }
   };
 
+  const generateMoreFlashcards = async () => {
+    if (!content || selectedStyle !== 'visual') return;
+    
+    setIsTransforming(true);
+    
+    try {
+      const { data: transformData, error: transformError } = await supabase.functions.invoke('transform-with-gemini', {
+        body: { 
+          content: content + "\n\n[Generate different flashcards focusing on other aspects, details, and concepts not covered in previous cards]", 
+          learningStyle: 'visual' 
+        }
+      });
+
+      if (transformError) throw transformError;
+
+      if (transformData.type === 'flashcards' && Array.isArray(transformData.transformedContent)) {
+        // Combine with existing flashcards
+        setFlashcards(prev => [...prev, ...transformData.transformedContent]);
+        
+        toast({
+          title: "More flashcards added!",
+          description: `Generated ${transformData.transformedContent.length} additional flashcards`,
+        });
+      }
+    } catch (error: any) {
+      console.error('Generate more flashcards error:', error);
+      toast({
+        title: "Failed to generate more flashcards",
+        description: error.message || "Unable to create additional flashcards",
+        variant: "destructive",
+      });
+    } finally {
+      setIsTransforming(false);
+    }
+  };
+
   const voiceOptions = [
     { value: 'alloy', label: 'Alloy (Neutral)' },
     { value: 'echo', label: 'Echo (Male)' },
@@ -215,6 +251,8 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         <Flashcards 
           flashcards={flashcards} 
           title="Study Flashcards"
+          onGenerateMore={generateMoreFlashcards}
+          isGenerating={isTransforming}
         />
       )}
 

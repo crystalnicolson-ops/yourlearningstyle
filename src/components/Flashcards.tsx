@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +12,13 @@ interface FlashcardData {
 interface FlashcardsProps {
   flashcards: FlashcardData[];
   title?: string;
+  onGenerateMore?: () => void;
+  isGenerating?: boolean;
 }
 
-const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
+const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: FlashcardsProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   if (!flashcards || flashcards.length === 0) {
     return (
@@ -28,62 +30,50 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
 
   const nextCard = () => {
     setCurrentIndex((prev) => (prev + 1) % flashcards.length);
-    setIsFlipped(false);
+    setShowAnswer(false);
   };
 
   const prevCard = () => {
     setCurrentIndex((prev) => (prev - 1 + flashcards.length) % flashcards.length);
-    setIsFlipped(false);
+    setShowAnswer(false);
   };
 
-  const flipCard = () => {
-    if (isFlipped) {
-      // If showing answer, advance to next card
-      nextCard();
-    } else {
-      // If showing question, flip to answer
-      setIsFlipped(true);
-    }
+  const toggleAnswer = () => {
+    setShowAnswer(!showAnswer);
   };
 
   const currentCard = flashcards[currentIndex];
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
-      <div className="relative h-64 perspective-1000">
-        <Card 
-          className={`absolute inset-0 w-full h-full cursor-pointer transition-transform duration-500 preserve-3d ${
-            isFlipped ? '-rotate-y-180' : ''
-          }`}
-          onClick={flipCard}
-        >
-          {/* Front side */}
-          <div className="absolute inset-0 w-full h-full backface-hidden p-6 flex flex-col justify-center items-center text-center bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
-            <div className="mb-4">
-              <Badge variant="outline" className="text-xs">Question</Badge>
-            </div>
-            <p className="text-lg font-medium leading-relaxed">
-              {currentCard.question}
-            </p>
-            <div className="absolute bottom-4 right-4">
-              <RotateCcw className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </div>
-
-          {/* Back side */}
-          <div className="absolute inset-0 w-full h-full backface-hidden -rotate-y-180 p-6 flex flex-col justify-center items-center text-center bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20">
-            <div className="mb-4">
-              <Badge variant="secondary" className="text-xs">Answer</Badge>
-            </div>
-            <p className="text-lg leading-relaxed">
-              {currentCard.answer}
-            </p>
-            <div className="absolute bottom-4 right-4">
-              <RotateCcw className="h-4 w-4 text-muted-foreground" />
-            </div>
-          </div>
-        </Card>
+      <div className="flex items-center justify-between">
+        {title && <h3 className="text-xl font-semibold">{title}</h3>}
+        {onGenerateMore && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onGenerateMore}
+            disabled={isGenerating}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            {isGenerating ? 'Generating...' : 'Generate More'}
+          </Button>
+        )}
       </div>
+
+      <Card className="h-64 cursor-pointer" onClick={toggleAnswer}>
+        <div className="p-6 flex flex-col justify-center items-center text-center h-full">
+          <div className="mb-4">
+            <Badge variant={showAnswer ? "secondary" : "outline"} className="text-xs">
+              {showAnswer ? "Answer" : "Question"}
+            </Badge>
+          </div>
+          <p className="text-lg leading-relaxed">
+            {showAnswer ? currentCard.answer : currentCard.question}
+          </p>
+        </div>
+      </Card>
 
       <div className="flex justify-between items-center">
         <Button
@@ -96,10 +86,18 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
           Previous
         </Button>
 
-        <div className="flex gap-1">
+        <div className="flex gap-2 items-center">
           <Badge variant="secondary" className="text-xs">
             {currentIndex + 1} of {flashcards.length}
           </Badge>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleAnswer}
+            className="text-xs"
+          >
+            {showAnswer ? 'Show Question' : 'Show Answer'}
+          </Button>
         </div>
 
         <Button
@@ -114,7 +112,7 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
       </div>
 
       <div className="text-center text-sm text-muted-foreground">
-        Click the card to see the answer, then click again to continue
+        Click the card or "Show Answer" button to toggle between question and answer
       </div>
     </div>
   );

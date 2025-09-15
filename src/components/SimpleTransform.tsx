@@ -148,6 +148,41 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     }
   };
 
+  const generateMoreFlashcards = async () => {
+    if (!content) return;
+    
+    setIsProcessing('more-flashcards');
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
+        body: { 
+          content: content + "\n\n[Generate different flashcards focusing on other aspects, details, and concepts not covered in previous cards]", 
+          learningStyle: 'visual' 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.type === 'flashcards' && Array.isArray(data.transformedContent)) {
+        // Combine with existing flashcards
+        setFlashcards(prev => [...prev, ...data.transformedContent]);
+        
+        toast({
+          title: "More flashcards added!",
+          description: `Generated ${data.transformedContent.length} additional flashcards`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Failed to generate more flashcards",
+        description: error.message || "Unable to create additional flashcards",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(null);
+    }
+  };
+
   const handleAudio = async () => {
     setIsProcessing('audio');
     // Clear other results
@@ -333,7 +368,9 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
       {flashcards.length > 0 && (
         <Flashcards 
-          flashcards={flashcards} 
+          flashcards={flashcards}
+          onGenerateMore={generateMoreFlashcards}
+          isGenerating={isProcessing === 'more-flashcards'}
         />
       )}
 
