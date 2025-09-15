@@ -238,15 +238,15 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
           <label
             htmlFor="file-upload"
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-gradient-subtle hover:bg-primary/5 transition-all duration-300 group"
+            className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-400 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-all duration-300 group"
           >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <Upload className="w-8 h-8 mb-3 text-primary group-hover:text-primary/80 transition-colors" />
-              <p className="mb-2 text-sm text-foreground font-medium">
-                <span className="font-semibold">Click to upload</span> or drag and drop
+            <div className="flex flex-col items-center justify-center pt-2 pb-2">
+              <Upload className="w-5 h-5 mb-1 text-gray-300 group-hover:text-gray-200 transition-colors" />
+              <p className="text-xs text-gray-300 font-medium">
+                <span className="font-semibold">Click to upload</span>
               </p>
-              <p className="text-xs text-muted-foreground">
-                TXT, MD, DOCX files supported • PDF coming soon
+              <p className="text-xs text-gray-400">
+                TXT, MD, DOCX • PDF soon
               </p>
             </div>
           </label>
