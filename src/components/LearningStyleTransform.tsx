@@ -131,31 +131,34 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          {learningStyles.map((style) => (
-            <Button
-              key={style.value}
-              variant={selectedStyle === style.value ? "default" : "outline"}
-              onClick={() => setSelectedStyle(style.value)}
-              className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all duration-200 hover:scale-105 ${
-                selectedStyle === style.value 
-                  ? style.value === 'visual' ? 'bg-blue-500 text-white border-blue-500' :
-                    style.value === 'auditory' ? 'bg-green-500 text-white border-green-500' :
-                    style.value === 'kinesthetic' ? 'bg-orange-500 text-white border-orange-500' :
-                    style.value === 'reading' ? 'bg-purple-500 text-white border-purple-500' : ''
-                  : style.value === 'visual' ? 'border-blue-500 text-blue-600 hover:bg-blue-50' :
-                    style.value === 'auditory' ? 'border-green-500 text-green-600 hover:bg-green-50' :
-                    style.value === 'kinesthetic' ? 'border-orange-500 text-orange-600 hover:bg-orange-50' :
-                    style.value === 'reading' ? 'border-purple-500 text-purple-600 hover:bg-purple-50' : ''
-              }`}
-              disabled={!content || isTransforming}
-            >
-              <div className="text-2xl">{style.icon}</div>
-              <div>
-                <div className="font-semibold">{style.label}</div>
-                <div className="text-xs opacity-75">{style.description}</div>
-              </div>
-            </Button>
-          ))}
+          {learningStyles.map((style) => {
+            const isSelected = selectedStyle === style.value;
+            const colorClasses = 
+              style.value === 'visual' 
+                ? isSelected ? 'bg-blue-500 text-white border-blue-500 shadow-lg' : 'border-blue-500 text-blue-600 bg-blue-50/50 hover:bg-blue-100'
+              : style.value === 'auditory' 
+                ? isSelected ? 'bg-green-500 text-white border-green-500 shadow-lg' : 'border-green-500 text-green-600 bg-green-50/50 hover:bg-green-100'
+              : style.value === 'kinesthetic' 
+                ? isSelected ? 'bg-orange-500 text-white border-orange-500 shadow-lg' : 'border-orange-500 text-orange-600 bg-orange-50/50 hover:bg-orange-100'
+              : style.value === 'reading' 
+                ? isSelected ? 'bg-purple-500 text-white border-purple-500 shadow-lg' : 'border-purple-500 text-purple-600 bg-purple-50/50 hover:bg-purple-100'
+              : isSelected ? 'bg-primary text-white' : 'border-border';
+
+            return (
+              <button
+                key={style.value}
+                onClick={() => setSelectedStyle(style.value)}
+                className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all duration-200 hover:scale-105 rounded-lg border-2 ${colorClasses}`}
+                disabled={!content || isTransforming}
+              >
+                <div className="text-2xl">{style.icon}</div>
+                <div>
+                  <div className="font-semibold">{style.label}</div>
+                  <div className="text-xs opacity-75">{style.description}</div>
+                </div>
+              </button>
+            );
+          })}
         </div>
         
         {selectedStyle === 'auditory' && (
