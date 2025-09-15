@@ -188,6 +188,7 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
         {/* Volume Control */}
         <div className="flex items-center gap-3">
           <Volume2 className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Volume</span>
           <Slider
             value={volume}
             onValueChange={setVolume}

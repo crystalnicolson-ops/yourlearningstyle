@@ -27,6 +27,7 @@ const learningStyles = [
 
 const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransformProps) => {
   const [selectedStyle, setSelectedStyle] = useState<string>('');
+  const [selectedVoice, setSelectedVoice] = useState<string>('Aria');
   const [isTransforming, setIsTransforming] = useState(false);
   const [transformedResult, setTransformedResult] = useState<any>(null);
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
@@ -68,7 +69,7 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
           body: { 
             text: transformedText,
-            voice: 'Aria' // ElevenLabs voice
+            voice: selectedVoice
           }
         });
 
@@ -108,6 +109,19 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     }
   };
 
+  const voiceOptions = [
+    { value: 'Aria', label: 'Aria (Default)' },
+    { value: 'Roger', label: 'Roger' },
+    { value: 'Sarah', label: 'Sarah' },
+    { value: 'Laura', label: 'Laura' },
+    { value: 'Charlie', label: 'Charlie' },
+    { value: 'George', label: 'George' },
+    { value: 'Charlotte', label: 'Charlotte' },
+    { value: 'Alice', label: 'Alice' },
+    { value: 'Liam', label: 'Liam' },
+    { value: 'River', label: 'River' }
+  ];
+
   return (
     <div className="space-y-6">
       <Card className="p-4 bg-gradient-subtle border border-primary/20">
@@ -133,6 +147,24 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
             </Button>
           ))}
         </div>
+        
+        {selectedStyle === 'auditory' && (
+          <div className="mb-4 space-y-2">
+            <label className="text-sm font-medium">Voice Selection</label>
+            <Select value={selectedVoice} onValueChange={setSelectedVoice}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {voiceOptions.map((voice) => (
+                  <SelectItem key={voice.value} value={voice.value}>
+                    {voice.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         
         <Button
           onClick={handleTransform}
