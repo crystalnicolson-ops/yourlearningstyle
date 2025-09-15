@@ -238,14 +238,14 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
           <label
             htmlFor="file-upload"
-            className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-gray-400 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-all duration-300 group"
+            className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/70 transition-all duration-300 group"
           >
             <div className="flex flex-col items-center justify-center pt-2 pb-2">
-              <Upload className="w-5 h-5 mb-1 text-gray-300 group-hover:text-gray-200 transition-colors" />
-              <p className="text-xs text-gray-300 font-medium">
+              <Upload className="w-5 h-5 mb-1 text-primary group-hover:text-primary/80 transition-colors" />
+              <p className="text-xs text-foreground font-medium">
                 <span className="font-semibold">Click to upload</span>
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 TXT, MD, DOCX • PDF soon
               </p>
             </div>
@@ -279,7 +279,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           type="submit" 
           disabled={isUploading}
           size="sm"
-          className="bg-black hover:bg-black/80 text-white px-4 py-2 text-xs"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-xs"
         >
           {isUploading ? "Uploading..." : "Upload"}
         </Button>
