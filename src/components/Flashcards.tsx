@@ -37,7 +37,13 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
   };
 
   const flipCard = () => {
-    setIsFlipped(!isFlipped);
+    if (isFlipped) {
+      // If showing answer, advance to next card
+      nextCard();
+    } else {
+      // If showing question, flip to answer
+      setIsFlipped(true);
+    }
   };
 
   const currentCard = flashcards[currentIndex];
@@ -122,7 +128,7 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
       </div>
 
       <div className="text-center text-sm text-muted-foreground">
-        Click the card to flip between question and answer
+        Click the card to see the answer, then click again to continue
       </div>
     </div>
   );
