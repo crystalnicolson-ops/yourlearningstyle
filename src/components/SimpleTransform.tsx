@@ -162,6 +162,38 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       if (transformError) throw transformError;
 
       const speechText = String(transformData.transformedContent || '').slice(0, 4000);
+      
+      // Try browser speech synthesis first (free!)
+      if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        const voices = speechSynthesis.getVoices();
+        
+        // Find a good voice based on selection
+        let selectedBrowserVoice = voices.find(voice => 
+          voice.name.toLowerCase().includes('female') || 
+          voice.name.toLowerCase().includes('male')
+        ) || voices[0];
+        
+        if (selectedBrowserVoice) {
+          utterance.voice = selectedBrowserVoice;
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          
+          speechSynthesis.speak(utterance);
+          
+          onTransformed(transformData.transformedContent, 'audio');
+          
+          toast({
+            title: "Audio playing!",
+            description: "Using free browser speech (no download available)",
+          });
+          
+          setIsProcessing(null);
+          return;
+        }
+      }
+      
+      // Fallback to cloud TTS (OpenAI is cheaper than ElevenLabs)
       const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
         body: { 
           text: speechText,
@@ -176,7 +208,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       
       toast({
         title: "Audio created!",
-        description: "Your notes have been converted to speech",
+        description: "Using cloud TTS (OpenAI fallback if ElevenLabs fails)",
       });
     } catch (error: any) {
       toast({
