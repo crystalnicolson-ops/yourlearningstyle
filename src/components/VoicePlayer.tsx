@@ -61,16 +61,28 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
     }
   }, [volume]);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play();
+    try {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        await audio.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('Audio play failed:', error);
+      setIsPlaying(false);
+      
+      // Handle autoplay restrictions
+      if (error.name === 'NotAllowedError') {
+        // Browser blocked autoplay - user needs to interact first
+        console.log('Audio play blocked by browser autoplay policy');
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleSeek = (value: number[]) => {
