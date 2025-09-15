@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Sparkles, FileText, Volume2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
@@ -22,6 +23,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
   const [audioBase64, setAudioBase64] = useState<string>('');
   const [enhancedNotes, setEnhancedNotes] = useState<string>('');
+  const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
   const { toast } = useToast();
 
   const handleEnhancedNotes = async () => {
@@ -115,7 +117,7 @@ Content to enhance:\n${content}`
       const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
         body: { 
           text: transformData.transformedContent,
-          voice: 'alloy'
+          voice: selectedVoice
         }
       });
 
@@ -139,8 +141,34 @@ Content to enhance:\n${content}`
     }
   };
 
+  const voices = [
+    { value: 'alloy', label: 'Alloy (Neutral)' },
+    { value: 'echo', label: 'Echo (Male)' },
+    { value: 'fable', label: 'Fable (British Male)' },
+    { value: 'onyx', label: 'Onyx (Deep Male)' },
+    { value: 'nova', label: 'Nova (Female)' },
+    { value: 'shimmer', label: 'Shimmer (Female)' }
+  ];
+
   return (
     <div className="space-y-4">
+      {/* Voice selection */}
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-foreground">Voice:</span>
+        <Select value={selectedVoice} onValueChange={setSelectedVoice}>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Select voice" />
+          </SelectTrigger>
+          <SelectContent>
+            {voices.map((voice) => (
+              <SelectItem key={voice.value} value={voice.value}>
+                {voice.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Simple 3-button interface */}
       <div className="flex gap-3">
         <Button
