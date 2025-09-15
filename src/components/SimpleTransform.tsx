@@ -26,6 +26,10 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
 
   const handleEnhancedNotes = async () => {
     setIsProcessing('enhanced');
+    // Clear other results
+    setFlashcards([]);
+    setAudioBase64('');
+    
     try {
       const { data, error } = await supabase.functions.invoke('gemini-text-manipulator', {
         body: { 
@@ -62,6 +66,10 @@ Content to enhance:\n${content}`
 
   const handleFlashcards = async () => {
     setIsProcessing('flashcards');
+    // Clear other results
+    setEnhancedNotes('');
+    setAudioBase64('');
+    
     try {
       const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
         body: { content, learningStyle: 'visual' }
@@ -91,6 +99,10 @@ Content to enhance:\n${content}`
 
   const handleAudio = async () => {
     setIsProcessing('audio');
+    // Clear other results
+    setEnhancedNotes('');
+    setFlashcards([]);
+    
     try {
       // First transform for auditory learning
       const { data: transformData, error: transformError } = await supabase.functions.invoke('transform-with-gemini', {
