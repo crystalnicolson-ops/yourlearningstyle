@@ -56,7 +56,7 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
       <div className="relative h-64 perspective-1000">
         <Card 
           className={`absolute inset-0 w-full h-full cursor-pointer transition-transform duration-500 preserve-3d ${
-            isFlipped ? 'rotate-x-180' : ''
+            isFlipped ? '-rotate-y-180' : ''
           }`}
           onClick={flipCard}
         >
@@ -74,7 +74,7 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
           </div>
 
           {/* Back side */}
-          <div className="absolute inset-0 w-full h-full backface-hidden rotate-x-180 p-6 flex flex-col justify-center items-center text-center bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20">
+          <div className="absolute inset-0 w-full h-full backface-hidden -rotate-y-180 p-6 flex flex-col justify-center items-center text-center bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20">
             <div className="mb-4">
               <Badge variant="secondary" className="text-xs">Answer</Badge>
             </div>
