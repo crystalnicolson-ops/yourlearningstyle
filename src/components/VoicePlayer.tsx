@@ -1,0 +1,199 @@
+import { useState, useRef, useEffect } from "react";
+import { Play, Pause, Download, Volume2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
+
+interface VoicePlayerProps {
+  audioBase64?: string;
+  title?: string;
+  text?: string;
+}
+
+const VoicePlayer = ({ audioBase64, title, text }: VoicePlayerProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState([80]);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !audioBase64) return;
+
+    const audioBlob = new Blob(
+      [Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))],
+      { type: 'audio/mp3' }
+    );
+    const audioUrl = URL.createObjectURL(audioBlob);
+    audio.src = audioUrl;
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+      URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioBase64]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume[0] / 100;
+    }
+  }, [volume]);
+
+  const togglePlayPause = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSeek = (value: number[]) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const newTime = (value[0] / 100) * duration;
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const downloadAudio = () => {
+    if (!audioBase64) return;
+
+    const audioBlob = new Blob(
+      [Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))],
+      { type: 'audio/mp3' }
+    );
+    const url = URL.createObjectURL(audioBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title || 'voice-notes'}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  if (!audioBase64) {
+    return (
+      <Card className="p-8 text-center">
+        <p className="text-muted-foreground">No audio generated yet.</p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="p-6 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20">
+      <audio ref={audioRef} preload="metadata" />
+      
+      {title && (
+        <div className="mb-4 text-center">
+          <h3 className="text-xl font-semibold mb-2">{title}</h3>
+          <Badge variant="secondary" className="text-xs">
+            <Volume2 className="h-3 w-3 mr-1" />
+            Audio Notes
+          </Badge>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <Slider
+            value={[duration > 0 ? (currentTime / duration) * 100 : 0]}
+            onValueChange={handleSeek}
+            max={100}
+            step={0.1}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center justify-center gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={togglePlayPause}
+            className="flex items-center gap-2"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
+            {isPlaying ? 'Pause' : 'Play'}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={downloadAudio}
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Download
+          </Button>
+        </div>
+
+        {/* Volume Control */}
+        <div className="flex items-center gap-3">
+          <Volume2 className="h-4 w-4 text-muted-foreground" />
+          <Slider
+            value={volume}
+            onValueChange={setVolume}
+            max={100}
+            step={1}
+            className="flex-1"
+          />
+          <span className="text-xs text-muted-foreground w-10">
+            {volume[0]}%
+          </span>
+        </div>
+
+        {/* Text Preview */}
+        {text && (
+          <div className="mt-4 p-4 bg-background/50 rounded-lg border">
+            <p className="text-sm text-muted-foreground mb-2">Original Text:</p>
+            <p className="text-sm leading-relaxed line-clamp-3">{text}</p>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};
+
+export default VoicePlayer;
