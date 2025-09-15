@@ -266,9 +266,8 @@ const extractTextForNote = async (note: Note) => {
             <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
               <div className="flex items-start justify-between flex-wrap">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="font-semibold text-foreground">{note.title}</h4>
-                    {hasContent && (
+                  {hasContent && (
+                    <div className="flex justify-start mb-2">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -277,8 +276,8 @@ const extractTextForNote = async (note: Note) => {
                       >
                         {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                       </Button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   
                   {note.content && !isExpanded && (
                     <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
