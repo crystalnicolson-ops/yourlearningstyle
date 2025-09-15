@@ -146,9 +146,9 @@ Content to enhance:\n${content}`
         <Button
           onClick={handleEnhancedNotes}
           disabled={!content || isProcessing !== null}
-          variant="outline"
+          variant="default"
           size="sm"
-          className="flex-1"
+          className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
         >
           {isProcessing === 'enhanced' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -161,9 +161,9 @@ Content to enhance:\n${content}`
         <Button
           onClick={handleFlashcards}
           disabled={!content || isProcessing !== null}
-          variant="outline"
+          variant="default"
           size="sm"
-          className="flex-1"
+          className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90"
         >
           {isProcessing === 'flashcards' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -176,9 +176,9 @@ Content to enhance:\n${content}`
         <Button
           onClick={handleAudio}
           disabled={!content || isProcessing !== null}
-          variant="outline"
+          variant="default"
           size="sm"
-          className="flex-1"
+          className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
         >
           {isProcessing === 'audio' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />

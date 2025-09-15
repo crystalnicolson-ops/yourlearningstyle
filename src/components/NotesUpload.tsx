@@ -254,18 +254,14 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
           <label
             htmlFor="file-upload"
-            className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/70 transition-all duration-300 group"
+            className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer w-auto h-auto border border-primary"
           >
-            <div className="flex flex-col items-center justify-center pt-2 pb-2">
-              <Upload className="w-5 h-5 mb-1 text-primary group-hover:text-primary/80 transition-colors" />
-              <p className="text-xs text-foreground font-medium">
-                <span className="font-semibold">Click to upload</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                TXT, MD, DOCX, JSON supported • PDF preview only
-              </p>
-            </div>
+            <Upload className="w-4 h-4" />
+            <span className="text-xs font-semibold">Upload File</span>
           </label>
+          <p className="mt-2 text-xs text-muted-foreground">
+            TXT, MD, DOCX, JSON supported • PDF preview only
+          </p>
             {file && (
               <Button
                 type="button"
