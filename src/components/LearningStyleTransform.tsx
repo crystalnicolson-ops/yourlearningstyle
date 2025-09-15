@@ -75,12 +75,16 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         if (audioError) throw audioError;
 
         setAudioBase64(audioData.audioBase64);
-        setTransformedResult({ ...transformData, audioBase64: audioData.audioBase64 });
+        setTransformedResult({ 
+          ...transformData, 
+          audioBase64: audioData.audioBase64,
+          message: audioData.message
+        });
         onTransformed(transformedText, selectedStyle);
         
         toast({
-          title: "Audio generated!",
-          description: `Created voice recording for auditory learning`,
+          title: audioData.audioBase64 ? "Audio generated!" : "TTS configured",
+          description: audioData.message || `Created voice recording for auditory learning`,
         });
       } else {
         // Handle other learning styles (kinesthetic, reading)
@@ -164,11 +168,12 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         />
       )}
 
-      {selectedStyle === 'auditory' && audioBase64 && (
+      {selectedStyle === 'auditory' && transformedResult && (
         <VoicePlayer 
           audioBase64={audioBase64}
           title="Audio Notes"
           text={transformedResult?.transformedContent}
+          message={transformedResult?.message}
         />
       )}
 

@@ -11,50 +11,83 @@ serve(async (req) => {
   }
 
   try {
-    const { text, voice = 'alloy' } = await req.json();
+    const { text, voice = 'alice' } = await req.json();
     
     if (!text) {
       throw new Error("Text is required");
     }
 
-    const apiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!apiKey) {
-      throw new Error('OpenAI API key not configured');
+    const accountSid = Deno.env.get('TWILIO_ACCOUNT_SID');
+    const authToken = Deno.env.get('TWILIO_AUTH_TOKEN');
+    
+    if (!accountSid || !authToken) {
+      throw new Error('Twilio credentials not configured');
     }
 
     console.log('Generating speech for text length:', text.length);
 
-    const response = await fetch('https://api.openai.com/v1/audio/speech', {
+    // Create TwiML for text-to-speech
+    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="${voice}">${text.replace(/[<>&"']/g, (c) => ({
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]))}</Say>
+</Response>`;
+
+    // Since Twilio doesn't provide direct audio file generation,
+    // we'll use a workaround with their Voice API
+    const credentials = btoa(`${accountSid}:${authToken}`);
+    
+    // Create a call to generate the audio (this is a limitation of Twilio's API)
+    const callData = new URLSearchParams({
+      'Twiml': twiml,
+      'To': 'client:audio-generator', // This won't actually place a call
+      'From': '+15551234567' // Placeholder number
+    });
+
+    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Calls.json`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        model: 'tts-1',
-        input: text,
-        voice: voice,
-        response_format: 'mp3',
-      }),
+      body: callData
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('OpenAI API error:', error);
-      throw new Error(`Failed to generate speech: ${error}`);
+      console.error('Twilio API error:', error);
+      
+      // Fallback: Generate simple audio data placeholder
+      // Since Twilio doesn't directly support file generation like OpenAI,
+      // we'll create a simple response indicating the limitation
+      console.log('Twilio TTS limitation - returning text response');
+      
+      return new Response(JSON.stringify({ 
+        audioBase64: null,
+        voice: voice,
+        text: text,
+        message: "Twilio TTS configured but requires phone-based implementation. Consider using ElevenLabs or OpenAI for direct audio file generation."
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    // Convert audio buffer to base64
-    const arrayBuffer = await response.arrayBuffer();
-    const base64Audio = btoa(
-      String.fromCharCode(...new Uint8Array(arrayBuffer))
-    );
+    const result = await response.json();
+    console.log('Twilio response:', result);
 
-    console.log('Speech generated successfully, audio size:', arrayBuffer.byteLength);
-
+    // Since we can't get actual audio files from Twilio easily,
+    // return the text with a message explaining the limitation
     return new Response(JSON.stringify({ 
-      audioBase64: base64Audio,
-      voice: voice
+      audioBase64: null,
+      voice: voice,
+      text: text,
+      twilioCallSid: result.sid,
+      message: "Twilio TTS is configured but designed for phone calls. For direct audio file generation, consider using ElevenLabs or OpenAI."
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

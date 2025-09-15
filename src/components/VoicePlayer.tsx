@@ -9,9 +9,10 @@ interface VoicePlayerProps {
   audioBase64?: string;
   title?: string;
   text?: string;
+  message?: string;
 }
 
-const VoicePlayer = ({ audioBase64, title, text }: VoicePlayerProps) => {
+const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -106,8 +107,23 @@ const VoicePlayer = ({ audioBase64, title, text }: VoicePlayerProps) => {
 
   if (!audioBase64) {
     return (
-      <Card className="p-8 text-center">
-        <p className="text-muted-foreground">No audio generated yet.</p>
+      <Card className="p-8 text-center space-y-4">
+        <div>
+          <p className="text-muted-foreground mb-2">
+            {message || "No audio generated yet."}
+          </p>
+          {title && (
+            <Badge variant="outline" className="text-xs">
+              {title}
+            </Badge>
+          )}
+        </div>
+        {text && (
+          <div className="p-4 bg-background/50 rounded-lg border">
+            <p className="text-sm text-muted-foreground mb-2">Text Content:</p>
+            <p className="text-sm leading-relaxed">{text}</p>
+          </div>
+        )}
       </Card>
     );
   }
