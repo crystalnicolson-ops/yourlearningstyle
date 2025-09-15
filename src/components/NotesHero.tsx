@@ -16,11 +16,11 @@ const NotesHero = () => {
           <div className="flex items-center justify-center gap-2 mb-6">
             <FileText className="h-8 w-8 text-white" />
             <h1 className="text-5xl md:text-6xl font-bold text-white">
-              Notes<span className="text-pink-200">App</span>
+              Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Your personal workspace for organizing thoughts, ideas, and important documents
+            Transform your notes into personalized learning experiences with AI-powered adaptations
           </p>
         </header>
 
@@ -29,11 +29,11 @@ const NotesHero = () => {
           <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
               <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FileText className="h-7 w-7 text-white" />
+                <Zap className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Rich Notes</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3">Visual Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Create detailed notes with formatting
+                Transform notes into interactive flashcards
               </p>
             </div>
           </Card>
@@ -41,11 +41,11 @@ const NotesHero = () => {
           <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
               <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Upload className="h-7 w-7 text-white" />
+                <Search className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">File Upload</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3">Auditory Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Attach documents and images
+                Generate voice recordings from your notes
               </p>
             </div>
           </Card>
@@ -53,11 +53,11 @@ const NotesHero = () => {
           <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
               <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Cloud className="h-7 w-7 text-white" />
+                <Target className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Cloud Sync</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3">AI Adaptation</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Access anywhere, anytime
+                Personalized content for your learning style
               </p>
             </div>
           </Card>
