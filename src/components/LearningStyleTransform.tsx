@@ -27,7 +27,7 @@ const learningStyles = [
 
 const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransformProps) => {
   const [selectedStyle, setSelectedStyle] = useState<string>('');
-  const [selectedVoice, setSelectedVoice] = useState<string>('Aria');
+  const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
   const [isTransforming, setIsTransforming] = useState(false);
   const [transformedResult, setTransformedResult] = useState<any>(null);
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
@@ -110,16 +110,12 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
   };
 
   const voiceOptions = [
-    { value: 'Aria', label: 'Aria (Default)' },
-    { value: 'Roger', label: 'Roger' },
-    { value: 'Sarah', label: 'Sarah' },
-    { value: 'Laura', label: 'Laura' },
-    { value: 'Charlie', label: 'Charlie' },
-    { value: 'George', label: 'George' },
-    { value: 'Charlotte', label: 'Charlotte' },
-    { value: 'Alice', label: 'Alice' },
-    { value: 'Liam', label: 'Liam' },
-    { value: 'River', label: 'River' }
+    { value: 'alloy', label: 'Alloy (Neutral)' },
+    { value: 'echo', label: 'Echo (Male)' },
+    { value: 'fable', label: 'Fable (British Male)' },
+    { value: 'onyx', label: 'Onyx (Deep Male)' },
+    { value: 'nova', label: 'Nova (Female)' },
+    { value: 'shimmer', label: 'Shimmer (Female)' },
   ];
 
   return (

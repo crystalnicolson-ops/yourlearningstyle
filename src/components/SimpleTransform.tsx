@@ -24,7 +24,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [audioBase64, setAudioBase64] = useState<string>('');
   const [useBrowserSpeech, setUseBrowserSpeech] = useState(false);
   const [enhancedNotes, setEnhancedNotes] = useState<string>('');
-  const [selectedVoice, setSelectedVoice] = useState<string>('Aria');
+  const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
   const { toast } = useToast();
 
   const handleEnhancedNotes = async () => {
@@ -216,17 +216,12 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
   };
 
   const voices = [
-    { value: 'Aria', label: 'Aria (Female)' },
-    { value: 'Roger', label: 'Roger (Male)' },
-    { value: 'Sarah', label: 'Sarah (Female)' },
-    { value: 'Laura', label: 'Laura (Female)' },
-    { value: 'Charlie', label: 'Charlie (Male)' },
-    { value: 'George', label: 'George (Male)' },
-    { value: 'Callum', label: 'Callum (Male)' },
-    { value: 'River', label: 'River (Neutral)' },
-    { value: 'Liam', label: 'Liam (Male)' },
-    { value: 'Charlotte', label: 'Charlotte (Female)' },
-    { value: 'Alice', label: 'Alice (Female)' },
+    { value: 'alloy', label: 'Alloy (Neutral)' },
+    { value: 'echo', label: 'Echo (Male)' },
+    { value: 'fable', label: 'Fable (British Male)' },
+    { value: 'onyx', label: 'Onyx (Deep Male)' },
+    { value: 'nova', label: 'Nova (Female)' },
+    { value: 'shimmer', label: 'Shimmer (Female)' },
   ];
 
   return (
