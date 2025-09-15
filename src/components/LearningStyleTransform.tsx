@@ -131,21 +131,49 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          {learningStyles.map((style) => (
-            <Button
-              key={style.value}
-              variant={selectedStyle === style.value ? "default" : "outline"}
-              onClick={() => setSelectedStyle(style.value)}
-              className="h-auto p-4 flex flex-col items-center gap-2 text-center"
-              disabled={!content || isTransforming}
-            >
-              <div className="text-2xl">{style.icon}</div>
-              <div>
-                <div className="font-semibold">{style.label}</div>
-                <div className="text-xs opacity-75">{style.description}</div>
-              </div>
-            </Button>
-          ))}
+          {learningStyles.map((style) => {
+            const getStyleClasses = (styleValue: string) => {
+              const baseClasses = "h-auto p-4 flex flex-col items-center gap-2 text-center transition-all duration-200 hover:scale-105";
+              const isSelected = selectedStyle === styleValue;
+              
+              switch (styleValue) {
+                case 'visual':
+                  return isSelected 
+                    ? `${baseClasses} bg-visual text-white border-visual shadow-lg` 
+                    : `${baseClasses} border-visual text-visual hover:bg-visual/10`;
+                case 'auditory':
+                  return isSelected 
+                    ? `${baseClasses} bg-auditory text-white border-auditory shadow-lg` 
+                    : `${baseClasses} border-auditory text-auditory hover:bg-auditory/10`;
+                case 'kinesthetic':
+                  return isSelected 
+                    ? `${baseClasses} bg-kinesthetic text-white border-kinesthetic shadow-lg` 
+                    : `${baseClasses} border-kinesthetic text-kinesthetic hover:bg-kinesthetic/10`;
+                case 'reading':
+                  return isSelected 
+                    ? `${baseClasses} bg-reading text-white border-reading shadow-lg` 
+                    : `${baseClasses} border-reading text-reading hover:bg-reading/10`;
+                default:
+                  return isSelected ? `${baseClasses} bg-primary text-white` : `${baseClasses} border-border`;
+              }
+            };
+
+            return (
+              <Button
+                key={style.value}
+                variant="outline"
+                onClick={() => setSelectedStyle(style.value)}
+                className={getStyleClasses(style.value)}
+                disabled={!content || isTransforming}
+              >
+                <div className="text-2xl">{style.icon}</div>
+                <div>
+                  <div className="font-semibold">{style.label}</div>
+                  <div className="text-xs opacity-75">{style.description}</div>
+                </div>
+              </Button>
+            );
+          })}
         </div>
         
         {selectedStyle === 'auditory' && (

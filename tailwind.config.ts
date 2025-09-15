@@ -57,6 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        visual: {
+          DEFAULT: "hsl(var(--visual-primary))",
+          secondary: "hsl(var(--visual-secondary))",
+        },
+        auditory: {
+          DEFAULT: "hsl(var(--auditory-primary))",
+          secondary: "hsl(var(--auditory-secondary))",
+        },
+        kinesthetic: {
+          DEFAULT: "hsl(var(--kinesthetic-primary))",
+          secondary: "hsl(var(--kinesthetic-secondary))",
+        },
+        reading: {
+          DEFAULT: "hsl(var(--reading-primary))",
+          secondary: "hsl(var(--reading-secondary))",
+        },
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
