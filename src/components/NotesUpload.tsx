@@ -156,6 +156,22 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           }
         } catch (error) {
           console.error('Text extraction failed:', error);
+          const errorMsg = error.message || 'Unable to extract text';
+          
+          // Show helpful message based on error type
+          if (errorMsg.includes('not supported')) {
+            toast({
+              title: "File type not fully supported",
+              description: `${file.name} was uploaded but text extraction isn't available for this format yet.`,
+              variant: "default",
+            });
+          } else {
+            toast({
+              title: "Text extraction failed", 
+              description: `Uploaded ${file.name} but couldn't extract text content.`,
+              variant: "default",
+            });
+          }
           // Continue without extracted text - user will see the file but no content
         }
       }
@@ -233,7 +249,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             id="file-upload"
             type="file"
             onChange={handleFileSelect}
-            accept=".docx,.txt,.md,.pdf"
+            accept=".docx,.txt,.md,.pdf,.json"
             className="sr-only"
           />
           <label
@@ -246,7 +262,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                 <span className="font-semibold">Click to upload</span>
               </p>
               <p className="text-xs text-muted-foreground">
-                TXT, MD, DOCX • PDF soon
+                TXT, MD, DOCX, JSON supported • PDF preview only
               </p>
             </div>
           </label>
