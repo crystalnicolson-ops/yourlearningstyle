@@ -22,6 +22,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [isProcessing, setIsProcessing] = useState<string | null>(null);
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
   const [audioBase64, setAudioBase64] = useState<string>('');
+  const [useBrowserSpeech, setUseBrowserSpeech] = useState(false);
   const [enhancedNotes, setEnhancedNotes] = useState<string>('');
   const [selectedVoice, setSelectedVoice] = useState<string>('Aria');
   const { toast } = useToast();
@@ -165,32 +166,18 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       
       // Try browser speech synthesis first (free!)
       if ('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window) {
-        const utterance = new SpeechSynthesisUtterance(speechText);
-        const voices = speechSynthesis.getVoices();
+        setUseBrowserSpeech(true);
+        setAudioBase64('browser-speech'); // Special marker for browser speech
         
-        // Find a good voice based on selection
-        let selectedBrowserVoice = voices.find(voice => 
-          voice.name.toLowerCase().includes('female') || 
-          voice.name.toLowerCase().includes('male')
-        ) || voices[0];
+        onTransformed(transformData.transformedContent, 'audio');
         
-        if (selectedBrowserVoice) {
-          utterance.voice = selectedBrowserVoice;
-          utterance.rate = 0.9;
-          utterance.pitch = 1;
-          
-          speechSynthesis.speak(utterance);
-          
-          onTransformed(transformData.transformedContent, 'audio');
-          
-          toast({
-            title: "Audio playing!",
-            description: "Using free browser speech (no download available)",
-          });
-          
-          setIsProcessing(null);
-          return;
-        }
+        toast({
+          title: "Audio ready!",
+          description: "Using free browser speech",
+        });
+        
+        setIsProcessing(null);
+        return;
       }
       
       // Fallback to cloud TTS (OpenAI is cheaper than ElevenLabs)
@@ -350,7 +337,9 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
       {audioBase64 && (
         <VoicePlayer 
-          audioBase64={audioBase64}
+          audioBase64={audioBase64 === 'browser-speech' ? undefined : audioBase64}
+          text={content}
+          useBrowserSpeech={useBrowserSpeech}
         />
       )}
     </div>

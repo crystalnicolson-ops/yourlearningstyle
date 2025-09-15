@@ -10,9 +10,10 @@ interface VoicePlayerProps {
   title?: string;
   text?: string;
   message?: string;
+  useBrowserSpeech?: boolean;
 }
 
-const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) => {
+const VoicePlayer = ({ audioBase64, title, text, message, useBrowserSpeech }: VoicePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -62,6 +63,23 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
   }, [volume]);
 
   const togglePlayPause = async () => {
+    if (useBrowserSpeech) {
+      if (isPlaying) {
+        speechSynthesis.cancel();
+        setIsPlaying(false);
+      } else {
+        if (text) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          utterance.onend = () => setIsPlaying(false);
+          speechSynthesis.speak(utterance);
+          setIsPlaying(true);
+        }
+      }
+      return;
+    }
+
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -117,7 +135,7 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
     URL.revokeObjectURL(url);
   };
 
-  if (!audioBase64) {
+  if (!audioBase64 && !useBrowserSpeech) {
     return (
       <Card className="p-8 text-center space-y-4">
         <div>
@@ -145,20 +163,22 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
       <audio ref={audioRef} preload="metadata" />
       
       <div className="space-y-4">
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <Slider
-            value={[duration > 0 ? (currentTime / duration) * 100 : 0]}
-            onValueChange={handleSeek}
-            max={100}
-            step={0.1}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+        {/* Progress Bar - only for downloadable audio */}
+        {!useBrowserSpeech && (
+          <div className="space-y-2">
+            <Slider
+              value={[duration > 0 ? (currentTime / duration) * 100 : 0]}
+              onValueChange={handleSeek}
+              max={100}
+              step={0.1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Controls */}
         <div className="flex items-center justify-between gap-4">
@@ -176,31 +196,41 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
             {isPlaying ? 'Pause' : 'Play'}
           </Button>
 
-          {/* Volume Control */}
-          <div className="flex items-center gap-2">
-            <Volume2 className="h-3 w-3 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Vol</span>
-            <Slider
-              value={volume}
-              onValueChange={setVolume}
-              max={100}
-              step={1}
-              className="w-16"
-            />
-            <span className="text-xs text-muted-foreground w-8">
-              {volume[0]}%
-            </span>
-          </div>
+          {/* Volume Control - only for downloadable audio */}
+          {!useBrowserSpeech && (
+            <div className="flex items-center gap-2">
+              <Volume2 className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Vol</span>
+              <Slider
+                value={volume}
+                onValueChange={setVolume}
+                max={100}
+                step={1}
+                className="w-16"
+              />
+              <span className="text-xs text-muted-foreground w-8">
+                {volume[0]}%
+              </span>
+            </div>
+          )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={downloadAudio}
-            className="flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Download
-          </Button>
+          {useBrowserSpeech && (
+            <Badge variant="outline" className="text-xs">
+              Free Browser Voice
+            </Badge>
+          )}
+
+          {!useBrowserSpeech && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={downloadAudio}
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Download
+            </Button>
+          )}
         </div>
 
         {/* Text Preview */}
