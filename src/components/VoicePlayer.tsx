@@ -159,7 +159,7 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-between gap-4">
           <Button
             variant="outline"
             size="sm"
@@ -174,6 +174,22 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
             {isPlaying ? 'Pause' : 'Play'}
           </Button>
 
+          {/* Volume Control */}
+          <div className="flex items-center gap-2">
+            <Volume2 className="h-3 w-3 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Vol</span>
+            <Slider
+              value={volume}
+              onValueChange={setVolume}
+              max={100}
+              step={1}
+              className="w-16"
+            />
+            <span className="text-xs text-muted-foreground w-8">
+              {volume[0]}%
+            </span>
+          </div>
+
           <Button
             variant="outline"
             size="sm"
@@ -183,22 +199,6 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
             <Download className="h-4 w-4" />
             Download
           </Button>
-        </div>
-
-        {/* Volume Control */}
-        <div className="flex items-center gap-3">
-          <Volume2 className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Volume</span>
-          <Slider
-            value={volume}
-            onValueChange={setVolume}
-            max={100}
-            step={1}
-            className="flex-1"
-          />
-          <span className="text-xs text-muted-foreground w-10">
-            {volume[0]}%
-          </span>
         </div>
 
         {/* Text Preview */}
