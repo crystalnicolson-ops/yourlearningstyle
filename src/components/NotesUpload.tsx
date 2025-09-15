@@ -243,7 +243,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
         </div>
         
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <div className="relative">
             <input
               id="file-upload"
@@ -254,36 +254,38 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             />
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-xs font-medium border"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-sm font-medium border"
             >
               <Upload className="w-4 h-4" />
-              {file ? "Change File" : "Choose File"}
+              Choose File
             </label>
-            {file && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setFile(null);
-                  const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-                  if (fileInput) fileInput.value = '';
-                }}
-                className="ml-2"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
           </div>
           
-          <Button 
-            type="submit" 
-            disabled={isUploading}
-            size="sm"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-xs"
-          >
-            {isUploading ? "Uploading..." : "Save Note"}
-          </Button>
+          {file && (
+            <Button 
+              type="submit" 
+              disabled={isUploading}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-sm"
+            >
+              {isUploading ? "Uploading..." : "Upload"}
+            </Button>
+          )}
+          
+          {file && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setFile(null);
+                const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+                if (fileInput) fileInput.value = '';
+              }}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         
         {file && (
