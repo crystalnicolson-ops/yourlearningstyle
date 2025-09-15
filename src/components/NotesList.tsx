@@ -339,7 +339,7 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               )}
 
-              {transformed && (
+              {transformed && transformed.style !== 'enhanced' && (
                 <div className="mt-4">
                   <h5 className="font-medium text-sm text-foreground mb-2">
                     Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
