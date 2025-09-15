@@ -62,8 +62,53 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('ElevenLabs API error:', error);
+      const errorText = await response.text();
+      console.error('ElevenLabs API error:', errorText);
+
+      // Try to adapt to ElevenLabs quota by truncating text proportionally
+      try {
+        const errJson = JSON.parse(errorText);
+        const msg: string = errJson?.detail?.message || '';
+        const match = msg.match(/You have (\d+) credits.*?(\d+) credits are required/i);
+        if (match) {
+          const available = parseInt(match[1], 10);
+          const required = parseInt(match[2], 10);
+          if (available > 0 && required > 0) {
+            const fraction = Math.max(0.05, Math.min(0.9, (available / required) * 0.9));
+            const newLen = Math.max(128, Math.floor(safeText.length * fraction));
+            console.log(`Retrying ElevenLabs with shorter text: ${newLen} chars (avail=${available}, req=${required})`);
+
+            const retryRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+              method: 'POST',
+              headers: {
+                'Accept': 'audio/mpeg',
+                'Content-Type': 'application/json',
+                'xi-api-key': apiKey,
+              },
+              body: JSON.stringify({
+                text: safeText.slice(0, newLen),
+                model_id: 'eleven_multilingual_v2',
+                voice_settings: {
+                  stability: 0.5,
+                  similarity_boost: 0.5
+                }
+              }),
+            });
+
+            if (retryRes.ok) {
+              const buf = await retryRes.arrayBuffer();
+              const base64 = encodeBase64(new Uint8Array(buf));
+              return new Response(JSON.stringify({ audioBase64: base64, voice }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              });
+            } else {
+              console.error('Retry after truncation failed:', await retryRes.text());
+            }
+          }
+        }
+      } catch (_) {
+        // ignore parse errors
+      }
 
       // Fallback to OpenAI TTS if ElevenLabs fails
       const openaiKey = Deno.env.get('OPENAI_API_KEY');
@@ -100,11 +145,11 @@ serve(async (req) => {
           });
         } catch (fallbackErr) {
           console.error('Fallback TTS error:', fallbackErr);
-          throw new Error(`Failed to generate speech: ${error}`);
+          throw new Error(`Failed to generate speech: ${errorText}`);
         }
       }
 
-      throw new Error(`Failed to generate speech: ${error}`);
+      throw new Error(`Failed to generate speech: ${errorText}`);
     }
 
     // Convert audio buffer to base64 safely
