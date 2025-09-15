@@ -242,14 +242,12 @@ Content to enhance:\n${content}`
       {flashcards.length > 0 && (
         <Flashcards 
           flashcards={flashcards} 
-          title="Study Flashcards"
         />
       )}
 
       {audioBase64 && (
         <VoicePlayer 
           audioBase64={audioBase64}
-          title="Audio Notes"
         />
       )}
     </div>

@@ -50,15 +50,6 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
-      {title && (
-        <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <Badge variant="secondary">
-            {currentIndex + 1} of {flashcards.length}
-          </Badge>
-        </div>
-      )}
-
       <div className="relative h-64 perspective-1000">
         <Card 
           className={`absolute inset-0 w-full h-full cursor-pointer transition-transform duration-500 preserve-3d ${
@@ -106,14 +97,9 @@ const Flashcards = ({ flashcards, title }: FlashcardsProps) => {
         </Button>
 
         <div className="flex gap-1">
-          {flashcards.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-primary' : 'bg-muted'
-              }`}
-            />
-          ))}
+          <Badge variant="secondary" className="text-xs">
+            {currentIndex + 1} of {flashcards.length}
+          </Badge>
         </div>
 
         <Button

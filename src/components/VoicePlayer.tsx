@@ -132,16 +132,6 @@ const VoicePlayer = ({ audioBase64, title, text, message }: VoicePlayerProps) =>
     <Card className="p-6 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20">
       <audio ref={audioRef} preload="metadata" />
       
-      {title && (
-        <div className="mb-4 text-center">
-          <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <Badge variant="secondary" className="text-xs">
-            <Volume2 className="h-3 w-3 mr-1" />
-            Audio Notes
-          </Badge>
-        </div>
-      )}
-
       <div className="space-y-4">
         {/* Progress Bar */}
         <div className="space-y-2">
