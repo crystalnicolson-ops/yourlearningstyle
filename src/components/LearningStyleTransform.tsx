@@ -68,7 +68,7 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
           body: { 
             text: transformedText,
-            voice: 'alloy' // You can make this configurable
+            voice: 'Aria' // ElevenLabs voice
           }
         });
 
