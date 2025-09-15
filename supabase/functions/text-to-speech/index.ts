@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { encode as encodeBase64 } from "https://deno.land/std@0.190.0/encoding/base64.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -64,11 +65,9 @@ serve(async (req) => {
       throw new Error(`Failed to generate speech: ${error}`);
     }
 
-    // Convert audio buffer to base64
+    // Convert audio buffer to base64 safely
     const arrayBuffer = await response.arrayBuffer();
-    const base64Audio = btoa(
-      String.fromCharCode(...new Uint8Array(arrayBuffer))
-    );
+    const base64Audio = encodeBase64(new Uint8Array(arrayBuffer));
 
     console.log('Speech generated successfully, audio size:', arrayBuffer.byteLength);
 
