@@ -113,7 +113,7 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          {learningStyles.filter(style => ['visual', 'auditory'].includes(style.value)).map((style) => (
+          {learningStyles.map((style) => (
             <Button
               key={style.value}
               variant={selectedStyle === style.value ? "default" : "outline"}

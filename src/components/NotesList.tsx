@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
+import GeminiTextManipulator from "./GeminiTextManipulator";
 
 interface Note {
   id: string;
@@ -292,10 +293,15 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
 
               {/* Learning Style Transform */}
               {hasContent && (
-                <div className="mt-4">
+                <div className="mt-4 space-y-4">
                   <LearningStyleTransform
                     content={note.content || ""}
                     onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+                  />
+                  
+                  <GeminiTextManipulator
+                    content={note.content || ""}
+                    onTransformed={(content) => handleTransformed(note.id, content, "gemini")}
                   />
                 </div>
               )}
