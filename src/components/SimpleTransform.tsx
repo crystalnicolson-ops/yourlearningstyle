@@ -269,22 +269,6 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
               ))}
             </SelectContent>
           </Select>
-          {audioBase64 && (
-            <Button
-              onClick={handleAudio}
-              disabled={isProcessing !== null}
-              variant="outline"
-              size="sm"
-              className="ml-2"
-            >
-              {isProcessing === 'audio' ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Volume2 className="h-4 w-4 mr-2" />
-              )}
-              Regenerate
-            </Button>
-          )}
         </div>
       )}
 
