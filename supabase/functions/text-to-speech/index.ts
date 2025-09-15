@@ -14,7 +14,8 @@ serve(async (req) => {
   try {
     const { text, voice = 'Aria' } = await req.json();
     
-    if (!text) {
+    const safeText = String(text || '').slice(0, 2000);
+    if (!safeText) {
       throw new Error("Text is required");
     }
 
@@ -23,7 +24,7 @@ serve(async (req) => {
       throw new Error('ElevenLabs API key not configured');
     }
 
-    console.log('Generating speech for text length:', text.length);
+    console.log('Generating speech for text length:', safeText.length);
 
     // Map voice names to ElevenLabs voice IDs
     const voiceMap: Record<string, string> = {
@@ -50,7 +51,7 @@ serve(async (req) => {
         'xi-api-key': apiKey,
       },
       body: JSON.stringify({
-        text: text,
+        text: safeText,
         model_id: 'eleven_multilingual_v2',
         voice_settings: {
           stability: 0.5,
@@ -62,6 +63,46 @@ serve(async (req) => {
     if (!response.ok) {
       const error = await response.text();
       console.error('ElevenLabs API error:', error);
+
+      // Fallback to OpenAI TTS if ElevenLabs fails
+      const openaiKey = Deno.env.get('OPENAI_API_KEY');
+      if (openaiKey) {
+        try {
+          console.log('Falling back to OpenAI TTS');
+          const oiRes = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openaiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'tts-1',
+              input: safeText,
+              voice: 'alloy',
+              response_format: 'mp3',
+            }),
+          });
+
+          if (!oiRes.ok) {
+            const oiErr = await oiRes.text();
+            throw new Error(`OpenAI TTS failed: ${oiErr}`);
+          }
+
+          const oiBuf = await oiRes.arrayBuffer();
+          const oiBase64 = encodeBase64(new Uint8Array(oiBuf));
+
+          return new Response(JSON.stringify({
+            audioBase64: oiBase64,
+            voice,
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        } catch (fallbackErr) {
+          console.error('Fallback TTS error:', fallbackErr);
+          throw new Error(`Failed to generate speech: ${error}`);
+        }
+      }
+
       throw new Error(`Failed to generate speech: ${error}`);
     }
 
