@@ -6,8 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
-import { FabricVisualGenerator } from "./FabricVisualGenerator";
-import { VisualData } from "@/lib/visualGenerator";
 
 interface Note {
   id: string;
@@ -26,7 +24,6 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
   const [isGuest, setIsGuest] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
   const [transformedContent, setTransformedContent] = useState<Record<string, { content: string; style: string }>>({});
-  const [generatedVisuals, setGeneratedVisuals] = useState<Record<string, VisualData>>({});
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -169,13 +166,6 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
     }));
   };
 
-  const handleVisualGenerated = (noteId: string, visual: VisualData) => {
-    setGeneratedVisuals(prev => ({
-      ...prev,
-      [noteId]: visual
-    }));
-  };
-
   const extractTextForNote = async (note: Note) => {
     try {
       toast({ title: 'Extracting text...', description: note.file_name || undefined });
@@ -230,126 +220,151 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
   }
 
   return (
-    <div className="space-y-4">
-      {notes.map((note) => {
-        const isExpanded = expandedNotes.has(note.id);
-        const hasContent = note.content && note.content.trim().length > 0;
-        const transformed = transformedContent[note.id];
-        
-        return (
-          <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
-            <div className="flex items-start justify-between flex-wrap">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h4 className="font-semibold text-foreground">{note.title}</h4>
-                  {hasContent && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleExpanded(note.id)}
-                      className="p-1 h-auto"
-                    >
-                      {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </Button>
+    <div className="space-y-6">
+      {/* Notes with Learning Transformation */}
+      <div className="space-y-4">
+        {notes.map((note) => {
+          const isExpanded = expandedNotes.has(note.id);
+          const hasContent = note.content && note.content.trim().length > 0;
+          const transformed = transformedContent[note.id];
+          
+          return (
+            <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
+              <div className="flex items-start justify-between flex-wrap">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-semibold text-foreground">{note.title}</h4>
+                    {hasContent && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleExpanded(note.id)}
+                        className="p-1 h-auto"
+                      >
+                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {note.content && !isExpanded && (
+                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+                      {note.content}
+                    </p>
+                  )}
+                  
+                  {note.file_name && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                      <FileText className="h-4 w-4" />
+                      <span>{note.file_name}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                    <Calendar className="h-3 w-3" />
+                    <span>{new Date(note.created_at).toLocaleDateString()}</span>
+                  </div>
+
+                  {!hasContent && note.file_url && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                      <span>
+                        {note.file_name?.toLowerCase().endsWith('.pdf') 
+                          ? 'PDF text extraction not yet supported - please copy/paste content manually'
+                          : 'No text content could be extracted from this file type'}
+                      </span>
+                    </div>
                   )}
                 </div>
-                
-                {note.content && !isExpanded && (
-                  <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                    {note.content}
-                  </p>
-                )}
-                
-                {note.file_name && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                    <FileText className="h-4 w-4" />
-                    <span>{note.file_name}</span>
+              </div>
+
+              {/* Expanded content section */}
+              {isExpanded && hasContent && (
+                <div className="mt-4 space-y-4 border-t border-border pt-4">
+                  <div>
+                    <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
+                    <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
+                      {note.content}
+                    </div>
                   </div>
-                )}
-                
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                  <Calendar className="h-3 w-3" />
-                  <span>{new Date(note.created_at).toLocaleDateString()}</span>
                 </div>
+              )}
 
-                {!hasContent && note.file_url && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                    <span>
-                      {note.file_name?.toLowerCase().endsWith('.pdf') 
-                        ? 'PDF text extraction not yet supported - please copy/paste content manually'
-                        : 'No text content could be extracted from this file type'}
-                    </span>
+              {/* Learning Style Transform */}
+              {hasContent && (
+                <div className="mt-4">
+                  <LearningStyleTransform
+                    content={note.content || ""}
+                    onTransformed={(content, style) => handleTransformed(note.id, content, style)}
+                  />
+                </div>
+              )}
+
+              {transformed && (
+                <div className="mt-4">
+                  <h5 className="font-medium text-sm text-foreground mb-2">
+                    Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
+                  </h5>
+                  <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
+                    {transformed.content}
                   </div>
-                )}
-              </div>
-              
-              <div className="mt-3 flex items-center gap-2 flex-wrap w-full justify-end">
-                {note.file_url && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => handleDownload(note.file_url!, note.file_name!)}
-                    className="flex items-center gap-1"
-                  >
-                    <Download className="h-4 w-4" />
-                    <span>Download</span>
-                  </Button>
-                )}
+                </div>
+              )}
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Files List */}
+      {notes.length > 0 && (
+        <Card className="p-4 bg-gradient-card shadow-card border-0">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Uploaded Files ({notes.length})
+          </h3>
+          
+          <div className="space-y-2">
+            {notes.map((note) => (
+              <div key={`file-${note.id}`} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <div>
+                    <div className="font-medium text-sm text-foreground">{note.title}</div>
+                    {note.file_name && (
+                      <div className="text-xs text-muted-foreground">{note.file_name}</div>
+                    )}
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(note.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
                 
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => handleDelete(note.id, note.file_url)}
-                  className="flex items-center gap-1"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span>Delete</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                  {note.file_url && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                      className="flex items-center gap-1"
+                    >
+                      <Download className="h-3 w-3" />
+                      Download
+                    </Button>
+                  )}
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(note.id, note.file_url)}
+                    className="flex items-center gap-1 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-
-            {/* Expanded content section */}
-             {isExpanded && hasContent && (
-               <div className="mt-4 space-y-4 border-t border-border pt-4">
-                 {/* Original content */}
-                 <div>
-                   <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
-                   <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
-                     {note.content}
-                   </div>
-                 </div>
-               </div>
-             )}
-
-             <div className="mt-4">
-               <LearningStyleTransform
-                 content={note.content || ""}
-                 onTransformed={(content, style) => handleTransformed(note.id, content, style)}
-               />
-             </div>
-
-             <div className="mt-4">
-               <FabricVisualGenerator
-                 content={note.content || ""}
-                 title={note.title}
-                 onGenerated={(visual) => handleVisualGenerated(note.id, visual)}
-               />
-             </div>
-
-             {transformed && (
-               <div className="mt-4">
-                 <h5 className="font-medium text-sm text-foreground mb-2">
-                   Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
-                 </h5>
-                 <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
-                   {transformed.content}
-                 </div>
-               </div>
-             )}
-
-           </Card>
-        );
-      })}
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 };
