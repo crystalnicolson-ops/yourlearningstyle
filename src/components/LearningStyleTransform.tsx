@@ -133,23 +133,32 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           {learningStyles.map((style) => {
             const isSelected = selectedStyle === style.value;
-            const colorClasses = 
-              style.value === 'visual' 
-                ? isSelected ? 'bg-blue-500 text-white border-blue-500 shadow-lg' : 'border-blue-500 text-blue-600 bg-blue-50/50 hover:bg-blue-100'
-              : style.value === 'auditory' 
-                ? isSelected ? 'bg-green-500 text-white border-green-500 shadow-lg' : 'border-green-500 text-green-600 bg-green-50/50 hover:bg-green-100'
-              : style.value === 'kinesthetic' 
-                ? isSelected ? 'bg-orange-500 text-white border-orange-500 shadow-lg' : 'border-orange-500 text-orange-600 bg-orange-50/50 hover:bg-orange-100'
-              : style.value === 'reading' 
-                ? isSelected ? 'bg-purple-500 text-white border-purple-500 shadow-lg' : 'border-purple-500 text-purple-600 bg-purple-50/50 hover:bg-purple-100'
-              : isSelected ? 'bg-primary text-white' : 'border-border';
+            const colorClasses =
+              style.value === 'visual'
+                ? isSelected
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-soft'
+                  : 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200'
+                : style.value === 'auditory'
+                ? isSelected
+                  ? 'bg-green-600 text-white border-green-600 shadow-soft'
+                  : 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200'
+                : style.value === 'kinesthetic'
+                ? isSelected
+                  ? 'bg-orange-600 text-white border-orange-600 shadow-soft'
+                  : 'bg-orange-100 text-orange-800 border-orange-200 hover:bg-orange-200'
+                : style.value === 'reading'
+                ? isSelected
+                  ? 'bg-purple-600 text-white border-purple-600 shadow-soft'
+                  : 'bg-purple-100 text-purple-800 border-purple-200 hover:bg-purple-200'
+                : '';
 
             return (
               <button
                 key={style.value}
                 onClick={() => setSelectedStyle(style.value)}
-                className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all duration-200 hover:scale-105 rounded-lg border-2 ${colorClasses}`}
-                disabled={!content || isTransforming}
+                aria-pressed={isSelected}
+                className={`h-auto p-4 flex flex-col items-center gap-2 text-center transition-all duration-200 hover:scale-105 rounded-lg border ${colorClasses}`}
+                disabled={isTransforming}
               >
                 <div className="text-2xl">{style.icon}</div>
                 <div>
