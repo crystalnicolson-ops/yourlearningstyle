@@ -157,23 +157,6 @@ Content to enhance:\n${content}`
 
   return (
     <div className="space-y-4">
-      {/* Voice selection */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-foreground">Voice:</span>
-        <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Select voice" />
-          </SelectTrigger>
-          <SelectContent>
-            {voices.map((voice) => (
-              <SelectItem key={voice.value} value={voice.value}>
-                {voice.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Simple 3-button interface */}
       <div className="flex gap-3">
         <Button
@@ -221,6 +204,41 @@ Content to enhance:\n${content}`
           Audio
         </Button>
       </div>
+
+      {/* Voice selection - only show when processing audio or audio exists */}
+      {(isProcessing === 'audio' || audioBase64) && (
+        <div className="flex items-center gap-3 p-3 bg-accent/10 rounded-lg border border-accent/20">
+          <span className="text-sm font-medium text-foreground">Voice:</span>
+          <Select value={selectedVoice} onValueChange={setSelectedVoice}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Select voice" />
+            </SelectTrigger>
+            <SelectContent>
+              {voices.map((voice) => (
+                <SelectItem key={voice.value} value={voice.value}>
+                  {voice.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {audioBase64 && (
+            <Button
+              onClick={handleAudio}
+              disabled={isProcessing !== null}
+              variant="outline"
+              size="sm"
+              className="ml-2"
+            >
+              {isProcessing === 'audio' ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Volume2 className="h-4 w-4 mr-2" />
+              )}
+              Regenerate
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Results */}
       {enhancedNotes && (
