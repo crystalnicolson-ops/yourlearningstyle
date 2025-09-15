@@ -42,7 +42,7 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     setAudioBase64('');
     
     try {
-      // Use Google AI Studio for better transformations
+      // Transform content based on learning style
       const { data: transformData, error: transformError } = await supabase.functions.invoke('transform-with-gemini', {
         body: { content, learningStyle: selectedStyle }
       });

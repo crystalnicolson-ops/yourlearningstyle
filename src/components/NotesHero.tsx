@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileText, Upload, Cloud, Search, Zap, Target } from "lucide-react";
+import { FileText, Upload, Search, Zap, Target } from "lucide-react";
 
 const NotesHero = () => {
   return (
@@ -20,12 +20,12 @@ const NotesHero = () => {
             </h1>
           </div>
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Transform your notes into personalized learning experiences with AI-powered adaptations
+            Transform your notes into personalized learning experiences for different learning styles
           </p>
         </header>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
+        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-2xl mx-auto">
           <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
               <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -33,7 +33,7 @@ const NotesHero = () => {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-3">Visual Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Transform notes into interactive flashcards
+                Transform notes into interactive flashcards for visual learners
               </p>
             </div>
           </Card>
@@ -45,19 +45,7 @@ const NotesHero = () => {
               </div>
               <h3 className="text-xl font-bold text-foreground mb-3">Auditory Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Generate voice recordings from your notes
-              </p>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Target className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">AI Adaptation</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Personalized content for your learning style
+                Generate voice recordings from your notes for audio learning
               </p>
             </div>
           </Card>
