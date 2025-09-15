@@ -23,7 +23,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
   const [audioBase64, setAudioBase64] = useState<string>('');
   const [enhancedNotes, setEnhancedNotes] = useState<string>('');
-  const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
+  const [selectedVoice, setSelectedVoice] = useState<string>('Aria');
   const { toast } = useToast();
 
   const handleEnhancedNotes = async () => {
@@ -142,12 +142,17 @@ Content to enhance:\n${content}`
   };
 
   const voices = [
-    { value: 'alloy', label: 'Alloy (Neutral)' },
-    { value: 'echo', label: 'Echo (Male)' },
-    { value: 'fable', label: 'Fable (British Male)' },
-    { value: 'onyx', label: 'Onyx (Deep Male)' },
-    { value: 'nova', label: 'Nova (Female)' },
-    { value: 'shimmer', label: 'Shimmer (Female)' }
+    { value: 'Aria', label: 'Aria (Female)' },
+    { value: 'Roger', label: 'Roger (Male)' },
+    { value: 'Sarah', label: 'Sarah (Female)' },
+    { value: 'Laura', label: 'Laura (Female)' },
+    { value: 'Charlie', label: 'Charlie (Male)' },
+    { value: 'George', label: 'George (Male)' },
+    { value: 'Callum', label: 'Callum (Male)' },
+    { value: 'River', label: 'River (Neutral)' },
+    { value: 'Liam', label: 'Liam (Male)' },
+    { value: 'Charlotte', label: 'Charlotte (Female)' },
+    { value: 'Alice', label: 'Alice (Female)' },
   ];
 
   return (
