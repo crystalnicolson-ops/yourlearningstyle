@@ -69,9 +69,22 @@ serve(async (req) => {
     // Prefer downloading directly by storage path when provided
     let blob: Blob | null = null;
     if (filePath && supabase) {
+      console.log('Attempting direct storage download for:', filePath);
       const { data, error } = await supabase.storage.from('notes').download(filePath);
       if (error) {
         console.error('Direct storage download error:', error.message);
+        // Try with signed URL as fallback
+        const { data: signedData, error: signedError } = await supabase.storage
+          .from('notes')
+          .createSignedUrl(filePath, 60); // 60 seconds expiry
+        
+        if (!signedError && signedData?.signedUrl) {
+          console.log('Using signed URL for download');
+          const resp = await fetch(signedData.signedUrl);
+          if (resp.ok) {
+            blob = await resp.blob();
+          }
+        }
       } else {
         blob = data as Blob;
       }
