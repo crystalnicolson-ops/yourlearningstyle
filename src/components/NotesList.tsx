@@ -274,7 +274,11 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
 
                 {!hasContent && note.file_url && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                    <span>No text content available from this file.</span>
+                    <span>
+                      {note.file_name?.toLowerCase().endsWith('.pdf') 
+                        ? 'PDF text extraction not yet supported - please copy/paste content manually'
+                        : 'No text content could be extracted from this file type'}
+                    </span>
                   </div>
                 )}
               </div>

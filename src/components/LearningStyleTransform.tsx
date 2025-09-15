@@ -107,46 +107,53 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
   return (
     <div className="space-y-6">
       <Card className="p-4 bg-gradient-subtle border border-primary/20">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-4">
           <Brain className="h-5 w-5 text-primary" />
           <span className="font-semibold text-foreground">Adapt for Learning Style</span>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Select value={selectedStyle} onValueChange={setSelectedStyle}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Choose learning style..." />
-            </SelectTrigger>
-            <SelectContent>
-              {learningStyles.map((style) => (
-                <SelectItem key={style.value} value={style.value}>
-                  <div className="flex items-center gap-2">
-                    <span>{style.icon}</span>
-                    <div>
-                      <div className="font-medium">{style.label}</div>
-                      <div className="text-xs text-muted-foreground">{style.description}</div>
-                    </div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Button
-            onClick={handleTransform}
-            disabled={!selectedStyle || isTransforming || !content}
-            className="whitespace-nowrap"
-          >
-            {isTransforming ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Transforming...
-              </>
-            ) : (
-              'Transform'
-            )}
-          </Button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          {learningStyles.filter(style => ['visual', 'auditory'].includes(style.value)).map((style) => (
+            <Button
+              key={style.value}
+              variant={selectedStyle === style.value ? "default" : "outline"}
+              onClick={() => setSelectedStyle(style.value)}
+              className="h-auto p-4 flex flex-col items-center gap-2 text-center"
+              disabled={!content || isTransforming}
+            >
+              <div className="text-2xl">{style.icon}</div>
+              <div>
+                <div className="font-semibold">{style.label}</div>
+                <div className="text-xs opacity-75">{style.description}</div>
+              </div>
+            </Button>
+          ))}
         </div>
+        
+        <Button
+          onClick={handleTransform}
+          disabled={!selectedStyle || isTransforming || !content}
+          className="w-full"
+          size="lg"
+        >
+          {isTransforming ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Creating {selectedStyle === 'visual' ? 'Flashcards' : 'Audio'}...
+            </>
+          ) : (
+            <>
+              Generate {selectedStyle === 'visual' ? 'Flashcards' : selectedStyle === 'auditory' ? 'Audio' : 'Content'}
+              {selectedStyle && <span className="ml-2">{learningStyles.find(s => s.value === selectedStyle)?.icon}</span>}
+            </>
+          )}
+        </Button>
+        
+        {!content && (
+          <p className="text-sm text-muted-foreground mt-2 text-center">
+            Upload a note with content to start transforming
+          </p>
+        )}
       </Card>
 
       {/* Render results based on learning style */}

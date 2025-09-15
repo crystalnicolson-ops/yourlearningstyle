@@ -227,28 +227,28 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         </div>
         
         <div>
-          <div className="relative">
-            <input
-              id="file-upload"
-              type="file"
-              onChange={handleFileSelect}
-              accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg"
-              className="sr-only"
-            />
-            <label
-              htmlFor="file-upload"
-              className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-gradient-subtle hover:bg-primary/5 transition-all duration-300 group"
-            >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Upload className="w-8 h-8 mb-3 text-primary group-hover:text-primary/80 transition-colors" />
-                <p className="mb-2 text-sm text-foreground font-medium">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  PDF, DOC, TXT, MD, PNG, JPG (max 10MB)
-                </p>
-              </div>
-            </label>
+        <div className="relative">
+          <input
+            id="file-upload"
+            type="file"
+            onChange={handleFileSelect}
+            accept=".pdf,.doc,.docx,.txt,.md"
+            className="sr-only"
+          />
+          <label
+            htmlFor="file-upload"
+            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-gradient-subtle hover:bg-primary/5 transition-all duration-300 group"
+          >
+            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+              <Upload className="w-8 h-8 mb-3 text-primary group-hover:text-primary/80 transition-colors" />
+              <p className="mb-2 text-sm text-foreground font-medium">
+                <span className="font-semibold">Click to upload</span> or drag and drop
+              </p>
+              <p className="text-xs text-muted-foreground">
+                TXT, MD, DOCX files supported • PDF coming soon
+              </p>
+            </div>
+          </label>
             {file && (
               <Button
                 type="button"
