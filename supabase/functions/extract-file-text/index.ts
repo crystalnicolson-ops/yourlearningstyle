@@ -41,7 +41,8 @@ function sniffType(fileType?: string | null, fileName?: string | null): string {
   if (fileType) return fileType;
   const name = (fileName || '').toLowerCase();
   if (name.endsWith('.txt') || name.endsWith('.md')) return 'text/plain';
-  if (name.endsWith('.docx') || name.endsWith('.doc')) return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  if (name.endsWith('.docx')) return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  if (name.endsWith('.doc')) return 'application/msword';
   if (name.endsWith('.pdf')) return 'application/pdf';
   if (name.endsWith('.json')) return 'application/json';
   return 'application/octet-stream';
@@ -53,23 +54,36 @@ serve(async (req) => {
   }
 
   try {
-    const { fileUrl, fileType, fileName } = await req.json();
+    const { fileUrl, fileType, fileName, filePath } = await req.json();
 
-    if (!fileUrl) {
+    if (!fileUrl && !filePath) {
       return new Response(
-        JSON.stringify({ error: 'File URL is required' }),
+        JSON.stringify({ error: 'File URL or file path is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     const effectiveType = sniffType(fileType, fileName);
-    console.log(`Extracting text: name=${fileName} type=${effectiveType}`);
+    console.log(`Extracting text: name=${fileName} type=${effectiveType} path=${filePath || 'n/a'}`);
 
-    // Try downloading via Storage (works even if bucket is private)
-    let blob: Blob | null = await downloadFromStorage(fileUrl);
+    // Prefer downloading directly by storage path when provided
+    let blob: Blob | null = null;
+    if (filePath && supabase) {
+      const { data, error } = await supabase.storage.from('notes').download(filePath);
+      if (error) {
+        console.error('Direct storage download error:', error.message);
+      } else {
+        blob = data as Blob;
+      }
+    }
 
-    // Fallback: direct fetch (works for public URLs and data URLs)
-    if (!blob) {
+    // Fallback: try deriving from URL (works even if bucket is private)
+    if (!blob && fileUrl) {
+      blob = await downloadFromStorage(fileUrl);
+    }
+
+    // Final fallback: direct fetch (works for public URLs and data URLs)
+    if (!blob && fileUrl) {
       const resp = await fetch(fileUrl);
       if (!resp.ok) {
         throw new Error(`Failed to fetch file: ${resp.status}`);
@@ -92,6 +106,8 @@ serve(async (req) => {
         const html = htmlResult?.value || '';
         extractedText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
       }
+    } else if (effectiveType.includes('msword') || (fileName || '').toLowerCase().endsWith('.doc')) {
+      extractedText = '[Legacy .doc files are not supported. Please resave your document as .docx and re-upload.]';
     } else if (effectiveType.includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
       // TODO: Implement PDF parsing (pdfjs-dist). For now, placeholder.
       extractedText = '[PDF text extraction will be added soon. Please copy/paste text for now.]';

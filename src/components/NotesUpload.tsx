@@ -138,12 +138,13 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           });
           
           const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
-            body: {
-              fileUrl: fileUrl,
-              fileType: file.type,
-              fileName: file.name
-            }
-          });
+              body: {
+                fileUrl: fileUrl,
+                fileType: file.type,
+                fileName: file.name,
+                filePath: filePath
+              }
+            });
 
           if (extractError) throw extractError;
           if (extractData?.extractedText) {
@@ -232,7 +233,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             id="file-upload"
             type="file"
             onChange={handleFileSelect}
-            accept=".pdf,.doc,.docx,.txt,.md"
+            accept=".docx,.txt,.md,.pdf"
             className="sr-only"
           />
           <label
