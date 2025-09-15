@@ -46,10 +46,10 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    if (!title.trim() && !file && !content.trim()) {
       toast({
-        title: "Title required",
-        description: "Please enter a title for your note",
+        title: "Content required",
+        description: "Please enter a title, content, or upload a file",
         variant: "destructive",
       });
       return;
@@ -93,7 +93,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
 
         addGuestNote({
           id: crypto.randomUUID(),
-          title: title.trim(),
+          title: title.trim() || file?.name || "Untitled Note",
           content: content.trim() || null,
           file_data_url: fileUrl,
           file_name: fileName,
@@ -165,7 +165,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         .insert([
           {
             user_id: user.id,
-            title: title.trim(),
+            title: title.trim() || fileName || "Untitled Note",
             content: extractedContent || null,
             file_url: fileUrl,
             file_name: fileName,
@@ -277,8 +277,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         
         <Button 
           type="submit" 
-          disabled={isUploading || !title.trim()}
-          className="w-full"
+          disabled={isUploading}
+          size="sm"
+          className="bg-foreground hover:bg-foreground/90 text-background px-6"
         >
           {isUploading ? "Uploading..." : "Upload Note"}
         </Button>

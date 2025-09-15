@@ -139,7 +139,7 @@ const extractKeyTerms = (content: string): string => {
     .filter(word => word.length > 4 && !commonWords.includes(word))
     .slice(0, 8);
     
-  return uniqueWords.map((term, index) => 
-    `${index + 1}. **${term.charAt(0).toUpperCase() + term.slice(1)}**: [Definition needed]`
+  return uniqueWords.map((term) => 
+    `**${term.charAt(0).toUpperCase() + term.slice(1)}**: [Definition needed]`
   ).join('\n');
 };
