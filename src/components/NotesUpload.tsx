@@ -239,25 +239,22 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
         </div>
         
-        <div>
-        <div className="relative">
-          <input
-            id="file-upload"
-            type="file"
-            onChange={handleFileSelect}
-            accept=".docx,.txt,.md,.pdf,.json"
-            className="sr-only"
-          />
-          <label
-            htmlFor="file-upload"
-            className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer w-auto h-auto border border-primary"
-          >
-            <Upload className="w-4 h-4" />
-            <span className="text-xs font-semibold">Upload File</span>
-          </label>
-          <p className="mt-2 text-xs text-muted-foreground">
-            TXT, MD, DOCX, JSON supported • PDF preview only
-          </p>
+        <div className="flex gap-3">
+          <div className="relative">
+            <input
+              id="file-upload"
+              type="file"
+              onChange={handleFileSelect}
+              accept=".docx,.txt,.md,.pdf,.json"
+              className="sr-only"
+            />
+            <label
+              htmlFor="file-upload"
+              className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-xs font-medium border"
+            >
+              <Upload className="w-4 h-4" />
+              {file ? "Change File" : "Choose File"}
+            </label>
             {file && (
               <Button
                 type="button"
@@ -268,29 +265,34 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                   const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                   if (fileInput) fileInput.value = '';
                 }}
-                className="absolute top-2 right-2"
+                className="ml-2"
               >
                 <X className="h-4 w-4" />
               </Button>
             )}
           </div>
-          {file && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-foreground bg-primary/10 p-3 rounded-lg">
-              <FileText className="h-4 w-4 text-primary" />
-              <span className="font-medium">{file.name}</span>
-              <span className="text-muted-foreground">({Math.round(file.size / 1024)}KB)</span>
-            </div>
-          )}
+          
+          <Button 
+            type="submit" 
+            disabled={isUploading}
+            size="sm"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-xs"
+          >
+            {isUploading ? "Uploading..." : "Save Note"}
+          </Button>
         </div>
         
-        <Button 
-          type="submit" 
-          disabled={isUploading}
-          size="sm"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-xs"
-        >
-          {isUploading ? "Uploading..." : "Upload"}
-        </Button>
+        {file && (
+          <div className="flex items-center gap-2 text-sm text-foreground bg-primary/10 p-3 rounded-lg">
+            <FileText className="h-4 w-4 text-primary" />
+            <span className="font-medium">{file.name}</span>
+            <span className="text-muted-foreground">({Math.round(file.size / 1024)}KB)</span>
+          </div>
+        )}
+        
+        <p className="text-xs text-muted-foreground">
+          TXT, MD, DOCX, JSON supported • PDF preview only
+        </p>
       </form>
     </Card>
   );
