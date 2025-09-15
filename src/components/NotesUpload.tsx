@@ -130,25 +130,32 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         fileName = file.name;
         fileType = file.type;
 
-        // Extract text from file if no manual content provided
-        if (!extractedContent) {
-          try {
-            const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
-              body: {
-                fileUrl: fileUrl,
-                fileType: file.type,
-                fileName: file.name
-              }
-            });
-
-            if (extractError) throw extractError;
-            if (extractData?.extractedText) {
-              extractedContent = extractData.extractedText;
+        // Always try to extract text from files
+        try {
+          toast({
+            title: "Extracting text...",
+            description: `Processing ${file.name}`,
+          });
+          
+          const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
+            body: {
+              fileUrl: fileUrl,
+              fileType: file.type,
+              fileName: file.name
             }
-          } catch (error) {
-            console.error('Text extraction failed:', error);
-            // Continue without extracted text
+          });
+
+          if (extractError) throw extractError;
+          if (extractData?.extractedText) {
+            const autoExtracted = extractData.extractedText;
+            // Combine manual content with extracted content if both exist
+            extractedContent = extractedContent 
+              ? `${extractedContent}\n\n--- Extracted from file ---\n${autoExtracted}`
+              : autoExtracted;
           }
+        } catch (error) {
+          console.error('Text extraction failed:', error);
+          // Continue without extracted text - user will see the file but no content
         }
       }
 

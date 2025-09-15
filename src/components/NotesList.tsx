@@ -274,15 +274,7 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
 
                 {!hasContent && note.file_url && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-                    <span>This note has no text content yet.</span>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="h-7 px-2"
-                      onClick={() => extractTextForNote(note)}
-                    >
-                      Extract text
-                    </Button>
+                    <span>No text content available from this file.</span>
                   </div>
                 )}
               </div>
