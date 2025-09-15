@@ -279,9 +279,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           type="submit" 
           disabled={isUploading}
           size="sm"
-          className="bg-foreground hover:bg-foreground/90 text-background px-6"
+          className="bg-black hover:bg-black/80 text-white px-4 py-2 text-xs"
         >
-          {isUploading ? "Uploading..." : "Upload Note"}
+          {isUploading ? "Uploading..." : "Upload"}
         </Button>
       </form>
     </Card>
