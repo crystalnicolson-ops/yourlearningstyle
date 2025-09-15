@@ -161,10 +161,10 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
       if (transformError) throw transformError;
 
-      // Then convert to speech
+      const speechText = String(transformData.transformedContent || '').slice(0, 4000);
       const { data: audioData, error: audioError } = await supabase.functions.invoke('text-to-speech', {
         body: { 
-          text: transformData.transformedContent,
+          text: speechText,
           voice: selectedVoice
         }
       });
