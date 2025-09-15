@@ -20,7 +20,7 @@ interface Note {
   updated_at: string;
 }
 
-const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
+const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; onNotesLoaded?: (noteCount: number) => void }) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
@@ -47,6 +47,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
           updated_at: g.updated_at,
         }));
         setNotes(mapped);
+        onNotesLoaded?.(mapped.length);
         return;
       }
 
@@ -59,6 +60,7 @@ const NotesList = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
       if (error) throw error;
       setNotes(data || []);
+      onNotesLoaded?.(data?.length || 0);
     } catch (error: any) {
       toast({
         title: "Failed to load notes",
