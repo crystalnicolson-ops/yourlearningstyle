@@ -179,10 +179,22 @@ Content to enhance:\n${content}`
 
       {/* Results */}
       {enhancedNotes && (
-        <Card className="p-4">
-          <h4 className="font-medium mb-3">Enhanced Notes</h4>
-          <div className="prose max-w-none text-sm">
-            <div className="whitespace-pre-wrap bg-muted/30 p-4 rounded">{enhancedNotes}</div>
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 shadow-lg">
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <h4 className="text-xl font-bold text-foreground">Enhanced Notes</h4>
+            </div>
+            <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
+          </div>
+          <div className="prose prose-lg max-w-none">
+            <div className="bg-white/60 dark:bg-black/20 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-inner">
+              <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+                {enhancedNotes}
+              </div>
+            </div>
           </div>
         </Card>
       )}
