@@ -51,11 +51,14 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         text: text,
-        model_id: 'eleven_multilingual_v2',
+        model_id: 'eleven_turbo_v2_5', // Much faster model
         voice_settings: {
           stability: 0.5,
-          similarity_boost: 0.5
-        }
+          similarity_boost: 0.5,
+          style: 0.0,
+          use_speaker_boost: true
+        },
+        output_format: 'mp3_22050_32' // Lower quality = faster generation
       }),
     });
 
