@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNotes";
 import LearningStyleTransform from "./LearningStyleTransform";
 import GeminiTextManipulator from "./GeminiTextManipulator";
+import SimpleTransform from "./SimpleTransform";
 
 interface Note {
   id: string;
@@ -291,17 +292,12 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
                 </div>
               )}
 
-              {/* Learning Style Transform */}
+              {/* Simple Transform Options */}
               {hasContent && (
-                <div className="mt-4 space-y-4">
-                  <LearningStyleTransform
+                <div className="mt-4">
+                  <SimpleTransform
                     content={note.content || ""}
-                    onTransformed={(content, style) => handleTransformed(note.id, content, style)}
-                  />
-                  
-                  <GeminiTextManipulator
-                    content={note.content || ""}
-                    onTransformed={(content) => handleTransformed(note.id, content, "gemini")}
+                    onTransformed={(content, type) => handleTransformed(note.id, content, type)}
                   />
                 </div>
               )}
