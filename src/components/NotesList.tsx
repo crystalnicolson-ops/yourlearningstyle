@@ -26,6 +26,7 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
   const [isGuest, setIsGuest] = useState(false);
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
   const [transformedContent, setTransformedContent] = useState<Record<string, { content: string; style: string }>>({});
+  const [extractingNotes, setExtractingNotes] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -74,6 +75,23 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
   useEffect(() => {
     fetchNotes();
   }, [refreshTrigger]);
+
+  // Auto-extract text for files that support it (no manual click required)
+  useEffect(() => {
+    const toExtract = notes.filter((n) => n.file_url && !n.content && isExtractableType(n) && !extractingNotes.has(n.id));
+    if (toExtract.length === 0) return;
+
+    toExtract.forEach((n) => {
+      setExtractingNotes((prev) => new Set(prev).add(n.id));
+      extractTextForNote(n).finally(() => {
+        setExtractingNotes((prev) => {
+          const next = new Set(prev);
+          next.delete(n.id);
+          return next;
+        });
+      });
+    });
+  }, [notes]);
 
   const handleDownload = async (fileUrl: string, fileName: string) => {
     try {
@@ -168,7 +186,21 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
     }));
   };
 
-  const extractTextForNote = async (note: Note) => {
+const isExtractableType = (note: Note) => {
+  const name = (note.file_name || '').toLowerCase();
+  const type = (note.file_type || '').toLowerCase();
+  return (
+    name.endsWith('.docx') ||
+    name.endsWith('.txt') ||
+    name.endsWith('.md') ||
+    name.endsWith('.json') ||
+    type.includes('officedocument.wordprocessingml.document') ||
+    type.startsWith('text/') ||
+    type.includes('json')
+  );
+};
+
+const extractTextForNote = async (note: Note) => {
     try {
       toast({ title: 'Extracting text...', description: note.file_name || undefined });
       const { data, error } = await supabase.functions.invoke('extract-file-text', {
@@ -274,16 +306,12 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
                           : note.file_name?.toLowerCase().endsWith('.doc')
                           ? 'Legacy .doc is not supported — please re-save as .docx'
                           : note.file_name?.toLowerCase().endsWith('.docx')
-                          ? 'DOCX detected — click Extract text to process'
-                          : 'File uploaded — click Extract text to process'}
+                          ? (extractingNotes.has(note.id) ? 'DOCX detected — extracting text…' : 'DOCX detected — processing automatically')
+                          : (extractingNotes.has(note.id) ? 'Processing file…' : 'File uploaded — processing automatically')}
                       </span>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => extractTextForNote(note)}
-                      >
-                        Extract text
-                      </Button>
+                      {extractingNotes.has(note.id) && (
+                        <span className="text-primary">Processing…</span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -321,63 +349,33 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
                   </div>
                 </div>
               )}
+              <div className="mt-4 flex items-center gap-2 justify-end">
+                {note.file_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(note.file_url!, note.file_name!)}
+                    className="flex items-center gap-1"
+                  >
+                    <Download className="h-3 w-3" />
+                    Download
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDelete(note.id, note.file_url)}
+                  className="flex items-center gap-1 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Delete
+                </Button>
+              </div>
             </Card>
           );
         })}
       </div>
 
-      {/* Files List */}
-      {notes.length > 0 && (
-        <Card className="p-4 bg-gradient-card shadow-card border-0">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Uploaded Files ({notes.length})
-          </h3>
-          
-          <div className="space-y-2">
-            {notes.map((note) => (
-              <div key={`file-${note.id}`} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <div className="font-medium text-sm text-foreground">{note.title}</div>
-                    {note.file_name && (
-                      <div className="text-xs text-muted-foreground">{note.file_name}</div>
-                    )}
-                    <div className="text-xs text-muted-foreground">
-                      {new Date(note.created_at).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  {note.file_url && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDownload(note.file_url!, note.file_name!)}
-                      className="flex items-center gap-1"
-                    >
-                      <Download className="h-3 w-3" />
-                      Download
-                    </Button>
-                  )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(note.id, note.file_url)}
-                    className="flex items-center gap-1 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
     </div>
   );
 };
