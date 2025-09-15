@@ -220,14 +220,28 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         </div>
         
         <div>
-          <div className="flex items-center gap-4">
-            <Input
+          <div className="relative">
+            <input
               id="file-upload"
               type="file"
               onChange={handleFileSelect}
               accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg"
-              className="w-full"
+              className="sr-only"
             />
+            <label
+              htmlFor="file-upload"
+              className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/30 rounded-lg cursor-pointer bg-gradient-subtle hover:bg-primary/5 transition-all duration-300 group"
+            >
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <Upload className="w-8 h-8 mb-3 text-primary group-hover:text-primary/80 transition-colors" />
+                <p className="mb-2 text-sm text-foreground font-medium">
+                  <span className="font-semibold">Click to upload</span> or drag and drop
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  PDF, DOC, TXT, MD, PNG, JPG (max 10MB)
+                </p>
+              </div>
+            </label>
             {file && (
               <Button
                 type="button"
@@ -238,15 +252,17 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                   const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                   if (fileInput) fileInput.value = '';
                 }}
+                className="absolute top-2 right-2"
               >
                 <X className="h-4 w-4" />
               </Button>
             )}
           </div>
           {file && (
-            <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-              <FileText className="h-4 w-4" />
-              <span>{file.name} ({Math.round(file.size / 1024)}KB)</span>
+            <div className="mt-3 flex items-center gap-2 text-sm text-foreground bg-primary/10 p-3 rounded-lg">
+              <FileText className="h-4 w-4 text-primary" />
+              <span className="font-medium">{file.name}</span>
+              <span className="text-muted-foreground">({Math.round(file.size / 1024)}KB)</span>
             </div>
           )}
         </div>
