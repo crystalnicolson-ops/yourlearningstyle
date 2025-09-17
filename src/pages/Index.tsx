@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Hero from "@/components/NotesHero";
 import NotesUpload from "@/components/NotesUpload";
 import NotesList from "@/components/NotesList";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -22,7 +23,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-primary">
       {/* Header with Home Button */}
       <header className="sticky top-0 z-50 bg-gradient-primary/95 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-6 py-3">
+        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => window.location.reload()}
@@ -31,6 +32,9 @@ const Index = () => {
             <Home className="h-4 w-4" />
             <span className="font-medium">LearningStyle</span>
           </Button>
+          <Link to="/app-store-images">
+            <Button variant="secondary">App Store Images</Button>
+          </Link>
         </div>
       </header>
 
