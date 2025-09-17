@@ -4,19 +4,19 @@ import { ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Import all generated images
-import uploadInterface from "@/assets/upload-clean.webp";
-import flashcardQuestion from "@/assets/flashcard-clean.webp";
-import enhancedNotes from "@/assets/enhanced-clean.webp";
-import audioVoiceSelector from "@/assets/audio-clean.webp";
-import landingPage from "@/assets/landing-clean.webp";
+import uploadInterface from "@/assets/upload-sharp.webp";
+import flashcardQuestion from "@/assets/flashcard-sharp.webp";
+import enhancedNotes from "@/assets/enhanced-sharp.webp";
+import audioVoiceSelector from "@/assets/audio-sharp.webp";
+import landingPage from "@/assets/landing-sharp.webp";
 
 const AppStoreImages = () => {
   const screenshots = [
-    { src: uploadInterface, title: "File Upload Interface", filename: "upload-clean.webp" },
-    { src: flashcardQuestion, title: "Flashcard Study Mode", filename: "flashcard-clean.webp" },
-    { src: enhancedNotes, title: "Enhanced Notes with Extra Context", filename: "enhanced-clean.webp" },
-    { src: audioVoiceSelector, title: "Audio Player with Voice Selection", filename: "audio-clean.webp" },
-    { src: landingPage, title: "Marketing Landing Page", filename: "landing-clean.webp" },
+    { src: uploadInterface, title: "File Upload Interface", filename: "upload-sharp.webp" },
+    { src: flashcardQuestion, title: "Flashcard Study Mode", filename: "flashcard-sharp.webp" },
+    { src: enhancedNotes, title: "Enhanced Notes with Extra Context", filename: "enhanced-sharp.webp" },
+    { src: audioVoiceSelector, title: "Audio Player with Voice Selection", filename: "audio-sharp.webp" },
+    { src: landingPage, title: "Marketing Landing Page", filename: "landing-sharp.webp" },
   ];
 
   const downloadImage = async (src: string, filename: string) => {
