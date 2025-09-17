@@ -28,13 +28,16 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [activeMode, setActiveMode] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleEnhancedNotes = async () => {
     setIsProcessing('enhanced');
+    setActiveMode('enhanced');
     // Clear other results
     setFlashcards([]);
     setAudioBase64('');
+    setShowQuiz(false);
     
     try {
       const { data, error } = await supabase.functions.invoke('gemini-text-manipulator', {
@@ -120,9 +123,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   const handleFlashcards = async () => {
     setIsProcessing('flashcards');
+    setActiveMode('flashcards');
     // Clear other results
     setEnhancedNotes('');
     setAudioBase64('');
+    setShowQuiz(false);
     
     try {
       const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
@@ -155,6 +160,12 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     if (!content) return;
 
     setIsProcessing('quiz');
+    setActiveMode('quiz');
+    // Clear other results
+    setEnhancedNotes('');
+    setFlashcards([]);
+    setAudioBase64('');
+    
     try {
       const { data, error } = await supabase.functions.invoke('generate-quiz', {
         body: { content }
@@ -225,9 +236,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   const handleAudio = async () => {
     setIsProcessing('audio');
+    setActiveMode('audio');
     // Clear other results
     setEnhancedNotes('');
     setFlashcards([]);
+    setShowQuiz(false);
     
     try {
       // First transform for auditory learning
@@ -301,6 +314,24 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   return (
     <div className="space-y-4">
+      {/* Active Mode Header */}
+      {activeMode && (
+        <Card className="p-4 bg-white/95 backdrop-blur-sm border-2 border-primary/20">
+          <div className="flex items-center gap-3">
+            {activeMode === 'enhanced' && <Sparkles className="h-5 w-5 text-primary" />}
+            {activeMode === 'flashcards' && <FileText className="h-5 w-5 text-secondary" />}
+            {activeMode === 'audio' && <Volume2 className="h-5 w-5 text-accent" />}
+            {activeMode === 'quiz' && <Brain className="h-5 w-5 text-quiz" />}
+            <span className="font-semibold text-foreground">
+              {activeMode === 'enhanced' && 'Enhanced Notes Mode'}
+              {activeMode === 'flashcards' && 'Flashcards Mode'}
+              {activeMode === 'audio' && 'Audio Mode'}
+              {activeMode === 'quiz' && `Quiz Mode - ${quizQuestions.length} Questions`}
+            </span>
+          </div>
+        </Card>
+      )}
+
       {/* 4-button interface */}
       <div className="grid grid-cols-2 gap-3">
         <Button
@@ -308,7 +339,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="bg-primary text-primary-foreground hover:bg-primary/90"
+          className={`transition-all duration-200 ${
+            activeMode === 'enhanced' 
+              ? "bg-primary text-primary-foreground ring-2 ring-primary/50 shadow-lg scale-105" 
+              : "bg-primary/80 text-primary-foreground hover:bg-primary hover:scale-105"
+          }`}
         >
           {isProcessing === 'enhanced' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -323,7 +358,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+          className={`transition-all duration-200 ${
+            activeMode === 'flashcards' 
+              ? "bg-secondary text-secondary-foreground ring-2 ring-secondary/50 shadow-lg scale-105" 
+              : "bg-secondary/80 text-secondary-foreground hover:bg-secondary hover:scale-105"
+          }`}
         >
           {isProcessing === 'flashcards' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -338,7 +377,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="bg-accent text-accent-foreground hover:bg-accent/90"
+          className={`transition-all duration-200 ${
+            activeMode === 'audio' 
+              ? "bg-accent text-accent-foreground ring-2 ring-accent/50 shadow-lg scale-105" 
+              : "bg-accent/80 text-accent-foreground hover:bg-accent hover:scale-105"
+          }`}
         >
           {isProcessing === 'audio' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -353,7 +396,11 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="bg-muted text-muted-foreground hover:bg-muted/90"
+          className={`transition-all duration-200 ${
+            activeMode === 'quiz' 
+              ? "bg-quiz text-quiz-foreground ring-2 ring-quiz/50 shadow-lg scale-105" 
+              : "bg-quiz/80 text-quiz-foreground hover:bg-quiz hover:scale-105"
+          }`}
         >
           {isProcessing === 'quiz' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -387,7 +434,9 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       {showQuiz && quizQuestions.length > 0 ? (
         <StudyQuiz 
           questions={quizQuestions} 
-          onBack={() => setShowQuiz(false)} 
+          onBack={() => setShowQuiz(false)}
+          onAddQuestions={(newQuestions) => setQuizQuestions(prev => [...prev, ...newQuestions])}
+          originalContent={content}
         />
       ) : (
         <>

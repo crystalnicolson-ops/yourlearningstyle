@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, CheckCircle, XCircle, RotateCcw } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, RotateCcw, Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface QuizQuestion {
   question: string;
@@ -18,13 +20,17 @@ interface QuizQuestion {
 interface StudyQuizProps {
   questions: QuizQuestion[];
   onBack: () => void;
+  onAddQuestions: (newQuestions: QuizQuestion[]) => void;
+  originalContent: string;
 }
 
-const StudyQuiz = ({ questions, onBack }: StudyQuizProps) => {
+const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: StudyQuizProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [isGeneratingMore, setIsGeneratingMore] = useState(false);
+  const { toast } = useToast();
 
   const handleAnswer = (option: string) => {
     if (showAnswer) return;
@@ -62,18 +68,69 @@ const StudyQuiz = ({ questions, onBack }: StudyQuizProps) => {
     setShowAnswer(false);
   };
 
+  const generateMoreQuestions = async () => {
+    setIsGeneratingMore(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-quiz', {
+        body: { 
+          content: originalContent + `\n\n[Generate ${questions.length + 3} additional unique questions different from these existing ones: ${questions.map(q => q.question).join('; ')}]`
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to generate more questions');
+      }
+
+      if (data?.questions && Array.isArray(data.questions)) {
+        onAddQuestions(data.questions);
+        toast({
+          title: "More questions added!",
+          description: `Generated ${data.questions.length} additional questions`,
+        });
+      } else {
+        throw new Error('Invalid quiz format received');
+      }
+    } catch (error: any) {
+      console.error('Error generating more questions:', error);
+      toast({
+        title: "Failed to generate more questions",
+        description: error.message || "Unable to add more questions. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingMore(false);
+    }
+  };
+
   const progress = ((currentQuestion + (showAnswer ? 1 : 0)) / questions.length) * 100;
 
   if (showResults) {
     const score = calculateScore();
     return (
       <div className="space-y-6">
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          <h2 className="text-2xl font-bold text-white">Quiz Complete!</h2>
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white">Quiz Complete!</h2>
+            <p className="text-white/80">{questions.length} questions total</p>
+          </div>
+          <Button 
+            onClick={generateMoreQuestions}
+            disabled={isGeneratingMore}
+            className="bg-quiz text-quiz-foreground hover:bg-quiz/90"
+          >
+            {isGeneratingMore ? (
+              <>Loading...</>
+            ) : (
+              <>
+                <Plus className="h-4 w-4 mr-2" />
+                Add More
+              </>
+            )}
+          </Button>
         </div>
 
         <Card className="p-8 bg-white/95 backdrop-blur-sm">
@@ -141,15 +198,30 @@ const StudyQuiz = ({ questions, onBack }: StudyQuizProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center justify-between mb-6">
         <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
-        <div className="flex-1">
+        <div className="text-center">
           <h2 className="text-2xl font-bold text-white">Study Quiz</h2>
-          <p className="text-white/80">Test your knowledge of the material</p>
+          <p className="text-white/80">Test your knowledge • {questions.length} questions</p>
         </div>
+        <Button 
+          onClick={generateMoreQuestions}
+          disabled={isGeneratingMore}
+          variant="outline"
+          className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+        >
+          {isGeneratingMore ? (
+            <>Loading...</>
+          ) : (
+            <>
+              <Plus className="h-4 w-4 mr-2" />
+              Add More
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Progress */}
