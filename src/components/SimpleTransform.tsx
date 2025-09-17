@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, FileText, Volume2, Loader2 } from "lucide-react";
+import { Sparkles, FileText, Volume2, Loader2, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -261,14 +261,14 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   return (
     <div className="space-y-4">
-      {/* Simple 3-button interface */}
-      <div className="flex gap-3">
+      {/* 4-button interface */}
+      <div className="grid grid-cols-2 gap-3">
         <Button
           onClick={handleEnhancedNotes}
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
         >
           {isProcessing === 'enhanced' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -283,7 +283,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90"
+          className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
         >
           {isProcessing === 'flashcards' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -298,7 +298,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
-          className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90"
+          className="bg-accent text-accent-foreground hover:bg-accent/90"
         >
           {isProcessing === 'audio' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -306,6 +306,18 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
             <Volume2 className="h-4 w-4 mr-2" />
           )}
           Audio
+        </Button>
+
+        <Button
+          asChild
+          variant="default"
+          size="sm"
+          className="bg-muted text-muted-foreground hover:bg-muted/90"
+        >
+          <a href="https://www.personalitytraits.io" target="_blank" rel="noopener noreferrer">
+            <Brain className="h-4 w-4 mr-2" />
+            Take Quiz
+          </a>
         </Button>
       </div>
 
