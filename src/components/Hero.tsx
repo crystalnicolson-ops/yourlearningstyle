@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, Headphones, BookOpen, Hand, Zap, Upload } from "lucide-react";
+import { Eye, Headphones, BookOpen, Hand, Zap, Upload, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -10,6 +10,16 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-purple-500/10"></div>
       <div className="absolute top-20 left-20 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
       <div className="absolute bottom-20 right-20 w-48 h-48 bg-pink-300/10 rounded-full blur-2xl"></div>
+      
+      {/* Home Button */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link to="/">
+          <Button variant="ghost" className="text-white hover:bg-white/10">
+            <Home className="h-4 w-4 mr-2" />
+            Home
+          </Button>
+        </Link>
+      </div>
       
       <div className="relative z-10 container mx-auto px-6 py-20">
         {/* Header */}
