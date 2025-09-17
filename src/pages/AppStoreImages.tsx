@@ -4,28 +4,28 @@ import { ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Import all generated images
-import appPreview1 from "@/assets/preview-simple-1.webp";
-import appPreview2 from "@/assets/preview-simple-2.webp";
-import appPreview3 from "@/assets/preview-simple-3.webp";
-import screenshot1 from "@/assets/screenshot-main.webp";
+import appPreview1 from "@/assets/preview-history-1.webp";
+import appPreview2 from "@/assets/preview-history-2.webp";
+import appPreview3 from "@/assets/preview-history-3.webp";
+import screenshot1 from "@/assets/screenshot-main-real.webp";
 import screenshot2 from "@/assets/screenshot-upload.webp";
-import screenshot3 from "@/assets/screenshot-flashcard.webp";
-import screenshot4 from "@/assets/screenshot-audio.webp";
-import screenshot5 from "@/assets/screenshot-notes-list.webp";
+import screenshot3 from "@/assets/screenshot-flashcard-real.webp";
+import screenshot4 from "@/assets/screenshot-audio-real.webp";
+import screenshot5 from "@/assets/screenshot-notes-real.webp";
 
 const AppStoreImages = () => {
   const appPreviews = [
-    { src: appPreview1, title: "Upload • Study • Learn", filename: "preview-simple-1.webp" },
-    { src: appPreview2, title: "Turn Notes into Flashcards", filename: "preview-simple-2.webp" },
-    { src: appPreview3, title: "Listen to Your Notes", filename: "preview-simple-3.webp" },
+    { src: appPreview1, title: "Turn Study Notes into Flashcards", filename: "preview-history-1.webp" },
+    { src: appPreview2, title: "Listen to Your Study Notes", filename: "preview-history-2.webp" },
+    { src: appPreview3, title: "Upload Documents • Create Study Tools", filename: "preview-history-3.webp" },
   ];
 
   const screenshots = [
-    { src: screenshot1, title: "Main App Screen", filename: "screenshot-main.webp" },
+    { src: screenshot1, title: "Main App Screen", filename: "screenshot-main-real.webp" },
     { src: screenshot2, title: "File Upload Interface", filename: "screenshot-upload.webp" },
-    { src: screenshot3, title: "Flashcard Study Mode", filename: "screenshot-flashcard.webp" },
-    { src: screenshot4, title: "Audio Player", filename: "screenshot-audio.webp" },
-    { src: screenshot5, title: "Notes Library", filename: "screenshot-notes-list.webp" },
+    { src: screenshot3, title: "Flashcard Study Mode", filename: "screenshot-flashcard-real.webp" },
+    { src: screenshot4, title: "Audio Player", filename: "screenshot-audio-real.webp" },
+    { src: screenshot5, title: "Notes Library", filename: "screenshot-notes-real.webp" },
   ];
 
   const downloadImage = (src: string, filename: string) => {
@@ -111,9 +111,9 @@ const AppStoreImages = () => {
         <Card className="mt-12 p-6 bg-white/10 backdrop-blur-sm border-white/20">
           <h3 className="text-xl font-bold text-white mb-4">How to Use These Images</h3>
           <div className="text-white/90 space-y-2">
-            <p><strong>App Preview Images:</strong> Simple marketing images showing your app's core functionality - upload documents, create flashcards, listen to audio.</p>
-            <p><strong>Screenshots:</strong> Real interface screenshots showing exactly what users will see - file upload, flashcard study mode, audio player, and notes library.</p>
-            <p><strong>What LearningStyle Does:</strong> Upload study documents • Create interactive flashcards • Generate audio from notes • Organize your study materials.</p>
+            <p><strong>App Preview Images:</strong> Marketing images showing real study content - your actual history notes about Jamestown, Plymouth Colony, and colonial settlements.</p>
+            <p><strong>Screenshots:</strong> Real interface screenshots showing your uploaded "History Study Guide" document being turned into flashcards and audio.</p>
+            <p><strong>What Users See:</strong> Upload study documents → Create flashcards from real content → Generate audio from notes → Study effectively.</p>
           </div>
         </Card>
       </div>
