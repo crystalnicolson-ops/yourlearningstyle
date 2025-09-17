@@ -4,28 +4,28 @@ import { ArrowLeft, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Import all generated images
-import appPreview1 from "@/assets/app-preview-1.webp";
-import appPreview2 from "@/assets/app-preview-2.webp";
-import appPreview3 from "@/assets/app-preview-3.webp";
-import screenshot1 from "@/assets/screenshot-1.webp";
-import screenshot2 from "@/assets/screenshot-2.webp";
-import screenshot3 from "@/assets/screenshot-3.webp";
-import screenshot4 from "@/assets/screenshot-4.webp";
-import screenshot5 from "@/assets/screenshot-5.webp";
+import appPreview1 from "@/assets/app-preview-1-real.webp";
+import appPreview2 from "@/assets/app-preview-2-real.webp";
+import appPreview3 from "@/assets/app-preview-3-real.webp";
+import screenshot1 from "@/assets/screenshot-1-real.webp";
+import screenshot2 from "@/assets/screenshot-2-real.webp";
+import screenshot3 from "@/assets/screenshot-3-real.webp";
+import screenshot4 from "@/assets/screenshot-4-real.webp";
+import screenshot5 from "@/assets/screenshot-5-real.webp";
 
 const AppStoreImages = () => {
   const appPreviews = [
-    { src: appPreview1, title: "App Preview 1 - Main Branding", filename: "app-preview-1.webp" },
-    { src: appPreview2, title: "App Preview 2 - Features", filename: "app-preview-2.webp" },
-    { src: appPreview3, title: "App Preview 3 - Personalized Learning", filename: "app-preview-3.webp" },
+    { src: appPreview1, title: "App Preview 1 - Note Transformation", filename: "app-preview-1-real.webp" },
+    { src: appPreview2, title: "App Preview 2 - AI Enhancement", filename: "app-preview-2-real.webp" },
+    { src: appPreview3, title: "App Preview 3 - Audio & Flashcards", filename: "app-preview-3-real.webp" },
   ];
 
   const screenshots = [
-    { src: screenshot1, title: "Screenshot 1 - Main Hero Screen", filename: "screenshot-1.webp" },
-    { src: screenshot2, title: "Screenshot 2 - Notes Upload", filename: "screenshot-2.webp" },
-    { src: screenshot3, title: "Screenshot 3 - Flashcards", filename: "screenshot-3.webp" },
-    { src: screenshot4, title: "Screenshot 4 - Notes List", filename: "screenshot-4.webp" },
-    { src: screenshot5, title: "Screenshot 5 - Audio Learning", filename: "screenshot-5.webp" },
+    { src: screenshot1, title: "Screenshot 1 - Enhanced Notes", filename: "screenshot-1-real.webp" },
+    { src: screenshot2, title: "Screenshot 2 - Audio Player", filename: "screenshot-2-real.webp" },
+    { src: screenshot3, title: "Screenshot 3 - Flashcards", filename: "screenshot-3-real.webp" },
+    { src: screenshot4, title: "Screenshot 4 - Upload & Transform", filename: "screenshot-4-real.webp" },
+    { src: screenshot5, title: "Screenshot 5 - Notes List", filename: "screenshot-5-real.webp" },
   ];
 
   const downloadImage = (src: string, filename: string) => {
@@ -111,9 +111,9 @@ const AppStoreImages = () => {
         <Card className="mt-12 p-6 bg-white/10 backdrop-blur-sm border-white/20">
           <h3 className="text-xl font-bold text-white mb-4">How to Use These Images</h3>
           <div className="text-white/90 space-y-2">
-            <p><strong>App Preview Images:</strong> Use these 3 marketing images in App Store Connect for your app's main promotional display.</p>
-            <p><strong>Screenshots:</strong> Upload all 5 screenshots to show your app's interface and features.</p>
-            <p><strong>Requirements:</strong> These images are optimized for iOS App Store requirements (9:16 aspect ratio).</p>
+            <p><strong>App Preview Images:</strong> Use these 3 marketing images to showcase your app's real functionality - note enhancement, audio generation, and flashcards.</p>
+            <p><strong>Screenshots:</strong> Upload all 5 screenshots showing the actual features users will see - enhanced notes, audio player, flashcards, upload interface, and notes list.</p>
+            <p><strong>Features Highlighted:</strong> Enhanced notes with AI formatting, audio note generation, interactive flashcards, and note transformation tools.</p>
           </div>
         </Card>
       </div>
