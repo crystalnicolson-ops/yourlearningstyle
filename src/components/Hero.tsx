@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, Headphones, BookOpen, Hand, Zap, Target } from "lucide-react";
+import { Eye, Headphones, BookOpen, Hand, Zap, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -28,16 +28,16 @@ const Hero = () => {
         {/* CTA Buttons */}
         <div className="text-center mb-20">
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link to="/quiz">
+            <a href="https://www.personalitytraits.io" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="default" className="min-w-48">
                 <Zap className="mr-2 h-5 w-5" />
                 Take Quiz (Free)
               </Button>
-            </Link>
+            </a>
             <Link to="/">
               <Button size="lg" variant="secondary" className="min-w-48">
-                <Target className="mr-2 h-5 w-5" />
-                Explore Styles
+                <Upload className="mr-2 h-5 w-5" />
+                Upload Documents
               </Button>
             </Link>
           </div>
