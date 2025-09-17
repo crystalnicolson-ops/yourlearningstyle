@@ -117,11 +117,11 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
             <h2 className="text-2xl font-bold text-white">Quiz Complete!</h2>
             <p className="text-white/80">{questions.length} questions total</p>
           </div>
-        <Button 
-          onClick={generateMoreQuestions}
-          disabled={isGeneratingMore}
-          className="bg-muted text-muted-foreground hover:bg-muted/90"
-        >
+          <Button 
+            onClick={generateMoreQuestions}
+            disabled={isGeneratingMore}
+            className="bg-quiz text-quiz-foreground hover:bg-quiz/90"
+          >
             {isGeneratingMore ? (
               <>Loading...</>
             ) : (

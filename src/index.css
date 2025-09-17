@@ -32,6 +32,10 @@ All colors MUST be HSL.
     --accent: 200 100% 70%;
     --accent-foreground: 0 0% 100%;
 
+    /* Quiz pink color scheme */
+    --quiz: 315 70% 65%;
+    --quiz-foreground: 0 0% 100%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
@@ -86,6 +90,10 @@ All colors MUST be HSL.
 
     --accent: 200 80% 60%;
     --accent-foreground: 0 0% 100%;
+
+    /* Quiz pink color scheme (dark mode) */
+    --quiz: 315 65% 55%;
+    --quiz-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;

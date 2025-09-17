@@ -321,7 +321,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
             {activeMode === 'enhanced' && <Sparkles className="h-5 w-5 text-primary" />}
             {activeMode === 'flashcards' && <FileText className="h-5 w-5 text-secondary" />}
             {activeMode === 'audio' && <Volume2 className="h-5 w-5 text-accent" />}
-            {activeMode === 'quiz' && <Brain className="h-5 w-5 text-muted-foreground" />}
+            {activeMode === 'quiz' && <Brain className="h-5 w-5 text-quiz" />}
             <span className="font-semibold text-foreground">
               {activeMode === 'enhanced' && 'Enhanced Notes Mode'}
               {activeMode === 'flashcards' && 'Flashcards Mode'}
@@ -398,8 +398,8 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           size="sm"
           className={`transition-all duration-200 ${
             activeMode === 'quiz' 
-              ? "bg-muted text-muted-foreground ring-2 ring-muted/50 shadow-lg scale-105" 
-              : "bg-muted/80 text-muted-foreground hover:bg-muted hover:scale-105"
+              ? "bg-quiz text-quiz-foreground ring-2 ring-quiz/50 shadow-lg scale-105" 
+              : "bg-quiz/80 text-quiz-foreground hover:bg-quiz hover:scale-105"
           }`}
         >
           {isProcessing === 'quiz' ? (
