@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.gemini-text-manipulator]
 verify_jwt = false
+
+[functions.generate-quiz]
+verify_jwt = false

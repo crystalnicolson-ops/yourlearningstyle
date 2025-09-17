@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
 import VoicePlayer from "./VoicePlayer";
+import StudyQuiz from "./StudyQuiz";
 
 interface SimpleTransformProps {
   content: string;
@@ -25,6 +26,8 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const [useBrowserSpeech, setUseBrowserSpeech] = useState(false);
   const [enhancedNotes, setEnhancedNotes] = useState<string>('');
   const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
+  const [showQuiz, setShowQuiz] = useState(false);
   const { toast } = useToast();
 
   const handleEnhancedNotes = async () => {
@@ -141,6 +144,43 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       toast({
         title: "Flashcard creation failed",
         description: error.message || "Failed to create flashcards",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(null);
+    }
+  };
+
+  const handleQuiz = async () => {
+    if (!content) return;
+
+    setIsProcessing('quiz');
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-quiz', {
+        body: { content }
+      });
+
+      if (error) {
+        console.error('Quiz generation error:', error);
+        throw new Error(error.message || 'Failed to generate quiz');
+      }
+
+      if (data?.questions && Array.isArray(data.questions)) {
+        setQuizQuestions(data.questions);
+        setShowQuiz(true);
+        onTransformed("Quiz generated successfully", "quiz");
+        toast({
+          title: "Quiz generated!",
+          description: "Test your knowledge with the new quiz.",
+        });
+      } else {
+        throw new Error('Invalid quiz format received');
+      }
+    } catch (error: any) {
+      console.error('Error generating quiz:', error);
+      toast({
+        title: "Quiz generation failed",
+        description: error.message || "Failed to generate quiz. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -309,15 +349,18 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
         </Button>
 
         <Button
-          asChild
+          onClick={handleQuiz}
+          disabled={!content || isProcessing !== null}
           variant="default"
           size="sm"
           className="bg-muted text-muted-foreground hover:bg-muted/90"
         >
-          <a href="https://www.personalitytraits.io" target="_blank" rel="noopener noreferrer">
+          {isProcessing === 'quiz' ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
             <Brain className="h-4 w-4 mr-2" />
-            Take Quiz
-          </a>
+          )}
+          Take Quiz
         </Button>
       </div>
 
@@ -341,57 +384,66 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
       )}
 
       {/* Results */}
-      {enhancedNotes && (
-        <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 shadow-lg">
-          <div className="mb-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Sparkles className="h-5 w-5 text-primary" />
+      {showQuiz && quizQuestions.length > 0 ? (
+        <StudyQuiz 
+          questions={quizQuestions} 
+          onBack={() => setShowQuiz(false)} 
+        />
+      ) : (
+        <>
+          {enhancedNotes && (
+            <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 shadow-lg">
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </div>
+                  <h4 className="text-xl font-bold text-foreground">Enhanced Notes</h4>
+                </div>
+                <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
               </div>
-              <h4 className="text-xl font-bold text-foreground">Enhanced Notes</h4>
-            </div>
-            <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
-          </div>
-          <div className="prose prose-lg max-w-none dark:prose-invert">
-            <div className="bg-white/80 dark:bg-black/30 backdrop-blur-sm p-8 rounded-xl border border-white/30 shadow-inner">
-              <div 
-                className="enhanced-notes-content text-foreground leading-relaxed"
-                dangerouslySetInnerHTML={{ 
-                  __html: enhancedNotes
-                    .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-primary border-b-2 border-primary/20 pb-2">$1</h1>')
-                    .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 text-foreground mt-6">$1</h2>')
-                    .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2 text-foreground mt-4">$1</h3>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-primary">$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em class="italic text-foreground/90">$1</em>')
-                    .replace(/^• (.*$)/gm, '<li class="mb-1">$1</li>')
-                    .replace(/^- (.*$)/gm, '<li class="mb-1">$1</li>')
-                    .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ul class="list-disc list-inside mb-4 space-y-1">$&</ul>')
-                    .replace(/^\d+\. (.*$)/gm, '<li class="mb-1">$1</li>')
-                    .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ol class="list-decimal list-inside mb-4 space-y-1">$&</ol>')
-                    .replace(/\n\n/g, '</p><p class="mb-4">')
-                    .replace(/^(?!<[h|u|o|l])(.+)$/gm, '<p class="mb-4">$1</p>')
-                    .replace(/<p class="mb-4"><\/p>/g, '')
-                }}
-              />
-            </div>
-          </div>
-        </Card>
-      )}
+              <div className="prose prose-lg max-w-none dark:prose-invert">
+                <div className="bg-white/80 dark:bg-black/30 backdrop-blur-sm p-8 rounded-xl border border-white/30 shadow-inner">
+                  <div 
+                    className="enhanced-notes-content text-foreground leading-relaxed"
+                    dangerouslySetInnerHTML={{ 
+                      __html: enhancedNotes
+                        .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-primary border-b-2 border-primary/20 pb-2">$1</h1>')
+                        .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 text-foreground mt-6">$1</h2>')
+                        .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2 text-foreground mt-4">$1</h3>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-primary">$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em class="italic text-foreground/90">$1</em>')
+                        .replace(/^• (.*$)/gm, '<li class="mb-1">$1</li>')
+                        .replace(/^- (.*$)/gm, '<li class="mb-1">$1</li>')
+                        .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ul class="list-disc list-inside mb-4 space-y-1">$&</ul>')
+                        .replace(/^\d+\. (.*$)/gm, '<li class="mb-1">$1</li>')
+                        .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ol class="list-decimal list-inside mb-4 space-y-1">$&</ol>')
+                        .replace(/\n\n/g, '</p><p class="mb-4">')
+                        .replace(/^(?!<[h|u|o|l])(.+)$/gm, '<p class="mb-4">$1</p>')
+                        .replace(/<p class="mb-4"><\/p>/g, '')
+                    }}
+                  />
+                </div>
+              </div>
+            </Card>
+          )}
 
-      {flashcards.length > 0 && (
-        <Flashcards 
-          flashcards={flashcards}
-          onGenerateMore={generateMoreFlashcards}
-          isGenerating={isProcessing === 'more-flashcards'}
-        />
-      )}
+          {flashcards.length > 0 && (
+            <Flashcards 
+              flashcards={flashcards}
+              onGenerateMore={generateMoreFlashcards}
+              isGenerating={isProcessing === 'more-flashcards'}
+            />
+          )}
 
-      {audioBase64 && (
-        <VoicePlayer 
-          audioBase64={audioBase64 === 'browser-speech' ? undefined : audioBase64}
-          text={content}
-          useBrowserSpeech={useBrowserSpeech}
-        />
+          {audioBase64 && (
+            <VoicePlayer 
+              audioBase64={audioBase64 === 'browser-speech' ? undefined : audioBase64}
+              text={content}
+              useBrowserSpeech={useBrowserSpeech}
+            />
+          )}
+        </>
       )}
     </div>
   );
