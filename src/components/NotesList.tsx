@@ -263,7 +263,7 @@ const extractTextForNote = async (note: Note) => {
           const transformed = transformedContent[note.id];
           
           return (
-            <Card key={note.id} className="p-4 bg-gradient-card shadow-card border-0">
+            <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
               <div className="flex items-start justify-between flex-wrap">
                 <div className="flex-1">
                   {hasContent && (
@@ -272,9 +272,9 @@ const extractTextForNote = async (note: Note) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleExpanded(note.id)}
-                        className="p-1 h-auto"
+                        className="p-2 h-auto min-h-[44px] min-w-[44px]"
                       >
-                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                       </Button>
                     </div>
                   )}
@@ -348,15 +348,15 @@ const extractTextForNote = async (note: Note) => {
                   </div>
                 </div>
               )}
-              <div className="mt-4 flex items-center gap-2 justify-end">
+              <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
                 {note.file_url && (
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleDownload(note.file_url!, note.file_name!)}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-2 h-11 px-4 text-base sm:text-sm justify-center"
                   >
-                    <Download className="h-3 w-3" />
+                    <Download className="h-4 w-4" />
                     Download
                   </Button>
                 )}
@@ -364,9 +364,9 @@ const extractTextForNote = async (note: Note) => {
                   variant="outline"
                   size="sm"
                   onClick={() => handleDelete(note.id, note.file_url)}
-                  className="flex items-center gap-1 text-destructive hover:text-destructive"
+                  className="flex items-center gap-2 text-destructive hover:text-destructive h-11 px-4 text-base sm:text-sm justify-center"
                 >
-                  <Trash2 className="h-3 w-3" />
+                  <Trash2 className="h-4 w-4" />
                   Delete
                 </Button>
               </div>

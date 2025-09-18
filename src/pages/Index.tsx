@@ -23,18 +23,18 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-primary">
       {/* Header with Home Button */}
       <header className="sticky top-0 z-50 bg-gradient-primary/95 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => window.location.reload()}
-            className="flex items-center gap-2 text-white hover:bg-white/10"
+            className="text-white hover:bg-white/20 flex items-center gap-2 h-11 px-4 text-base sm:text-sm"
           >
-            <Home className="h-4 w-4" />
+            <Home className="h-5 w-5 sm:h-4 sm:w-4" />
             <span className="font-medium">LearningStyle</span>
           </Button>
           
           <Link to="/landing">
-            <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+            <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 h-11 px-4 text-base sm:text-sm">
               About
             </Button>
           </Link>
@@ -45,10 +45,10 @@ const Index = () => {
       {!hasNotes && <Hero />}
       
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="space-y-8">
+      <div className="max-w-4xl mx-auto p-4 sm:p-6">
+        <div className="space-y-6 sm:space-y-8">
           {/* Notes List - becomes center focus when notes exist */}
-          <div className={hasNotes ? "mt-8" : ""}>
+          <div className={hasNotes ? "mt-6 sm:mt-8" : ""}>
             <NotesList 
               refreshTrigger={refreshTrigger} 
               onNotesLoaded={handleNotesLoaded}

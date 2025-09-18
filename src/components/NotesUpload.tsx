@@ -218,7 +218,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   };
 
   return (
-    <Card className="p-6 bg-gradient-card shadow-card border-0">
+    <Card className="p-4 sm:p-6 bg-gradient-card shadow-card border-0">
       <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
         <Upload className="h-5 w-5" />
         Upload New Document
@@ -230,7 +230,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             placeholder="Note title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full"
+            className="w-full h-11 text-base"
           />
         </div>
         
@@ -239,12 +239,12 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             placeholder="Note content (optional)..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[100px]"
+            className="w-full min-h-[120px] text-base"
           />
         </div>
         
-        <div className="flex gap-3 items-center">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+          <div className="relative flex-1 sm:flex-none">
             <input
               id="file-upload"
               type="file"
@@ -254,9 +254,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             />
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-sm font-medium border"
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-base font-medium border w-full sm:w-auto h-11"
             >
-              <Upload className="w-4 h-4" />
+              <Upload className="w-5 h-5" />
               Choose File
             </label>
           </div>
@@ -265,7 +265,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             <Button 
               type="submit" 
               disabled={isUploading}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 text-sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 text-base h-11 flex-1 sm:flex-none"
             >
               {isUploading ? "Uploading..." : "Upload"}
             </Button>
@@ -281,9 +281,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                 const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                 if (fileInput) fileInput.value = '';
               }}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground h-11 w-11 p-0 sm:ml-2"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </Button>
           )}
         </div>

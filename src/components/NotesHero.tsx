@@ -10,40 +10,40 @@ const NotesHero = () => {
       <div className="absolute top-20 left-20 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
       <div className="absolute bottom-20 right-20 w-48 h-48 bg-pink-300/10 rounded-full blur-2xl"></div>
       
-      <div className="relative z-10 container mx-auto px-6 py-20">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-20">
         {/* Header */}
-        <header className="text-center mb-16">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <FileText className="h-8 w-8 text-white" />
-            <h1 className="text-5xl md:text-6xl font-bold text-white">
+        <header className="text-center mb-12 sm:mb-16">
+          <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
               Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4">
             Transform your notes into personalized learning experiences for different learning styles
           </p>
         </header>
 
         {/* Feature Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-2xl mx-auto">
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+        <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 max-w-2xl mx-auto px-4">
+          <Card className="p-6 sm:p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-7 w-7 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Visual Learning</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">Visual Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Transform notes into interactive flashcards for visual learners
               </p>
             </div>
           </Card>
 
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
+          <Card className="p-6 sm:p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
             <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Search className="h-7 w-7 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Auditory Learning</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">Auditory Learning</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Generate voice recordings from your notes for audio learning
               </p>
