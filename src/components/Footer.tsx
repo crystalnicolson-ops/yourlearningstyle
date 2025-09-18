@@ -11,7 +11,7 @@ export const Footer = () => {
           
           <div className="flex items-center gap-6">
             <a 
-              href="mailto:support@learningstyle.app"
+              href="mailto:personalitytraitsoffice@gmail.com"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
             >
               <Mail className="h-4 w-4" />
