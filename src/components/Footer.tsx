@@ -15,13 +15,11 @@ export const Footer = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
             >
               <Mail className="h-4 w-4" />
-              Support
+              Email Us
             </a>
             
             <a 
-              href="https://docs.lovable.dev/" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/support"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
             >
               <ExternalLink className="h-4 w-4" />
