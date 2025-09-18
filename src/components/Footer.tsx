@@ -25,6 +25,13 @@ export const Footer = () => {
               <ExternalLink className="h-4 w-4" />
               Help Center
             </a>
+            
+            <a 
+              href="/privacy-policy"
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              Privacy Policy
+            </a>
           </div>
         </div>
       </div>

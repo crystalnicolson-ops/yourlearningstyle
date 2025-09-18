@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import AppStoreImages from "./pages/AppStoreImages";
 import Quiz from "./pages/Quiz";
 import Support from "./pages/Support";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/app-store-images" element={<AppStoreImages />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
