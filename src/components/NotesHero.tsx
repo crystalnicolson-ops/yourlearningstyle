@@ -19,36 +19,27 @@ const NotesHero = () => {
               Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
-          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4 mb-4">
-            <strong>Step 1:</strong> Choose your learning style below
+          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4 mb-6">
+            <strong>Step 1:</strong> Choose your learning style:
           </p>
+          
+          <div className="flex justify-center items-center gap-8 text-white/90 mb-6">
+            <div className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-pink-200" />
+              <span className="font-medium">Visual Learning</span>
+            </div>
+            <div className="text-white/50">or</div>
+            <div className="flex items-center gap-2">
+              <Search className="h-5 w-5 text-pink-200" />
+              <span className="font-medium">Auditory Learning</span>
+            </div>
+          </div>
+          
           <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto leading-relaxed px-4">
             <strong>Step 2:</strong> Upload your documents to get started
           </p>
         </header>
 
-        {/* Learning Style Options */}
-        <div className="flex justify-center gap-4 mb-8 max-w-lg mx-auto">
-          <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10">
-            <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Zap className="h-3 w-3 text-white" />
-            </div>
-            <h3 className="text-xs font-medium text-white mb-1">Visual Learning</h3>
-            <p className="text-xs text-white/70">
-              Interactive flashcards
-            </p>
-          </div>
-
-          <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10">
-            <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Search className="h-3 w-3 text-white" />
-            </div>
-            <h3 className="text-xs font-medium text-white mb-1">Auditory Learning</h3>
-            <p className="text-xs text-white/70">
-              Voice recordings
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
