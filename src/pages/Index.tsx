@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-primary flex flex-col">
       {/* Header with Home Button */}
-      <header className="sticky top-0 z-50 bg-gradient-primary/95 backdrop-blur-sm border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-transparent">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Button
             variant="ghost"

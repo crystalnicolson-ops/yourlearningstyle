@@ -4,11 +4,7 @@ import { FileText, Upload, Search, Zap, Target } from "lucide-react";
 
 const NotesHero = () => {
   return (
-    <div className="bg-gradient-primary relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5"></div>
-      <div className="absolute top-20 left-20 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 right-20 w-48 h-48 bg-white/5 rounded-full blur-2xl"></div>
+    <div className="relative overflow-hidden">
       
       <div className="relative z-10 container mx-auto px-4 sm:px-6 py-12 sm:py-16">
         {/* Header */}
