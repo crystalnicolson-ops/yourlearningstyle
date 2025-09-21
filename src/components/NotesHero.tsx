@@ -19,36 +19,35 @@ const NotesHero = () => {
               Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4">
-            Transform your notes into personalized learning experiences for different learning styles
+          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4 mb-4">
+            <strong>Step 1:</strong> Choose your learning style below
+          </p>
+          <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto leading-relaxed px-4">
+            <strong>Step 2:</strong> Upload your documents to get started
           </p>
         </header>
 
-        {/* Feature Cards */}
-        <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 max-w-2xl mx-auto px-4">
-          <Card className="p-6 sm:p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">Visual Learning</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Transform notes into interactive flashcards for visual learners
-              </p>
+        {/* Learning Style Options */}
+        <div className="flex justify-center gap-4 mb-8 max-w-lg mx-auto">
+          <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10">
+            <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Zap className="h-3 w-3 text-white" />
             </div>
-          </Card>
+            <h3 className="text-xs font-medium text-white mb-1">Visual Learning</h3>
+            <p className="text-xs text-white/70">
+              Interactive flashcards
+            </p>
+          </div>
 
-          <Card className="p-6 sm:p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Search className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3">Auditory Learning</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Generate voice recordings from your notes for audio learning
-              </p>
+          <div className="text-center p-3 bg-white/5 rounded-lg border border-white/10">
+            <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Search className="h-3 w-3 text-white" />
             </div>
-          </Card>
+            <h3 className="text-xs font-medium text-white mb-1">Auditory Learning</h3>
+            <p className="text-xs text-white/70">
+              Voice recordings
+            </p>
+          </div>
         </div>
       </div>
     </div>
