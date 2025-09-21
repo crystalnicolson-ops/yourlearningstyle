@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Brain, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,7 +26,7 @@ const learningStyles = [
 
 const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransformProps) => {
   const [selectedStyle, setSelectedStyle] = useState<string>('');
-  const [selectedVoice, setSelectedVoice] = useState<string>('alloy');
+  const selectedVoice = 'alloy'; // Use single reliable voice
   const [isTransforming, setIsTransforming] = useState(false);
   const [transformedResult, setTransformedResult] = useState<any>(null);
   const [flashcards, setFlashcards] = useState<FlashcardData[]>([]);
@@ -164,14 +163,6 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     });
   };
 
-  const voiceOptions = [
-    { value: 'alloy', label: 'Alloy (Neutral)' },
-    { value: 'echo', label: 'Echo (Male)' },
-    { value: 'fable', label: 'Fable (British Male)' },
-    { value: 'onyx', label: 'Onyx (Deep Male)' },
-    { value: 'nova', label: 'Nova (Female)' },
-    { value: 'shimmer', label: 'Shimmer (Female)' },
-  ];
 
   return (
     <div className="space-y-6">
@@ -221,23 +212,6 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
           })}
         </div>
         
-        {selectedStyle === 'auditory' && (
-          <div className="mb-4 space-y-2">
-            <label className="text-sm font-medium">Voice Selection</label>
-            <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {voiceOptions.map((voice) => (
-                  <SelectItem key={voice.value} value={voice.value}>
-                    {voice.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
         
         <Button
           onClick={handleTransform}
