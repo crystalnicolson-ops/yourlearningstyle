@@ -100,15 +100,6 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
       <div className="flex items-center justify-between">
         {title && <h3 className="text-xl font-semibold">{title}</h3>}
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={downloadFlashcards}
-            className="flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            Download
-          </Button>
           {onGenerateMore && (
             <Button
               variant="outline"

@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, CheckCircle, XCircle, RotateCcw, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import UniversalDownloadButton from "./UniversalDownloadButton";
+import SmartDownloadButton from "./SmartDownloadButton";
 
 interface QuizQuestion {
   question: string;
@@ -119,7 +119,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
             <p className="text-white/80">{questions.length} questions total</p>
           </div>
           <div className="flex gap-2">
-            <UniversalDownloadButton
+            <SmartDownloadButton
               quiz={questions}
               variant="outline" 
               className="bg-white/10 text-white border-white/20 hover:bg-white/20"
@@ -216,7 +216,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
           <p className="text-white/80">Test your knowledge • {questions.length} questions</p>
         </div>
         <div className="flex gap-2">
-          <UniversalDownloadButton
+          <SmartDownloadButton
             quiz={questions}
             variant="outline"
             className="bg-white/10 text-white border-white/20 hover:bg-white/20"

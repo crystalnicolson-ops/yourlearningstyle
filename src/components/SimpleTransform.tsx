@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, FileText, Volume2, Loader2, Brain, Download } from "lucide-react";
+import { Sparkles, FileText, Volume2, Loader2, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
 import VoicePlayer from "./VoicePlayer";
 import StudyQuiz from "./StudyQuiz";
+import SmartDownloadButton from "./SmartDownloadButton";
 
 interface SimpleTransformProps {
   content: string;
@@ -449,6 +450,15 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   return (
     <div className="space-y-4">
+      {/* Smart Download Button - Single button that downloads appropriate content */}
+      <div className="flex justify-center">
+        <SmartDownloadButton
+          flashcards={flashcards}
+          quiz={quizQuestions}
+          enhancedNotes={enhancedNotes}
+        />
+      </div>
+
       {/* Active Mode Header */}
       {activeMode && (
         <Card className="p-4 bg-white/95 backdrop-blur-sm border-2 border-primary/20">
@@ -560,17 +570,12 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           {enhancedNotes && (
             <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 shadow-lg">
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded-lg">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <h4 className="text-xl font-bold text-foreground">Enhanced Notes</h4>
                   </div>
-                  <Button variant="outline" size="sm" onClick={downloadEnhancedNotes}>
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </div>
                 <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
               </div>
               <div className="prose prose-lg max-w-none dark:prose-invert">
