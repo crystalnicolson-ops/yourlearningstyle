@@ -39,7 +39,6 @@ const SmartDownloadButton = ({
 
   const downloadContent = () => {
     try {
-      // Priority: Enhanced Notes > Flashcards > Quiz
       if (enhancedNotes) {
         // Download enhanced notes as HTML for Word
         const htmlContent = `
@@ -158,14 +157,15 @@ const SmartDownloadButton = ({
         });
         
       } else if (flashcards && flashcards.length > 0) {
-        // Download as Quizlet-compatible CSV
-        const csvHeader = "Front,Back\n";
-        const csvData = flashcards.map(card => 
-          `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
-        ).join('\n');
-        const csvContent = csvHeader + csvData;
+        // Download as Quizlet-compatible CSV (no header for better compatibility)
+        const csvData = flashcards.map(card => {
+          // Clean the text to remove any problematic characters
+          const cleanQuestion = card.question.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
+          const cleanAnswer = card.answer.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
+          return `"${cleanQuestion}","${cleanAnswer}"`; 
+        }).join('\n');
         
-        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -177,7 +177,7 @@ const SmartDownloadButton = ({
         
         toast({
           title: "✅ Flashcards downloaded for Quizlet!",
-          description: `Downloaded ${flashcards.length} flashcards in Quizlet format`,
+          description: `Downloaded ${flashcards.length} flashcards. Import this CSV file directly into Quizlet.`,
         });
         
       } else if (quiz && quiz.length > 0) {
