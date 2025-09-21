@@ -222,12 +222,11 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
       </Card>
 
       {/* Universal Download Button */}
-      {(flashcards.length > 0 || (transformedResult && selectedStyle !== 'visual' && selectedStyle !== 'auditory')) && (
+      {(flashcards.length > 0) && (
         <div className="flex justify-center">
           <UniversalDownloadButton
             flashcards={selectedStyle === 'visual' ? flashcards : undefined}
-            textContent={selectedStyle !== 'visual' && selectedStyle !== 'auditory' ? transformedResult?.transformedContent : undefined}
-            filename={selectedStyle === 'visual' ? 'flashcards.csv' : `${selectedStyle}-learning-notes.txt`}
+            filename={selectedStyle === 'visual' ? 'flashcards.csv' : undefined}
           />
         </div>
       )}
