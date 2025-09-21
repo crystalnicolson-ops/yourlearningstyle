@@ -249,7 +249,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
               id="file-upload"
               type="file"
               onChange={handleFileSelect}
-              accept=".docx,.txt,.md,.pdf,.json"
+              accept=".pdf,.docx,.pptx"
               className="sr-only"
             />
             <label
@@ -297,7 +297,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         )}
         
         <p className="text-xs text-muted-foreground">
-          TXT, MD, DOCX, JSON supported • PDF preview only
+          PDF, DOCX, PPTX files supported • Upload your documents to extract and transform content
         </p>
       </form>
     </Card>
