@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FileText, Download, Trash2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, Trash2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -92,38 +92,6 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
       });
     });
   }, [notes]);
-
-  const handleDownload = async (fileUrl: string, fileName: string) => {
-    try {
-      if (fileUrl.startsWith('data:')) {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = fileUrl;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        return;
-      }
-      const response = await fetch(fileUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      toast({
-        title: "Download failed",
-        description: "Failed to download file",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleDelete = async (noteId: string, fileUrl: string | null) => {
     try {
@@ -349,17 +317,6 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               )}
               <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
-                {note.file_url && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDownload(note.file_url!, note.file_name!)}
-                    className="flex items-center gap-2 h-11 px-4 text-base sm:text-sm justify-center"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </Button>
-                )}
                 <Button
                   variant="outline"
                   size="sm"
