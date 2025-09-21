@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Brain, Loader2 } from "lucide-react";
+import { Brain, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
@@ -145,6 +145,25 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     }
   };
 
+  const downloadTransformedContent = () => {
+    if (!transformedResult?.transformedContent || selectedStyle === 'visual' || selectedStyle === 'auditory') return;
+    
+    const styleLabel = learningStyles.find(s => s.value === selectedStyle)?.label || selectedStyle;
+    const blob = new Blob([transformedResult.transformedContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${styleLabel.toLowerCase()}-learning-notes-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: `${styleLabel} learning notes downloaded!`,
+    });
+  };
+
   const voiceOptions = [
     { value: 'alloy', label: 'Alloy (Neutral)' },
     { value: 'echo', label: 'Echo (Male)' },
@@ -267,10 +286,13 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
 
       {transformedResult && selectedStyle !== 'visual' && selectedStyle !== 'auditory' && (
         <Card className="p-6">
-          <div className="mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xl font-semibold">
               Transformed for {learningStyles.find(s => s.value === selectedStyle)?.label} Learning
             </h3>
+            <Button variant="outline" size="sm" onClick={downloadTransformedContent}>
+              <Download className="h-4 w-4" />
+            </Button>
           </div>
           <div className="prose max-w-none">
             <div className="whitespace-pre-wrap">{transformedResult.transformedContent}</div>

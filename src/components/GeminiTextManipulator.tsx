@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
@@ -96,6 +96,25 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
     }
   };
 
+  const downloadResult = () => {
+    if (!result) return;
+    
+    const transformationType = selectedOption ? manipulationOptions.find(opt => opt.value === selectedOption)?.label : 'Custom';
+    const blob = new Blob([result], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${transformationType?.toLowerCase()}-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Transformed content downloaded!",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 bg-gradient-subtle border border-primary/20">
@@ -172,8 +191,11 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
 
       {result && (
         <Card className="p-6">
-          <div className="mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xl font-semibold">Transformed Content</h3>
+            <Button variant="outline" size="sm" onClick={downloadResult}>
+              <Download className="h-4 w-4" />
+            </Button>
           </div>
           <div className="prose max-w-none">
             <div className="whitespace-pre-wrap bg-muted/30 p-4 rounded-lg">{result}</div>

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface FlashcardData {
   question: string;
@@ -19,6 +20,7 @@ interface FlashcardsProps {
 const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: FlashcardsProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const { toast } = useToast();
 
   if (!flashcards || flashcards.length === 0) {
     return (
@@ -42,24 +44,58 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
     setShowAnswer(!showAnswer);
   };
 
+  const downloadFlashcards = () => {
+    if (!flashcards || flashcards.length === 0) return;
+    
+    // Create text format for download
+    const textData = `${title || 'Flashcards'}\n\n${flashcards.map((card, index) => 
+      `${index + 1}. QUESTION: ${card.question}\n   ANSWER: ${card.answer}\n`
+    ).join('\n')}\n\nTotal: ${flashcards.length} flashcards`;
+    
+    const blob = new Blob([textData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `flashcards-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Flashcards downloaded!",
+    });
+  };
+
   const currentCard = flashcards[currentIndex];
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
         {title && <h3 className="text-xl font-semibold">{title}</h3>}
-        {onGenerateMore && (
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={onGenerateMore}
-            disabled={isGenerating}
+            onClick={downloadFlashcards}
             className="flex items-center gap-2"
           >
-            <Plus className="h-4 w-4" />
-            {isGenerating ? 'Generating...' : 'Generate More'}
+            <Download className="h-4 w-4" />
+            Download
           </Button>
-        )}
+          {onGenerateMore && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onGenerateMore}
+              disabled={isGenerating}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              {isGenerating ? 'Generating...' : 'Generate More'}
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card className="h-64 cursor-pointer" onClick={toggleAnswer}>
