@@ -221,7 +221,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
     <Card className="p-4 sm:p-6 bg-gradient-card shadow-card border-0">
       <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
         <Upload className="h-5 w-5" />
-        Upload New Document
+        Upload Your Notes
       </h3>
       
       <form onSubmit={handleSubmit} className="space-y-4">
