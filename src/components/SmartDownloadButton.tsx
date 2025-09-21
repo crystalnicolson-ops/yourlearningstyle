@@ -1,6 +1,7 @@
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType, HeadingLevel } from "docx";
 
 interface FlashcardData {
   question: string;
@@ -37,7 +38,7 @@ const SmartDownloadButton = ({
 }: SmartDownloadButtonProps) => {
   const { toast } = useToast();
 
-  const downloadContent = () => {
+  const downloadContent = async () => {
     try {
       if (enhancedNotes) {
         // Download enhanced notes as HTML for Word
@@ -157,28 +158,54 @@ const SmartDownloadButton = ({
         });
         
       } else if (flashcards && flashcards.length > 0) {
-        // Download as Quizlet-compatible tab-separated format with CRLF and UTF-8 BOM
-        const tsvData = flashcards.map(card => {
-          // Clean the text to remove any problematic characters
-          const cleanQuestion = card.question.replace(/[\r\n\t]+/g, ' ').trim();
-          const cleanAnswer = card.answer.replace(/[\r\n\t]+/g, ' ').trim();
-          return `${cleanQuestion}\t${cleanAnswer}`;
-        }).join('\r\n');
-        
-        const BOM = '\uFEFF';
-        const blob = new Blob([BOM, tsvData], { type: 'text/tab-separated-values;charset=utf-8;' });
+        // Download flashcards as a DOCX with a two-column table (Front / Back)
+        const rows = [
+          new TableRow({
+            children: [
+              new TableCell({ children: [new Paragraph({ text: "Front", heading: HeadingLevel.HEADING_3 })] }),
+              new TableCell({ children: [new Paragraph({ text: "Back", heading: HeadingLevel.HEADING_3 })] }),
+            ],
+          }),
+          ...flashcards.map((card) =>
+            new TableRow({
+              children: [
+                new TableCell({ children: [new Paragraph(card.question.replace(/[\r\n\t]+/g, ' ').trim())] }),
+                new TableCell({ children: [new Paragraph(card.answer.replace(/[\r\n\t]+/g, ' ').trim())] }),
+              ],
+            })
+          ),
+        ];
+
+        const table = new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows,
+        });
+
+        const doc = new Document({
+          sections: [
+            {
+              properties: {},
+              children: [
+                new Paragraph({ text: "Flashcards", heading: HeadingLevel.HEADING_1 }),
+                table,
+              ],
+            },
+          ],
+        });
+
+        const blob = await Packer.toBlob(doc);
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `quizlet-flashcards-${Date.now()}.tsv`;
+        a.download = `flashcards-${Date.now()}.docx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
+
         toast({
-          title: "✅ Flashcards downloaded for Quizlet!",
-          description: `Downloaded ${flashcards.length} flashcards as .tsv file. Import this directly into Quizlet.`,
+          title: "✅ Flashcards downloaded!",
+          description: `Saved as .docx with a two-column table (Front/Back)`,
         });
         
       } else if (quiz && quiz.length > 0) {
