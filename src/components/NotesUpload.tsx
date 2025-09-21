@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { addGuestNote } from "@/lib/guestNotes";
 const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  
   const [file, setFile] = useState<File | null>(null);
   const { toast } = useToast();
 
@@ -46,10 +46,10 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim() && !file && !content.trim()) {
+    if (!file) {
       toast({
-        title: "Content required",
-        description: "Please enter a title, content, or upload a file",
+        title: "File required",
+        description: "Please select a file to upload",
         variant: "destructive",
       });
       return;
@@ -94,7 +94,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         addGuestNote({
           id: crypto.randomUUID(),
           title: title.trim() || file?.name || "Untitled Note",
-          content: content.trim() || null,
+          content: null,
           file_data_url: fileUrl,
           file_name: fileName,
           file_type: fileType,
@@ -108,9 +108,6 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         });
 
         // Reset form
-        setTitle("");
-        setContent("");
-        setFile(null);
         const fileInput = document.getElementById('file-upload') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
         onNoteAdded();
@@ -118,7 +115,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
       }
 
       // Authenticated flow (Supabase)
-      let extractedContent = content.trim();
+      let extractedContent = "";
       
       if (file) {
         const filePath = await uploadFile(file, user.id);
@@ -150,9 +147,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           if (extractData?.extractedText) {
             const autoExtracted = extractData.extractedText;
             // Combine manual content with extracted content if both exist
-            extractedContent = extractedContent 
-              ? `${extractedContent}\n\n--- Extracted from file ---\n${autoExtracted}`
-              : autoExtracted;
+             extractedContent = autoExtracted;
           }
         } catch (error) {
           console.error('Text extraction failed:', error);
@@ -198,7 +193,6 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
 
       // Reset form
       setTitle("");
-      setContent("");
       setFile(null);
       
       // Reset file input
@@ -234,14 +228,6 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           />
         </div>
         
-        <div>
-          <Textarea
-            placeholder="Note content (optional)..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[120px] text-base"
-          />
-        </div>
         
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
           <div className="relative flex-1 sm:flex-none">
