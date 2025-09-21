@@ -157,19 +157,19 @@ const SmartDownloadButton = ({
         });
         
       } else if (flashcards && flashcards.length > 0) {
-        // Download as Quizlet-compatible CSV (no header for better compatibility)
-        const csvData = flashcards.map(card => {
+        // Download as Quizlet-compatible tab-separated format
+        const tsvData = flashcards.map(card => {
           // Clean the text to remove any problematic characters
-          const cleanQuestion = card.question.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
-          const cleanAnswer = card.answer.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
-          return `"${cleanQuestion}","${cleanAnswer}"`; 
+          const cleanQuestion = card.question.replace(/[\r\n\t]+/g, ' ').trim();
+          const cleanAnswer = card.answer.replace(/[\r\n\t]+/g, ' ').trim();
+          return `${cleanQuestion}\t${cleanAnswer}`;
         }).join('\n');
         
-        const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([tsvData], { type: 'text/plain;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `quizlet-flashcards-${Date.now()}.csv`;
+        a.download = `quizlet-flashcards-${Date.now()}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -177,7 +177,7 @@ const SmartDownloadButton = ({
         
         toast({
           title: "✅ Flashcards downloaded for Quizlet!",
-          description: `Downloaded ${flashcards.length} flashcards. Import this CSV file directly into Quizlet.`,
+          description: `Downloaded ${flashcards.length} flashcards as .txt file. Import this directly into Quizlet.`,
         });
         
       } else if (quiz && quiz.length > 0) {

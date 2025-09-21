@@ -58,23 +58,23 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
     }
     
     try {
-      // Create Quizlet-compatible CSV format (no header needed for Quizlet)
-      const csvData = flashcards.map(card => {
+      // Create Quizlet-compatible tab-separated format
+      const tsvData = flashcards.map(card => {
         // Clean the text to remove any problematic characters
-        const cleanQuestion = card.question.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
-        const cleanAnswer = card.answer.replace(/"/g, '""').replace(/[\r\n]+/g, ' ').trim();
-        return `"${cleanQuestion}","${cleanAnswer}"`;
+        const cleanQuestion = card.question.replace(/[\r\n\t]+/g, ' ').trim();
+        const cleanAnswer = card.answer.replace(/[\r\n\t]+/g, ' ').trim();
+        return `${cleanQuestion}\t${cleanAnswer}`;
       }).join('\n');
       
-      console.log('🃏 QUIZLET CSV CONTENT:', csvData.substring(0, 200) + '...');
+      console.log('🃏 QUIZLET TSV CONTENT:', tsvData.substring(0, 200) + '...');
       
-      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob([tsvData], { type: 'text/plain;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `quizlet-flashcards-${Date.now()}.csv`;
+      a.download = `quizlet-flashcards-${Date.now()}.txt`;
       document.body.appendChild(a);
-      console.log('🃏 TRIGGERING QUIZLET CSV DOWNLOAD');
+      console.log('🃏 TRIGGERING QUIZLET TXT DOWNLOAD');
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
@@ -82,7 +82,7 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
       console.log('✅ QUIZLET FLASHCARD DOWNLOAD COMPLETED');
       toast({
         title: "✅ Flashcards downloaded for Quizlet!",
-        description: `Downloaded ${flashcards.length} flashcards. Import this CSV file directly into Quizlet.`,
+        description: `Downloaded ${flashcards.length} flashcards as .txt file. Import this directly into Quizlet.`,
       });
     } catch (error) {
       console.error('❌ Error downloading flashcards:', error);
