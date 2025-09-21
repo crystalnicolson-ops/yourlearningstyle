@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, CheckCircle, XCircle, RotateCcw, Plus } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, RotateCcw, Plus, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -102,6 +102,39 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
     }
   };
 
+  const downloadQuiz = () => {
+    if (!questions || questions.length === 0) return;
+    
+    // Create structured quiz format
+    const quizData = {
+      title: "Study Quiz",
+      questions: questions.map((q, index) => ({
+        number: index + 1,
+        question: q.question,
+        options: q.options,
+        correctAnswer: q.correctAnswer
+      })),
+      totalQuestions: questions.length,
+      exportedAt: new Date().toISOString()
+    };
+    
+    const jsonContent = JSON.stringify(quizData, null, 2);
+    
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quiz-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Quiz downloaded as JSON!",
+    });
+  };
+
   const progress = ((currentQuestion + (showAnswer ? 1 : 0)) / questions.length) * 100;
 
   if (showResults) {
@@ -117,20 +150,30 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
             <h2 className="text-2xl font-bold text-white">Quiz Complete!</h2>
             <p className="text-white/80">{questions.length} questions total</p>
           </div>
-          <Button 
-            onClick={generateMoreQuestions}
-            disabled={isGeneratingMore}
-            className="bg-quiz text-quiz-foreground hover:bg-quiz/90"
-          >
-            {isGeneratingMore ? (
-              <>Loading...</>
-            ) : (
-              <>
-                <Plus className="h-4 w-4 mr-2" />
-                Add More
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={downloadQuiz}
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download
+            </Button>
+            <Button 
+              onClick={generateMoreQuestions}
+              disabled={isGeneratingMore}
+              className="bg-quiz text-quiz-foreground hover:bg-quiz/90"
+            >
+              {isGeneratingMore ? (
+                <>Loading...</>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add More
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         <Card className="p-8 bg-white/95 backdrop-blur-sm">
@@ -207,21 +250,31 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
           <h2 className="text-2xl font-bold text-white">Study Quiz</h2>
           <p className="text-white/80">Test your knowledge • {questions.length} questions</p>
         </div>
-        <Button 
-          onClick={generateMoreQuestions}
-          disabled={isGeneratingMore}
-          variant="outline"
-          className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-        >
-          {isGeneratingMore ? (
-            <>Loading...</>
-          ) : (
-            <>
-              <Plus className="h-4 w-4 mr-2" />
-              Add More
-            </>
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={downloadQuiz}
+            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+          <Button 
+            onClick={generateMoreQuestions}
+            disabled={isGeneratingMore}
+            variant="outline"
+            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+          >
+            {isGeneratingMore ? (
+              <>Loading...</>
+            ) : (
+              <>
+                <Plus className="h-4 w-4 mr-2" />
+                Add More
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Progress */}

@@ -47,23 +47,26 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
   const downloadFlashcards = () => {
     if (!flashcards || flashcards.length === 0) return;
     
-    // Create text format for download
-    const textData = `${title || 'Flashcards'}\n\n${flashcards.map((card, index) => 
-      `${index + 1}. QUESTION: ${card.question}\n   ANSWER: ${card.answer}\n`
-    ).join('\n')}\n\nTotal: ${flashcards.length} flashcards`;
+    // Create CSV format for flashcards
+    const csvHeader = "Question,Answer\n";
+    const csvData = flashcards.map(card => 
+      `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
+    ).join('\n');
     
-    const blob = new Blob([textData], { type: 'text/plain' });
+    const csvContent = csvHeader + csvData;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `flashcards-${Date.now()}.txt`;
+    a.download = `flashcards-${Date.now()}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
     toast({
-      title: "Flashcards downloaded!",
+      title: "Flashcards downloaded as CSV!",
     });
   };
 
