@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Brain, Loader2, Download } from "lucide-react";
+import { Brain, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
 import VoicePlayer from "./VoicePlayer";
+import UniversalDownloadButton from "./UniversalDownloadButton";
 
 interface LearningStyleTransformProps {
   content: string;
@@ -144,25 +145,6 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
     }
   };
 
-  const downloadTransformedContent = () => {
-    if (!transformedResult?.transformedContent || selectedStyle === 'visual' || selectedStyle === 'auditory') return;
-    
-    const styleLabel = learningStyles.find(s => s.value === selectedStyle)?.label || selectedStyle;
-    const blob = new Blob([transformedResult.transformedContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${styleLabel.toLowerCase()}-learning-notes-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: `${styleLabel} learning notes downloaded!`,
-    });
-  };
-
 
   return (
     <div className="space-y-6">
@@ -239,6 +221,17 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
         )}
       </Card>
 
+      {/* Universal Download Button */}
+      {(flashcards.length > 0 || (transformedResult && selectedStyle !== 'visual' && selectedStyle !== 'auditory')) && (
+        <div className="flex justify-center">
+          <UniversalDownloadButton
+            flashcards={selectedStyle === 'visual' ? flashcards : undefined}
+            textContent={selectedStyle !== 'visual' && selectedStyle !== 'auditory' ? transformedResult?.transformedContent : undefined}
+            filename={selectedStyle === 'visual' ? 'flashcards.csv' : `${selectedStyle}-learning-notes.txt`}
+          />
+        </div>
+      )}
+
       {/* Render results based on learning style */}
       {selectedStyle === 'visual' && flashcards.length > 0 && (
         <Flashcards 
@@ -260,13 +253,10 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
 
       {transformedResult && selectedStyle !== 'visual' && selectedStyle !== 'auditory' && (
         <Card className="p-6">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4">
             <h3 className="text-xl font-semibold">
               Transformed for {learningStyles.find(s => s.value === selectedStyle)?.label} Learning
             </h3>
-            <Button variant="outline" size="sm" onClick={downloadTransformedContent}>
-              <Download className="h-4 w-4" />
-            </Button>
           </div>
           <div className="prose max-w-none">
             <div className="whitespace-pre-wrap">{transformedResult.transformedContent}</div>
