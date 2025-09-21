@@ -45,17 +45,6 @@ const Index = () => {
       {/* Show hero only when no notes */}
       {!hasNotes && <Hero />}
       
-      {/* Learning Style Instructions - show at top after notes are uploaded */}
-      {hasNotes && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6">
-          <div className="text-center p-6 bg-white/10 rounded-lg border border-white/20">
-            <h3 className="text-lg font-semibold text-white mb-2">Next Step: Pick Your Learning Style</h3>
-            <p className="text-white/80 text-sm">
-              Choose a learning style from the options below to transform your notes
-            </p>
-          </div>
-        </div>
-      )}
       
       {/* Main Content */}
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
