@@ -4,8 +4,9 @@ import { FileText, Upload, Search, Zap, Target } from "lucide-react";
 
 const NotesHero = () => {
   return (
-    <div className="bg-primary relative overflow-hidden">
+    <div className="bg-gradient-primary relative overflow-hidden">
       {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5"></div>
       <div className="absolute top-20 left-20 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
       <div className="absolute bottom-20 right-20 w-48 h-48 bg-white/5 rounded-full blur-2xl"></div>
       
@@ -15,7 +16,7 @@ const NotesHero = () => {
           <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
             <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
-              Learning<span className="text-pink-200">Style</span>
+              Learning<span className="text-white/80">Style</span>
             </h1>
           </div>
           <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4">
