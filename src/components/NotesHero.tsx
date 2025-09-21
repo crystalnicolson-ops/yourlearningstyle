@@ -16,7 +16,7 @@ const NotesHero = () => {
             </h1>
           </div>
           <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4 mb-8">
-            Upload your documents to transform them into personalized learning experiences
+            Upload your notes and see them transform into personalized learning experiences
           </p>
 
           {/* Learning Styles Information */}
