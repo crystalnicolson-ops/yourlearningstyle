@@ -303,21 +303,46 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
   };
 
   const downloadEnhancedNotes = () => {
-    if (!enhancedNotes) return;
-    
-    const blob = new Blob([enhancedNotes], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `enhanced-notes-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Enhanced notes downloaded!",
+    console.log('📝 ENHANCED NOTES DOWNLOAD CLICKED! 📝', { 
+      enhancedNotesLength: enhancedNotes?.length,
+      enhancedNotesPreview: enhancedNotes?.substring(0, 100) 
     });
+    
+    if (!enhancedNotes) {
+      console.log('❌ No enhanced notes to download');
+      toast({
+        title: "No enhanced notes to download",
+        description: "Generate enhanced notes first",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      const blob = new Blob([enhancedNotes], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `enhanced-notes-${Date.now()}.txt`;
+      document.body.appendChild(a);
+      console.log('📝 TRIGGERING ENHANCED NOTES DOWNLOAD');
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      console.log('✅ ENHANCED NOTES DOWNLOAD COMPLETED');
+      toast({
+        title: "✅ Enhanced notes downloaded!",
+        description: `Downloaded ${enhancedNotes.length} characters of enhanced notes`,
+      });
+    } catch (error) {
+      console.error('❌ Error downloading enhanced notes:', error);
+      toast({
+        title: "Enhanced notes download failed",
+        description: "There was an error downloading the enhanced notes",
+        variant: "destructive",
+      });
+    }
   };
 
 
