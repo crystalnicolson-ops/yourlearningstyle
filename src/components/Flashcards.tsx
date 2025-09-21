@@ -45,29 +45,46 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
   };
 
   const downloadFlashcards = () => {
-    if (!flashcards || flashcards.length === 0) return;
+    console.log('Download flashcards clicked', { flashcardsLength: flashcards?.length });
     
-    // Create CSV format for flashcards
-    const csvHeader = "Question,Answer\n";
-    const csvData = flashcards.map(card => 
-      `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
-    ).join('\n');
+    if (!flashcards || flashcards.length === 0) {
+      console.log('No flashcards to download');
+      return;
+    }
     
-    const csvContent = csvHeader + csvData;
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `flashcards-${Date.now()}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Flashcards downloaded as CSV!",
-    });
+    try {
+      // Create CSV format for flashcards
+      const csvHeader = "Question,Answer\n";
+      const csvData = flashcards.map(card => 
+        `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
+      ).join('\n');
+      
+      const csvContent = csvHeader + csvData;
+      console.log('CSV content created', csvContent.substring(0, 100) + '...');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `flashcards-${Date.now()}.csv`;
+      document.body.appendChild(a);
+      console.log('About to click download link');
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      console.log('Download should have started');
+      toast({
+        title: "Flashcards downloaded as CSV!",
+      });
+    } catch (error) {
+      console.error('Error downloading flashcards:', error);
+      toast({
+        title: "Download failed",
+        description: "There was an error downloading the flashcards",
+        variant: "destructive",
+      });
+    }
   };
 
   const currentCard = flashcards[currentIndex];
