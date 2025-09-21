@@ -269,17 +269,6 @@ const extractTextForNote = async (note: Note) => {
                   />
                 </div>
               )}
-
-              {transformed && !['enhanced', 'flashcards', 'audio'].includes(transformed.style) && (
-                <div className="mt-4">
-                  <h5 className="font-medium text-sm text-foreground mb-2">
-                    Adapted for {transformed.style.charAt(0).toUpperCase() + transformed.style.slice(1)} Learning
-                  </h5>
-                  <div className="bg-primary/5 border border-primary/20 p-3 rounded text-sm text-foreground whitespace-pre-wrap">
-                    {transformed.content}
-                  </div>
-                </div>
-              )}
               <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
                 <Button
                   variant="outline"
