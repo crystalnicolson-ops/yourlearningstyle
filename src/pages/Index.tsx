@@ -59,6 +59,16 @@ const Index = () => {
             />
           </div>
           
+          {/* Learning Style Instructions - show after notes are uploaded */}
+          {hasNotes && (
+            <div className="text-center p-6 bg-white/10 rounded-lg border border-white/20">
+              <h3 className="text-lg font-semibold text-white mb-2">Next Step: Pick Your Learning Style</h3>
+              <p className="text-white/80 text-sm">
+                Choose a learning style from the options above to transform your notes
+              </p>
+            </div>
+          )}
+          
           {/* Upload section - show at bottom when notes exist */}
           {hasNotes && <NotesUpload onNoteAdded={handleNoteAdded} />}
         </div>
