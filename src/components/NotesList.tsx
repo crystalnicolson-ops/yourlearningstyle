@@ -227,25 +227,6 @@ const extractTextForNote = async (note: Note) => {
             <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
               <div className="flex items-start justify-between flex-wrap">
                 <div className="flex-1">
-                  {hasContent && (
-                    <div className="flex justify-start mb-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleExpanded(note.id)}
-                        className="p-2 h-auto min-h-[44px] min-w-[44px]"
-                      >
-                        {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {note.content && !isExpanded && (
-                    <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-                      {note.content}
-                    </p>
-                  )}
-                  
                   {note.file_name && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <FileText className="h-4 w-4" />
@@ -277,17 +258,7 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               </div>
 
-              {/* Expanded content section */}
-              {isExpanded && hasContent && (
-                <div className="mt-4 space-y-4 border-t border-border pt-4">
-                  <div>
-                    <h5 className="font-medium text-sm text-foreground mb-2">Original Content</h5>
-                    <div className="bg-muted/50 p-3 rounded text-sm text-muted-foreground whitespace-pre-wrap">
-                      {note.content}
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Expanded content section - removed */}
 
               {/* Simple Transform Options */}
               {hasContent && (
