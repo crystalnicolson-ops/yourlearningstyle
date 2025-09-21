@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Download, Volume2 } from "lucide-react";
+import { Play, Pause, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -118,23 +118,6 @@ const VoicePlayer = ({ audioBase64, title, text, message, useBrowserSpeech }: Vo
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const downloadAudio = () => {
-    if (!audioBase64) return;
-
-    const audioBlob = new Blob(
-      [Uint8Array.from(atob(audioBase64), c => c.charCodeAt(0))],
-      { type: 'audio/mp3' }
-    );
-    const url = URL.createObjectURL(audioBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title || 'voice-notes'}.mp3`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   if (!audioBase64 && !useBrowserSpeech) {
     return (
       <Card className="p-8 text-center space-y-4">
@@ -218,18 +201,6 @@ const VoicePlayer = ({ audioBase64, title, text, message, useBrowserSpeech }: Vo
             <Badge variant="outline" className="text-xs">
               Free Browser Voice
             </Badge>
-          )}
-
-          {!useBrowserSpeech && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={downloadAudio}
-              className="flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Download
-            </Button>
           )}
         </div>
 

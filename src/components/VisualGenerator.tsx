@@ -116,11 +116,8 @@ export const VisualGenerator: React.FC<VisualGeneratorProps> = ({
 
       {generatedVisual && (
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader>
             <CardTitle className="text-lg">{generatedVisual.title}</CardTitle>
-            <Button variant="outline" size="sm" onClick={downloadVisual}>
-              <Download className="h-4 w-4" />
-            </Button>
           </CardHeader>
           <CardContent>
             <div className="relative w-full h-96 bg-muted/20 rounded-lg overflow-hidden border">

@@ -223,7 +223,7 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
 
       {/* Universal Download Button */}
       {(flashcards.length > 0) && (
-        <div className="flex justify-center">
+        <div className="flex justify-end mb-4">
           <SmartDownloadButton
             flashcards={selectedStyle === 'visual' ? flashcards : undefined}
           />

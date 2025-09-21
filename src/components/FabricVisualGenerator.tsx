@@ -509,9 +509,6 @@ export const FabricVisualGenerator: React.FC<FabricVisualGeneratorProps> = ({
             
             {generatedVisual && (
               <>
-                <Button variant="outline" onClick={downloadVisual}>
-                  <Download className="h-4 w-4" />
-                </Button>
                 <Button variant="outline" onClick={clearCanvas}>
                   <RotateCcw className="h-4 w-4" />
                 </Button>

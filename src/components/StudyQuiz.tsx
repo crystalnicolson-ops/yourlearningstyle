@@ -119,11 +119,6 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
             <p className="text-white/80">{questions.length} questions total</p>
           </div>
           <div className="flex gap-2">
-            <SmartDownloadButton
-              quiz={questions}
-              variant="outline" 
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-            />
             <Button 
               onClick={generateMoreQuestions}
               disabled={isGeneratingMore}
@@ -138,6 +133,11 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
                 </>
               )}
             </Button>
+            <SmartDownloadButton
+              quiz={questions}
+              variant="outline" 
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            />
           </div>
         </div>
 
@@ -216,11 +216,6 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
           <p className="text-white/80">Test your knowledge • {questions.length} questions</p>
         </div>
         <div className="flex gap-2">
-          <SmartDownloadButton
-            quiz={questions}
-            variant="outline"
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-          />
           <Button 
             onClick={generateMoreQuestions}
             disabled={isGeneratingMore}
@@ -236,6 +231,11 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
               </>
             )}
           </Button>
+          <SmartDownloadButton
+            quiz={questions}
+            variant="outline"
+            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+          />
         </div>
       </div>
 

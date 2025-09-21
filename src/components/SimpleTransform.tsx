@@ -450,29 +450,27 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
 
   return (
     <div className="space-y-4">
-      {/* Smart Download Button - Single button that downloads appropriate content */}
-      <div className="flex justify-center">
-        <SmartDownloadButton
-          flashcards={flashcards}
-          quiz={quizQuestions}
-          enhancedNotes={enhancedNotes}
-        />
-      </div>
-
       {/* Active Mode Header */}
       {activeMode && (
         <Card className="p-4 bg-white/95 backdrop-blur-sm border-2 border-primary/20">
-          <div className="flex items-center gap-3">
-            {activeMode === 'enhanced' && <Sparkles className="h-5 w-5 text-primary" />}
-            {activeMode === 'flashcards' && <FileText className="h-5 w-5 text-secondary" />}
-            {activeMode === 'audio' && <Volume2 className="h-5 w-5 text-accent" />}
-            {activeMode === 'quiz' && <Brain className="h-5 w-5 text-quiz" />}
-            <span className="font-semibold text-foreground">
-              {activeMode === 'enhanced' && 'Enhanced Notes Mode'}
-              {activeMode === 'flashcards' && 'Flashcards Mode'}
-              {activeMode === 'audio' && 'Audio Mode'}
-              {activeMode === 'quiz' && `Quiz Mode - ${quizQuestions.length} Questions`}
-            </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {activeMode === 'enhanced' && <Sparkles className="h-5 w-5 text-primary" />}
+              {activeMode === 'flashcards' && <FileText className="h-5 w-5 text-secondary" />}
+              {activeMode === 'audio' && <Volume2 className="h-5 w-5 text-accent" />}
+              {activeMode === 'quiz' && <Brain className="h-5 w-5 text-quiz" />}
+              <span className="font-semibold text-foreground">
+                {activeMode === 'enhanced' && 'Enhanced Notes Mode'}
+                {activeMode === 'flashcards' && 'Flashcards Mode'}
+                {activeMode === 'audio' && 'Audio Mode'}
+                {activeMode === 'quiz' && `Quiz Mode - ${quizQuestions.length} Questions`}
+              </span>
+            </div>
+            <SmartDownloadButton
+              flashcards={flashcards}
+              quiz={quizQuestions}
+              enhancedNotes={enhancedNotes}
+            />
           </div>
         </Card>
       )}

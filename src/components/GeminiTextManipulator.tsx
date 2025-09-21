@@ -191,11 +191,8 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
 
       {result && (
         <Card className="p-6">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4">
             <h3 className="text-xl font-semibold">Transformed Content</h3>
-            <Button variant="outline" size="sm" onClick={downloadResult}>
-              <Download className="h-4 w-4" />
-            </Button>
           </div>
           <div className="prose max-w-none">
             <div className="whitespace-pre-wrap bg-muted/30 p-4 rounded-lg">{result}</div>
