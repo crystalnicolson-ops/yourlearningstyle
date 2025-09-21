@@ -211,14 +211,7 @@ const extractTextForNote = async (note: Note) => {
   }
 
   if (notes.length === 0) {
-    return (
-      <Card className="p-6 bg-gradient-card shadow-card border-0">
-        <div className="text-center text-muted-foreground">
-          <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>No notes uploaded yet. Upload your first note above!</p>
-        </div>
-      </Card>
-    );
+    return null;
   }
 
   return (
