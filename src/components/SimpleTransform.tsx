@@ -565,42 +565,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
         />
       ) : (
         <>
-          {enhancedNotes && (
-            <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 shadow-lg">
-              <div className="mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Sparkles className="h-5 w-5 text-primary" />
-                    </div>
-                    <h4 className="text-xl font-bold text-foreground">Enhanced Notes</h4>
-                  </div>
-                <div className="h-1 w-20 bg-gradient-to-r from-primary to-primary/50 rounded-full"></div>
-              </div>
-              <div className="prose prose-lg max-w-none dark:prose-invert">
-                <div className="bg-white/80 dark:bg-black/30 backdrop-blur-sm p-8 rounded-xl border border-white/30 shadow-inner">
-                  <div 
-                    className="enhanced-notes-content text-foreground leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
-                      __html: enhancedNotes
-                        .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-primary border-b-2 border-primary/20 pb-2">$1</h1>')
-                        .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 text-foreground mt-6">$1</h2>')
-                        .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2 text-foreground mt-4">$1</h3>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-primary">$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em class="italic text-foreground/90">$1</em>')
-                        .replace(/^• (.*$)/gm, '<li class="mb-1">$1</li>')
-                        .replace(/^- (.*$)/gm, '<li class="mb-1">$1</li>')
-                        .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ul class="list-disc list-inside mb-4 space-y-1">$&</ul>')
-                        .replace(/^\d+\. (.*$)/gm, '<li class="mb-1">$1</li>')
-                        .replace(/(\n<li.*?>.*?<\/li>)+/gs, '<ol class="list-decimal list-inside mb-4 space-y-1">$&</ol>')
-                        .replace(/\n\n/g, '</p><p class="mb-4">')
-                        .replace(/^(?!<[h|u|o|l])(.+)$/gm, '<p class="mb-4">$1</p>')
-                        .replace(/<p class="mb-4"><\/p>/g, '')
-                    }}
-                  />
-                </div>
-              </div>
-            </Card>
-          )}
+          {/* Enhanced notes display removed to avoid showing full content */}
 
           {flashcards.length > 0 && (
             <Flashcards 

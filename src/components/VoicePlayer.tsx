@@ -131,12 +131,6 @@ const VoicePlayer = ({ audioBase64, title, text, message, useBrowserSpeech }: Vo
             </Badge>
           )}
         </div>
-        {text && (
-          <div className="p-4 bg-background/50 rounded-lg border">
-            <p className="text-sm text-muted-foreground mb-2">Text Content:</p>
-            <p className="text-sm leading-relaxed">{text}</p>
-          </div>
-        )}
       </Card>
     );
   }
@@ -204,13 +198,6 @@ const VoicePlayer = ({ audioBase64, title, text, message, useBrowserSpeech }: Vo
           )}
         </div>
 
-        {/* Text Preview */}
-        {text && (
-          <div className="mt-4 p-4 bg-background/50 rounded-lg border">
-            <p className="text-sm text-muted-foreground mb-2">Original Text:</p>
-            <p className="text-sm leading-relaxed line-clamp-3">{text}</p>
-          </div>
-        )}
       </div>
     </Card>
   );

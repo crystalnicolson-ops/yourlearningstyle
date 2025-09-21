@@ -159,11 +159,8 @@ const isExtractableType = (note: Note) => {
   const type = (note.file_type || '').toLowerCase();
   return (
     name.endsWith('.docx') ||
-    name.endsWith('.txt') ||
-    name.endsWith('.md') ||
     name.endsWith('.json') ||
     type.includes('officedocument.wordprocessingml.document') ||
-    type.startsWith('text/') ||
     type.includes('json')
   );
 };
