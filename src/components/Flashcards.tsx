@@ -58,23 +58,24 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
     }
     
     try {
-      // Create Quizlet-compatible tab-separated format
+      // Create Quizlet-compatible tab-separated format with CRLF and UTF-8 BOM
       const tsvData = flashcards.map(card => {
         // Clean the text to remove any problematic characters
         const cleanQuestion = card.question.replace(/[\r\n\t]+/g, ' ').trim();
         const cleanAnswer = card.answer.replace(/[\r\n\t]+/g, ' ').trim();
         return `${cleanQuestion}\t${cleanAnswer}`;
-      }).join('\n');
+      }).join('\r\n');
       
       console.log('🃏 QUIZLET TSV CONTENT:', tsvData.substring(0, 200) + '...');
       
-      const blob = new Blob([tsvData], { type: 'text/plain;charset=utf-8;' });
+      const BOM = '\uFEFF';
+      const blob = new Blob([BOM, tsvData], { type: 'text/tab-separated-values;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `quizlet-flashcards-${Date.now()}.txt`;
+      a.download = `quizlet-flashcards-${Date.now()}.tsv`;
       document.body.appendChild(a);
-      console.log('🃏 TRIGGERING QUIZLET TXT DOWNLOAD');
+      console.log('🃏 TRIGGERING QUIZLET TSV DOWNLOAD');
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
@@ -82,7 +83,7 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
       console.log('✅ QUIZLET FLASHCARD DOWNLOAD COMPLETED');
       toast({
         title: "✅ Flashcards downloaded for Quizlet!",
-        description: `Downloaded ${flashcards.length} flashcards as .txt file. Import this directly into Quizlet.`,
+        description: `Downloaded ${flashcards.length} flashcards as .tsv file. Import this directly into Quizlet.`,
       });
     } catch (error) {
       console.error('❌ Error downloading flashcards:', error);

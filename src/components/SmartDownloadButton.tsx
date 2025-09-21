@@ -157,19 +157,20 @@ const SmartDownloadButton = ({
         });
         
       } else if (flashcards && flashcards.length > 0) {
-        // Download as Quizlet-compatible tab-separated format
+        // Download as Quizlet-compatible tab-separated format with CRLF and UTF-8 BOM
         const tsvData = flashcards.map(card => {
           // Clean the text to remove any problematic characters
           const cleanQuestion = card.question.replace(/[\r\n\t]+/g, ' ').trim();
           const cleanAnswer = card.answer.replace(/[\r\n\t]+/g, ' ').trim();
           return `${cleanQuestion}\t${cleanAnswer}`;
-        }).join('\n');
+        }).join('\r\n');
         
-        const blob = new Blob([tsvData], { type: 'text/plain;charset=utf-8;' });
+        const BOM = '\uFEFF';
+        const blob = new Blob([BOM, tsvData], { type: 'text/tab-separated-values;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `quizlet-flashcards-${Date.now()}.txt`;
+        a.download = `quizlet-flashcards-${Date.now()}.tsv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -177,7 +178,7 @@ const SmartDownloadButton = ({
         
         toast({
           title: "✅ Flashcards downloaded for Quizlet!",
-          description: `Downloaded ${flashcards.length} flashcards as .txt file. Import this directly into Quizlet.`,
+          description: `Downloaded ${flashcards.length} flashcards as .tsv file. Import this directly into Quizlet.`,
         });
         
       } else if (quiz && quiz.length > 0) {
