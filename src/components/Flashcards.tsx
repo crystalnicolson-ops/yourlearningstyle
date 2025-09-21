@@ -45,10 +45,15 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
   };
 
   const downloadFlashcards = () => {
-    console.log('Download flashcards clicked', { flashcardsLength: flashcards?.length });
+    console.log('🃏 FLASHCARD DOWNLOAD CLICKED! 🃏', { flashcardsLength: flashcards?.length });
     
     if (!flashcards || flashcards.length === 0) {
-      console.log('No flashcards to download');
+      console.log('❌ No flashcards to download');
+      toast({
+        title: "No flashcards to download",
+        description: "Generate flashcards first",
+        variant: "destructive",
+      });
       return;
     }
     
@@ -60,7 +65,7 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
       ).join('\n');
       
       const csvContent = csvHeader + csvData;
-      console.log('CSV content created', csvContent.substring(0, 100) + '...');
+      console.log('🃏 CSV FLASHCARD CONTENT:', csvContent.substring(0, 200) + '...');
       
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -68,19 +73,20 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
       a.href = url;
       a.download = `flashcards-${Date.now()}.csv`;
       document.body.appendChild(a);
-      console.log('About to click download link');
+      console.log('🃏 TRIGGERING FLASHCARD CSV DOWNLOAD');
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      console.log('Download should have started');
+      console.log('✅ FLASHCARD DOWNLOAD COMPLETED');
       toast({
-        title: "Flashcards downloaded as CSV!",
+        title: "✅ Flashcards downloaded as CSV!",
+        description: `Downloaded ${flashcards.length} flashcards`,
       });
     } catch (error) {
-      console.error('Error downloading flashcards:', error);
+      console.error('❌ Error downloading flashcards:', error);
       toast({
-        title: "Download failed",
+        title: "Flashcard download failed",
         description: "There was an error downloading the flashcards",
         variant: "destructive",
       });
