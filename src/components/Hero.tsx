@@ -39,7 +39,7 @@ const Hero = () => {
         </header>
 
         {/* CTA Buttons */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a href="https://www.personalitytraits.io" target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="default" className="min-w-48">
@@ -53,6 +53,29 @@ const Hero = () => {
                 Upload Documents
               </Button>
             </Link>
+          </div>
+        </div>
+
+        {/* Learning Style Options */}
+        <div className="flex justify-center gap-4 mb-16 max-w-lg mx-auto">
+          <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Eye className="h-4 w-4 text-white" />
+            </div>
+            <h3 className="text-sm font-medium text-white mb-1">Visual Learning</h3>
+            <p className="text-xs text-white/70">
+              Flashcards & diagrams
+            </p>
+          </div>
+
+          <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
+              <Headphones className="h-4 w-4 text-white" />
+            </div>
+            <h3 className="text-sm font-medium text-white mb-1">Auditory Learning</h3>
+            <p className="text-xs text-white/70">
+              Voice recordings
+            </p>
           </div>
         </div>
 
