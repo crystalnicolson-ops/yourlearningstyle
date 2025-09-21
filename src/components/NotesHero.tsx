@@ -15,9 +15,32 @@ const NotesHero = () => {
               Learning<span className="text-white/80">Style</span>
             </h1>
           </div>
-          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4">
+          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed px-4 mb-8">
             Upload your documents to transform them into personalized learning experiences
           </p>
+
+          {/* Learning Styles Information */}
+          <div className="max-w-4xl mx-auto px-4 mb-8">
+            <h3 className="text-lg font-semibold text-white/90 mb-4 text-center">Available Learning Styles:</h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+              <div className="text-center">
+                <div className="text-white font-medium mb-1">Visual Learning</div>
+                <div className="text-white/70">Interactive flashcards and diagrams</div>
+              </div>
+              <div className="text-center">
+                <div className="text-white font-medium mb-1">Auditory Learning</div>
+                <div className="text-white/70">Voice recordings and audio content</div>
+              </div>
+              <div className="text-center">
+                <div className="text-white font-medium mb-1">Reading/Writing</div>
+                <div className="text-white/70">Enhanced notes and summaries</div>
+              </div>
+              <div className="text-center">
+                <div className="text-white font-medium mb-1">Kinesthetic</div>
+                <div className="text-white/70">Interactive quizzes and activities</div>
+              </div>
+            </div>
+          </div>
         </header>
 
       </div>
