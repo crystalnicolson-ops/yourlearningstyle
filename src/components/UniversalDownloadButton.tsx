@@ -43,8 +43,8 @@ const UniversalDownloadButton = ({
     try {
       // Priority: Flashcards > Quiz > Text Content
       if (flashcards && flashcards.length > 0) {
-        // Download as CSV
-        const csvHeader = "Question,Answer\n";
+        // Download as Quizlet-compatible CSV
+        const csvHeader = "Front,Back\n";
         const csvData = flashcards.map(card => 
           `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
         ).join('\n');
@@ -54,15 +54,15 @@ const UniversalDownloadButton = ({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = filename || `flashcards-${Date.now()}.csv`;
+        a.download = filename || `quizlet-flashcards-${Date.now()}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
         toast({
-          title: "✅ Flashcards downloaded!",
-          description: `Downloaded ${flashcards.length} flashcards as CSV`,
+          title: "✅ Flashcards downloaded for Quizlet!",
+          description: `Downloaded ${flashcards.length} flashcards in Quizlet format`,
         });
         
       } else if (quiz && quiz.length > 0) {

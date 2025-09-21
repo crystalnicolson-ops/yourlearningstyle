@@ -58,30 +58,30 @@ const Flashcards = ({ flashcards, title, onGenerateMore, isGenerating }: Flashca
     }
     
     try {
-      // Create CSV format for flashcards
-      const csvHeader = "Question,Answer\n";
+      // Create Quizlet-compatible CSV format
+      const csvHeader = "Front,Back\n";
       const csvData = flashcards.map(card => 
         `"${card.question.replace(/"/g, '""')}","${card.answer.replace(/"/g, '""')}"`
       ).join('\n');
       
       const csvContent = csvHeader + csvData;
-      console.log('🃏 CSV FLASHCARD CONTENT:', csvContent.substring(0, 200) + '...');
+      console.log('🃏 QUIZLET CSV CONTENT:', csvContent.substring(0, 200) + '...');
       
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `flashcards-${Date.now()}.csv`;
+      a.download = `quizlet-flashcards-${Date.now()}.csv`;
       document.body.appendChild(a);
-      console.log('🃏 TRIGGERING FLASHCARD CSV DOWNLOAD');
+      console.log('🃏 TRIGGERING QUIZLET CSV DOWNLOAD');
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      console.log('✅ FLASHCARD DOWNLOAD COMPLETED');
+      console.log('✅ QUIZLET FLASHCARD DOWNLOAD COMPLETED');
       toast({
-        title: "✅ Flashcards downloaded as CSV!",
-        description: `Downloaded ${flashcards.length} flashcards`,
+        title: "✅ Flashcards downloaded for Quizlet!",
+        description: `Downloaded ${flashcards.length} flashcards in Quizlet format`,
       });
     } catch (error) {
       console.error('❌ Error downloading flashcards:', error);
