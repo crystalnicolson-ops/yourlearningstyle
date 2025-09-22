@@ -83,7 +83,7 @@ const Quiz = () => {
         </div>
 
         {/* Question */}
-        <Card className="mx-3 sm:mx-auto p-3 sm:p-8 bg-white/95 backdrop-blur-sm max-w-3xl">
+        <Card className="mx-3 sm:mx-auto p-3 sm:p-8 bg-white/95 backdrop-blur-sm max-w-full sm:max-w-3xl">
           <h2 className="text-base sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-8 text-center leading-tight break-words">
             {question.question}
           </h2>
@@ -111,7 +111,7 @@ const Quiz = () => {
         </Card>
 
         {/* Sticky bottom counter */}
-        <div className="fixed inset-x-0 bottom-0 z-40">
+        <div className="fixed inset-x-0 bottom-0 z-50 pointer-events-none">
           <div className="mx-auto w-full max-w-4xl px-3 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
             <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-sm sm:text-base py-2 text-center">
               Completed {Object.keys(answers).length} of {quizQuestions.length}
