@@ -220,7 +220,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
   return (
     <div className="space-y-6 relative">
       {/* Mobile spacer for fixed progress bar */}
-      <div className="h-10 sm:hidden -mx-3" />
+      <div className="sm:hidden h-[calc(env(safe-area-inset-top)+2.25rem)]" />
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10 text-xs sm:text-sm">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -256,7 +256,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
       {/* Progress: fixed on mobile, sticky on desktop */}
       {/* Mobile fixed top bar */}
-      <div className="fixed top-0 inset-x-0 z-[60] sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
+      <div className="fixed top-0 inset-x-0 z-[70] sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10 pt-[calc(env(safe-area-inset-top)+0.25rem)]">
         <div className="mx-auto w-full max-w-4xl">
           <div className="flex justify-between text-white/90 text-xs mb-1">
             <span>Question {currentQuestion + 1} of {questions.length}</span>
@@ -275,14 +275,17 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       </div>
 
       {/* Question */}
-      <Card className="p-4 sm:p-8 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
-        <h3 className="text-base sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
+      <Card className="p-3 sm:p-8 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
+        <div className="flex items-start justify-between mb-2 sm:mb-4">
+          <span className="inline-flex sm:hidden items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] px-2 py-1 border border-gray-200">Q {currentQuestion + 1}/{questions.length}</span>
+        </div>
+        <h3 className="text-sm sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-6 leading-snug">
           {question.question}
         </h3>
 
         <div className="space-y-2 sm:space-y-3">
           {Object.entries(question.options).map(([option, text]) => {
-            let buttonClass = "w-full p-2 sm:p-4 text-left justify-start border transition-all duration-200 text-sm sm:text-base";
+            let buttonClass = "w-full p-2 sm:p-4 text-left justify-start border transition-all duration-200 text-xs sm:text-base";
             
             if (showAnswer) {
               if (option === question.correctAnswer) {
@@ -306,8 +309,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
                 onClick={() => handleAnswer(option)}
                 disabled={showAnswer}
               >
-                <span className="font-semibold mr-3 flex-shrink-0">{option}.</span>
-                <span className="text-sm sm:text-base break-words">{text}</span>
+                <span className="font-semibold mr-2 flex-shrink-0 text-xs sm:text-sm">{option}.</span>
+                <span className="text-xs sm:text-base break-words">{text}</span>
               </Button>
             );
           })}
@@ -342,8 +345,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       {/* Sticky bottom counter */}
       <div className="fixed inset-x-0 bottom-0 z-50">
         <div className="mx-auto w-full max-w-4xl px-3 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-          <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-sm sm:text-base py-2 text-center">
-            Question {currentQuestion + 1} / {questions.length}
+          <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-xs sm:text-sm py-1.5 text-center">
+            Q {currentQuestion + 1} / {questions.length}
           </div>
         </div>
       </div>
