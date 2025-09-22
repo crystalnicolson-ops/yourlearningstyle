@@ -212,9 +212,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   };
 
   return (
-    <Card className="p-4 sm:p-6 bg-gradient-card shadow-card border-0">
-      <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-        <Upload className="h-5 w-5" />
+    <Card className="p-3 sm:p-6 bg-gradient-card shadow-card border-0">
+      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
+        <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
         Upload Your Notes
       </h3>
       
@@ -224,7 +224,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             placeholder="Note title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full h-11 text-base"
+            className="w-full h-10 sm:h-11 text-sm sm:text-base"
           />
         </div>
         
@@ -240,9 +240,9 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             />
             <label
               htmlFor="file-upload"
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-base font-medium border w-full sm:w-auto h-11"
+              className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors cursor-pointer text-sm sm:text-base font-medium border w-full sm:w-auto h-10 sm:h-11"
             >
-              <Upload className="w-5 h-5" />
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
               Choose File
             </label>
           </div>
@@ -251,7 +251,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             <Button 
               type="submit" 
               disabled={isUploading}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 text-base h-11 flex-1 sm:flex-none"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-2 text-sm sm:text-base h-10 sm:h-11 flex-1 sm:flex-none"
             >
               {isUploading ? "Uploading..." : "Upload"}
             </Button>
@@ -267,7 +267,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                 const fileInput = document.getElementById('file-upload') as HTMLInputElement;
                 if (fileInput) fileInput.value = '';
               }}
-              className="text-muted-foreground hover:text-foreground h-11 w-11 p-0 sm:ml-2"
+              className="text-muted-foreground hover:text-foreground h-10 w-10 p-0 sm:ml-2"
             >
               <X className="h-5 w-5" />
             </Button>
@@ -275,14 +275,14 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         </div>
         
         {file && (
-          <div className="flex items-center gap-2 text-sm text-foreground bg-primary/10 p-3 rounded-lg">
+          <div className="flex items-center gap-2 text-xs text-foreground bg-primary/10 p-2 rounded-lg">
             <FileText className="h-4 w-4 text-primary" />
-            <span className="font-medium">{file.name}</span>
+            <span className="font-medium truncate">{file.name}</span>
             <span className="text-muted-foreground">({Math.round(file.size / 1024)}KB)</span>
           </div>
         )}
         
-        <p className="text-xs text-muted-foreground">
+        <p className="text-[11px] text-muted-foreground">
           PDF, DOCX, PPTX files supported • Upload your documents to extract and transform content
         </p>
       </form>

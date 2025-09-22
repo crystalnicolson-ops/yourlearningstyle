@@ -218,7 +218,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
   const selectedAnswer = selectedAnswers[currentQuestion];
 
   return (
-    <div className="space-y-6 relative">
+    <div className="space-y-4 sm:space-y-6 relative">
       {/* Mobile spacer for fixed progress bar */}
       <div className="sm:hidden h-[calc(env(safe-area-inset-top)+1.75rem)]" />
       <div className="flex items-center justify-between mb-4 sm:mb-6">
