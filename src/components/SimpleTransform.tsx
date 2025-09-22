@@ -166,7 +166,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     setFlashcards([]);
     setAudioBase64('');
 
-    const requestedCount = 20;
+    const requestedCount = 30;
 
     try {
       // First request

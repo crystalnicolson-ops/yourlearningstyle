@@ -220,14 +220,14 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
   return (
     <div className="space-y-6 relative">
       {/* Mobile spacer for fixed progress bar */}
-      <div className="sm:hidden h-[calc(env(safe-area-inset-top)+2.25rem)]" />
+      <div className="sm:hidden h-[calc(env(safe-area-inset-top)+1.75rem)]" />
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10 text-xs sm:text-sm">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
         <div className="text-center">
-          <h2 className="text-lg sm:text-2xl font-bold text-white">Study Quiz</h2>
+          <h2 className="text-base sm:text-2xl font-bold text-white">Study Quiz</h2>
           <p className="text-white/80 text-xs sm:text-sm">Test your knowledge • {questions.length} questions</p>
         </div>
         <div className="flex gap-2">
@@ -256,7 +256,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
       {/* Progress: fixed on mobile, sticky on desktop */}
       {/* Mobile fixed top bar */}
-      <div className="fixed top-0 inset-x-0 z-[70] sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10 pt-[calc(env(safe-area-inset-top)+0.25rem)]">
+      <div className="fixed top-0 inset-x-0 z-[70] sm:hidden bg-gradient-primary/95 backdrop-blur px-2 py-1 border-b border-white/10 pt-[calc(env(safe-area-inset-top)+0.25rem)]">
         <div className="mx-auto w-full max-w-4xl">
           <div className="flex justify-between text-white/90 text-xs mb-1">
             <span>Question {currentQuestion + 1} of {questions.length}</span>
@@ -275,17 +275,17 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       </div>
 
       {/* Question */}
-      <Card className="p-3 sm:p-8 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
+      <Card className="p-2 sm:p-6 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
         <div className="flex items-start justify-between mb-2 sm:mb-4">
-          <span className="inline-flex sm:hidden items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] px-2 py-1 border border-gray-200">Q {currentQuestion + 1}/{questions.length}</span>
+          <span className="inline-flex sm:hidden items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] px-2 py-1 border border-gray-200">Question {currentQuestion + 1} of {questions.length}</span>
         </div>
-        <h3 className="text-sm sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-6 leading-snug">
+        <h3 className="text-sm sm:text-2xl font-semibold text-gray-800 mb-2.5 sm:mb-6 leading-snug">
           {question.question}
         </h3>
 
-        <div className="space-y-2 sm:space-y-3">
+        <div className="space-y-1.5 sm:space-y-3">
           {Object.entries(question.options).map(([option, text]) => {
-            let buttonClass = "w-full p-2 sm:p-4 text-left justify-start border transition-all duration-200 text-xs sm:text-base";
+            let buttonClass = "w-full p-1.5 sm:p-4 text-left justify-start border transition-all duration-200 text-xs sm:text-sm";
             
             if (showAnswer) {
               if (option === question.correctAnswer) {
