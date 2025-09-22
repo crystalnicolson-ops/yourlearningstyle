@@ -61,17 +61,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    let mounted = true;
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        if (!mounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
         
         // Check subscription when auth state changes
         if (session) {
-          // Delay to ensure session is fully established
-          setTimeout(() => checkSubscription(), 1000);
+          setTimeout(() => {
+            if (mounted) checkSubscription();
+          }, 500);
         } else {
           setSubscribed(false);
         }
@@ -80,16 +85,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
       
       if (session) {
-        setTimeout(() => checkSubscription(), 1000);
+        setTimeout(() => {
+          if (mounted) checkSubscription();
+        }, 500);
       }
+    }).catch(() => {
+      if (mounted) setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

@@ -27,7 +27,10 @@ const Index = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Button
             variant="ghost"
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setRefreshTrigger(0);
+              setHasNotes(false);
+            }}
             className="text-white hover:bg-white/20 flex items-center gap-2 h-11 px-4 text-base sm:text-sm"
           >
             <Home className="h-5 w-5 sm:h-4 sm:w-4" />
