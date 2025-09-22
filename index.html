@@ -32,7 +32,10 @@
       
       /* Capacitor WebView specific fixes */
       body {
-        padding-top: env(safe-area-inset-top) !important;
+        /* Safe area padding for iOS when status bar overlays WebView */
+        padding-top: constant(safe-area-inset-top) !important; /* iOS 11-12 */
+        padding-top: env(safe-area-inset-top) !important;      /* iOS 13+ */
+        padding-bottom: constant(safe-area-inset-bottom) !important;
         padding-bottom: env(safe-area-inset-bottom) !important;
         background-color: hsl(208, 100%, 97%) !important;
       }

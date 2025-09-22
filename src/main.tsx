@@ -9,12 +9,15 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 
 (async () => {
   try {
-    if (Capacitor.getPlatform() !== "web") {
-      // Do not draw under the status bar
+    const platform = Capacitor.getPlatform();
+    if (platform === "ios") {
+      // On iOS, let content extend under the status bar and use safe-area padding
+      await StatusBar.setOverlaysWebView({ overlay: true });
+      await StatusBar.setStyle({ style: Style.Dark });
+    } else if (platform === "android") {
+      // On Android, use a solid status bar background matching the app
       await StatusBar.setOverlaysWebView({ overlay: false });
-      // Match our app background (hsl(208, 100%, 97%) ≈ #F0F8FF)
       await StatusBar.setBackgroundColor({ color: "#F0F8FF" });
-      // Choose text/icon color for contrast
       await StatusBar.setStyle({ style: Style.Dark });
     }
   } catch (err) {
