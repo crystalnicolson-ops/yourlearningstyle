@@ -147,9 +147,9 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-primary">
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
           <Link to="/">
             <Button variant="ghost" className="text-white hover:bg-white/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -157,13 +157,13 @@ const Quiz = () => {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-white">VARK Learning Style Quiz</h1>
-            <p className="text-white/80">Discover your preferred learning style</p>
+            <h1 className="text-xl sm:text-3xl font-bold text-white">VARK Learning Style Quiz</h1>
+            <p className="text-white/80 text-sm sm:text-base">Discover your preferred learning style</p>
           </div>
         </div>
 
         {/* Progress */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <div className="flex justify-between text-white/80 text-sm mb-2">
             <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
             <span>{Math.round(progress)}% Complete</span>
@@ -172,28 +172,28 @@ const Quiz = () => {
         </div>
 
         {/* Question */}
-        <Card className="p-8 bg-white/95 backdrop-blur-sm max-w-3xl mx-auto">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-8 text-center">
+        <Card className="p-4 sm:p-8 bg-white/95 backdrop-blur-sm max-w-3xl mx-auto">
+          <h2 className="text-lg sm:text-2xl font-semibold text-gray-800 mb-6 sm:mb-8 text-center">
             {question.question}
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {question.options.map((option, index) => (
               <Button
                 key={index}
                 variant="outline"
-                className="w-full p-6 h-auto text-left justify-start hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                className="w-full p-4 sm:p-6 h-auto text-left justify-start hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
                 onClick={() => handleAnswer(option.style)}
               >
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-base">{option.text}</span>
-                  <ChevronRight className="h-5 w-5 opacity-50" />
+                  <span className="text-sm sm:text-base">{option.text}</span>
+                  <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 opacity-50" />
                 </div>
               </Button>
             ))}
           </div>
 
-          <div className="mt-8 text-center text-sm text-gray-600">
+          <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-600">
             Choose the option that best describes your preference
           </div>
         </Card>
