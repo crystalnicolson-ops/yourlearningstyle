@@ -32,6 +32,13 @@ const Hero = () => {
           </div>
         </header>
 
+        {/* Get Started Instructions */}
+        <div className="text-center mb-12">
+          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+            To get started, upload your notes below and transform them into personalized learning materials
+          </p>
+        </div>
+
         {/* CTA Buttons */}
         <div className="text-center mb-12">
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
