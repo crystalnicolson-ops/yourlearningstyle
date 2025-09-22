@@ -227,29 +227,31 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
           Back
         </Button>
         <div className="text-center">
-          <h2 className="text-base sm:text-2xl font-bold text-white">Study Quiz</h2>
-          <p className="text-white/80 text-xs sm:text-sm">Test your knowledge • {questions.length} questions</p>
+          <h2 className="text-sm sm:text-2xl font-bold text-white">Study Quiz</h2>
+          <p className="text-white/80 text-[11px] sm:text-sm">Test your knowledge • {questions.length} questions</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <Button 
             onClick={generateMoreQuestions}
             disabled={isGeneratingMore}
             variant="outline"
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            size="sm"
+            className="h-8 px-2 bg-white/10 text-white border-white/20 hover:bg-white/20 text-xs"
           >
             {isGeneratingMore ? (
               <>Loading...</>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-2" />
-                Add More
+                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Add More</span>
+                <span className="sm:hidden">Add</span>
               </>
             )}
           </Button>
           <SmartDownloadButton
             quiz={questions}
             variant="outline"
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            className="h-8 px-2 bg-white/10 text-white border-white/20 hover:bg-white/20 text-xs"
           />
         </div>
       </div>
@@ -266,7 +268,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         </div>
       </div>
       {/* Desktop sticky bar */}
-      <div className="hidden sm:block sticky top-0 z-40 -mx-6 mb-8 bg-gradient-primary/90 backdrop-blur-sm px-6 pt-2 pb-2 border-b border-white/10">
+      <div className="hidden sm:block sticky top-0 z-40 -mx-4 mb-4 bg-gradient-primary/90 backdrop-blur-sm px-4 pt-2 pb-2 border-b border-white/10">
         <div className="flex justify-between text-white/90 text-sm mb-2">
           <span>Question {currentQuestion + 1} of {questions.length}</span>
           <span>{Math.round(progress)}% Complete</span>
@@ -334,8 +336,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
                   </>
                 )}
               </div>
-              <Button onClick={handleNext} className="text-sm sm:text-base">
-                {currentQuestion < questions.length - 1 ? "Next Question" : "View Results"}
+              <Button onClick={handleNext} size="sm" className="h-9 text-sm sm:text-base">
+                {currentQuestion < questions.length - 1 ? "Next" : "Results"}
               </Button>
             </div>
           </div>
