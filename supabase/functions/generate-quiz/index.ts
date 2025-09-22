@@ -12,8 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    const { content } = await req.json();
-    
+    const body = await req.json();
+    const content = body?.content;
+    let count = Number(body?.count ?? 25);
+    if (!Number.isFinite(count)) count = 25;
+    // Clamp to a reasonable range to avoid overly long responses
+    count = Math.max(5, Math.min(30, Math.round(count)));
+
     if (!content) {
       return new Response(JSON.stringify({ error: 'Content is required' }), {
         status: 400,
@@ -21,6 +26,7 @@ serve(async (req) => {
       });
     }
 
+    console.log('generate-quiz: requested count =', count);
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       return new Response(JSON.stringify({ error: 'OpenAI API key not configured' }), {
@@ -29,7 +35,11 @@ serve(async (req) => {
       });
     }
 
-    const prompt = `Based on the following study material, create exactly 5 multiple-choice questions. Each question should have 4 options (A, B, C, D) with only one correct answer. Focus on key concepts, important facts, and main ideas from the material.
+    const excludeQuestions: string[] = Array.isArray(body?.excludeQuestions) ? body.excludeQuestions : [];
+    const excludeBlock = excludeQuestions.length
+      ? `\nDo NOT include any questions that match or closely rephrase any of these existing questions:\n- ${excludeQuestions.join("\n- ")}`
+      : "";
+    const prompt = `Based on the following study material, create exactly ${count} multiple-choice questions. Each question must have 4 options (A, B, C, D) with only one correct answer. Focus on key concepts, important facts, and main ideas from the material. Keep questions and options concise.
 
 Return the response as a JSON array with this exact format:
 [
@@ -37,13 +47,14 @@ Return the response as a JSON array with this exact format:
     "question": "What is the main concept discussed?",
     "options": {
       "A": "Option 1",
-      "B": "Option 2", 
+      "B": "Option 2",
       "C": "Option 3",
       "D": "Option 4"
     },
     "correctAnswer": "B"
   }
 ]
+${excludeBlock}
 
 Study Material:
 ${content}`;
@@ -63,8 +74,8 @@ ${content}`;
           },
           { role: 'user', content: prompt }
         ],
-        temperature: 0.7,
-        max_tokens: 1500,
+        temperature: 0.6,
+        max_tokens: 2500,
       }),
     });
 

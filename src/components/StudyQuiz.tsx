@@ -70,11 +70,24 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
   };
 
   const generateMoreQuestions = async () => {
+    // Aim to add up to 10 more, capped at 30 total
+    const remaining = Math.max(0, 30 - questions.length);
+    if (remaining === 0) {
+      toast({
+        title: "Limit reached",
+        description: "You already have the maximum of 30 questions",
+      });
+      return;
+    }
+
+    const additionalCount = Math.min(10, remaining);
     setIsGeneratingMore(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-quiz', {
         body: { 
-          content: originalContent + `\n\n[Generate ${questions.length + 3} additional unique questions different from these existing ones: ${questions.map(q => q.question).join('; ')}]`
+          content: originalContent,
+          count: additionalCount,
+          excludeQuestions: questions.map(q => q.question)
         }
       });
 
@@ -239,13 +252,13 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mb-4 sm:mb-8">
-        <div className="flex justify-between text-white/80 text-xs sm:text-sm mb-2">
+      {/* Progress (sticky on mobile) */}
+      <div className="sticky top-0 z-40 -mx-3 sm:mx-0 mb-3 sm:mb-8 bg-gradient-primary/90 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-white/10">
+        <div className="flex justify-between text-white/90 text-xs sm:text-sm mb-2">
           <span>Question {currentQuestion + 1} of {questions.length}</span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-1.5" />
       </div>
 
       {/* Question */}
@@ -256,7 +269,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
         <div className="space-y-2 sm:space-y-3">
           {Object.entries(question.options).map(([option, text]) => {
-            let buttonClass = "w-full p-3 sm:p-4 text-left justify-start border-2 transition-all duration-200";
+            let buttonClass = "w-full p-2 sm:p-4 text-left justify-start border transition-all duration-200 text-sm sm:text-base";
             
             if (showAnswer) {
               if (option === question.correctAnswer) {

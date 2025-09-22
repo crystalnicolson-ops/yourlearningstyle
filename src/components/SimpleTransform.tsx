@@ -169,7 +169,8 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     try {
       const { data, error } = await supabase.functions.invoke('generate-quiz', {
         body: { 
-          content: content + "\n\n[Generate 25-30 unique multiple-choice questions (A–D) with one correct answer. Do not repeat questions.]"
+          content,
+          count: 20
         }
       });
 

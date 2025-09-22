@@ -77,13 +77,13 @@ const Quiz = () => {
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="mb-4 sm:mb-8">
-          <div className="flex justify-between text-white/80 text-xs sm:text-sm mb-2">
+        {/* Progress (sticky on mobile) */}
+        <div className="sticky top-0 z-40 -mx-3 sm:mx-0 mb-3 sm:mb-8 bg-gradient-primary/90 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-white/10">
+          <div className="flex justify-between text-white/90 text-xs sm:text-sm mb-2">
             <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-1.5" />
         </div>
 
         {/* Question */}
