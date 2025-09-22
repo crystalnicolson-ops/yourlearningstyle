@@ -6,104 +6,15 @@ import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import QuizResults from "@/components/QuizResults";
 
-interface Question {
-  id: number;
-  question: string;
-  options: {
-    text: string;
-    style: 'visual' | 'auditory' | 'reading' | 'kinesthetic';
-  }[];
-}
-
-const quizQuestions: Question[] = [
-  {
-    id: 1,
-    question: "When learning something new, I prefer to:",
-    options: [
-      { text: "See diagrams, charts, or visual demonstrations", style: 'visual' },
-      { text: "Listen to explanations or discussions", style: 'auditory' },
-      { text: "Read detailed instructions or texts", style: 'reading' },
-      { text: "Practice hands-on or try it myself", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 2,
-    question: "When remembering information, I find it easier to recall:",
-    options: [
-      { text: "Pictures, graphs, or visual layouts", style: 'visual' },
-      { text: "Conversations or things I've heard", style: 'auditory' },
-      { text: "Written notes or text I've read", style: 'reading' },
-      { text: "Things I've practiced or physically done", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 3,
-    question: "When giving directions to someone, I would:",
-    options: [
-      { text: "Draw a map or show them visually", style: 'visual' },
-      { text: "Tell them step by step verbally", style: 'auditory' },
-      { text: "Write down the directions", style: 'reading' },
-      { text: "Walk with them to show the way", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 4,
-    question: "When studying for an exam, I prefer to:",
-    options: [
-      { text: "Use flashcards, diagrams, or mind maps", style: 'visual' },
-      { text: "Discuss topics with others or record myself", style: 'auditory' },
-      { text: "Read and rewrite notes multiple times", style: 'reading' },
-      { text: "Use practice problems or real examples", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 5,
-    question: "In a classroom, I learn best when:",
-    options: [
-      { text: "The teacher uses slides, videos, or visual aids", style: 'visual' },
-      { text: "There are discussions and verbal explanations", style: 'auditory' },
-      { text: "I can take detailed written notes", style: 'reading' },
-      { text: "There are activities, labs, or hands-on work", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 6,
-    question: "When I need to concentrate, I:",
-    options: [
-      { text: "Need a clean, organized visual environment", style: 'visual' },
-      { text: "Can work with background music or sounds", style: 'auditory' },
-      { text: "Prefer quiet with written materials nearby", style: 'reading' },
-      { text: "Need to move around or use fidget tools", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 7,
-    question: "When learning a new skill, I:",
-    options: [
-      { text: "Watch demonstrations or video tutorials", style: 'visual' },
-      { text: "Listen to instructions and explanations", style: 'auditory' },
-      { text: "Read manuals or step-by-step guides", style: 'reading' },
-      { text: "Jump in and learn by doing", style: 'kinesthetic' }
-    ]
-  },
-  {
-    id: 8,
-    question: "When problem-solving, I tend to:",
-    options: [
-      { text: "Visualize the problem and draw it out", style: 'visual' },
-      { text: "Talk through it with others", style: 'auditory' },
-      { text: "Write down pros and cons", style: 'reading' },
-      { text: "Try different approaches until something works", style: 'kinesthetic' }
-    ]
-  }
-];
+import { quizQuestions, LearningStyle } from "@/data/quizQuestions";
+// quiz questions and types are imported from src/data/quizQuestions
 
 const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, 'visual' | 'auditory' | 'reading' | 'kinesthetic'>>({});
+  const [answers, setAnswers] = useState<Record<number, LearningStyle>>({});
   const [showResults, setShowResults] = useState(false);
 
-  const handleAnswer = (style: 'visual' | 'auditory' | 'reading' | 'kinesthetic') => {
+  const handleAnswer = (style: LearningStyle) => {
     setAnswers(prev => ({
       ...prev,
       [quizQuestions[currentQuestion].id]: style
@@ -146,7 +57,7 @@ const Quiz = () => {
   const question = quizQuestions[currentQuestion];
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className="min-h-screen bg-gradient-primary overflow-x-hidden">
       <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 py-3 sm:py-8">
         {/* Header */}
         <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
@@ -173,7 +84,7 @@ const Quiz = () => {
 
         {/* Question */}
         <Card className="mx-3 sm:mx-auto p-3 sm:p-8 bg-white/95 backdrop-blur-sm max-w-3xl">
-          <h2 className="text-base sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-8 text-center leading-tight">
+          <h2 className="text-base sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-8 text-center leading-tight break-words">
             {question.question}
           </h2>
 
@@ -185,8 +96,8 @@ const Quiz = () => {
                 className="w-full p-3 sm:p-6 h-auto text-left justify-start hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
                 onClick={() => handleAnswer(option.style)}
               >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs sm:text-base leading-snug pr-2">{option.text}</span>
+                <div className="flex items-center justify-between w-full min-w-0">
+                  <span className="text-xs sm:text-base leading-snug pr-2 break-words">{option.text}</span>
                   <ChevronRight className="h-3 w-3 sm:h-5 sm:w-5 opacity-50 flex-shrink-0" />
                 </div>
               </Button>
@@ -200,7 +111,7 @@ const Quiz = () => {
           {/* Bottom progress indicator */}
           <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 text-center">
             <span className="text-xs sm:text-sm font-medium text-gray-600 bg-gray-50 px-3 py-1 rounded-full">
-              {Object.keys(answers).length} of {quizQuestions.length} questions completed
+              Question {currentQuestion + 1} / {quizQuestions.length}
             </span>
           </div>
         </Card>
