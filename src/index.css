@@ -123,8 +123,15 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  body {
+  html, body {
     @apply bg-background text-foreground;
+    background: hsl(var(--background));
+    overflow-x: hidden;
+  }
+  
+  #root {
+    background: hsl(var(--background));
+    min-height: 100vh;
   }
 }
 

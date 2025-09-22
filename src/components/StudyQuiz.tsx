@@ -258,8 +258,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
       {/* Progress: fixed on mobile, sticky on desktop */}
       {/* Mobile fixed top bar */}
-      <div className="fixed top-0 inset-x-0 z-[70] sm:hidden bg-gradient-primary/95 backdrop-blur px-2 py-1 border-b border-white/10 pt-[calc(env(safe-area-inset-top)+0.25rem)]">
-        <div className="mx-auto w-full max-w-4xl">
+      <div className="fixed top-0 left-0 right-0 z-[70] sm:hidden bg-gradient-primary/95 backdrop-blur px-4 py-1 border-b border-white/10 pt-[calc(env(safe-area-inset-top)+0.25rem)]">
+        <div className="w-full max-w-4xl mx-auto">
           <div className="flex justify-between text-white/90 text-xs mb-1">
             <span>Question {currentQuestion + 1} of {questions.length}</span>
             <span>{Math.round(progress)}% Complete</span>
@@ -268,7 +268,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         </div>
       </div>
       {/* Desktop sticky bar */}
-      <div className="hidden sm:block sticky top-0 z-40 -mx-4 mb-4 bg-gradient-primary/90 backdrop-blur-sm px-4 pt-2 pb-2 border-b border-white/10">
+      <div className="hidden sm:block sticky top-0 z-40 mb-4 bg-gradient-primary/90 backdrop-blur-sm px-4 pt-2 pb-2 border-b border-white/10">
         <div className="flex justify-between text-white/90 text-sm mb-2">
           <span>Question {currentQuestion + 1} of {questions.length}</span>
           <span>{Math.round(progress)}% Complete</span>
@@ -345,9 +345,9 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       </Card>
 
       {/* Sticky bottom counter */}
-      <div className="fixed inset-x-0 bottom-0 z-50">
-        <div className="mx-auto w-full max-w-4xl px-3 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-          <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-xs sm:text-sm py-1.5 text-center">
+      <div className="fixed left-0 right-0 bottom-0 z-50">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
+          <div className="mx-2 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-xs sm:text-sm py-1.5 text-center">
             Q {currentQuestion + 1} / {questions.length}
           </div>
         </div>
