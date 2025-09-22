@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <title>Learning Style - Discover Your Perfect Learning Method</title>
     <meta name="description" content="Discover your unique learning style and unlock your full potential with personalized study strategies, techniques, and resources." />
     <meta name="author" content="Lovable" />
@@ -15,6 +15,30 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <style>
+      /* Mobile WebView background fix */
+      html, body {
+        background: hsl(208, 100%, 97%) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        overflow-x: hidden !important;
+      }
+      
+      /* Capacitor WebView specific fixes */
+      body {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+        background-color: hsl(208, 100%, 97%) !important;
+      }
+      
+      #root {
+        background: hsl(208, 100%, 97%) !important;
+        min-height: 100vh !important;
+        width: 100% !important;
+      }
+    </style>
   </head>
 
   <body>
