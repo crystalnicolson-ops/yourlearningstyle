@@ -58,7 +58,7 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-primary overflow-x-hidden">
-      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 py-3 sm:py-8">
+      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 pt-3 pb-24 sm:pt-8 sm:pb-8">
         {/* Header */}
         <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
           <Link to="/">
@@ -108,13 +108,16 @@ const Quiz = () => {
             Choose the option that best describes your preference
           </div>
 
-          {/* Bottom progress indicator */}
-          <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 text-center">
-            <span className="text-xs sm:text-sm font-medium text-gray-600 bg-gray-50 px-3 py-1 rounded-full">
-              Question {currentQuestion + 1} / {quizQuestions.length}
-            </span>
-          </div>
         </Card>
+
+        {/* Sticky bottom counter */}
+        <div className="fixed inset-x-0 bottom-0 z-40">
+          <div className="mx-auto w-full max-w-4xl px-3 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
+            <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-sm sm:text-base py-2 text-center">
+              Completed {Object.keys(answers).length} of {quizQuestions.length}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
