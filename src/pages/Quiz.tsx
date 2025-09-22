@@ -196,6 +196,13 @@ const Quiz = () => {
           <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-gray-600">
             Choose the option that best describes your preference
           </div>
+
+          {/* Bottom progress indicator */}
+          <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+            <span className="text-sm text-gray-500">
+              {Object.keys(answers).length} of {quizQuestions.length} questions completed
+            </span>
+          </div>
         </Card>
       </div>
     </div>
