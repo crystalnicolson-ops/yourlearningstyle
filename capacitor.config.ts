@@ -9,8 +9,12 @@ const config: CapacitorConfig = {
     cleartext: true
   },
   ios: {
-    // Ensure native iOS view (status bar/safe area) matches app background
-    backgroundColor: '#F0F8FF'
+    // Configure launch screen background to match app
+    backgroundColor: '#F0F8FF',
+    // Configure splash screen
+    splashBackgroundColor: '#F0F8FF',
+    // Configure status bar
+    statusBarStyle: 'dark'
   },
   bundledWebRuntime: false
 };
