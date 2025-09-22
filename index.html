@@ -39,6 +39,20 @@
         padding-bottom: env(safe-area-inset-bottom) !important;
         background-color: hsl(208, 100%, 97%) !important;
       }
+
+      /* Status bar cover when overlay is enabled (iOS) */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: constant(safe-area-inset-top);
+        height: env(safe-area-inset-top);
+        background: hsl(208, 100%, 97%);
+        z-index: 2147483647;
+        pointer-events: none;
+      }
       
       #root {
         background: hsl(208, 100%, 97%) !important;

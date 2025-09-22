@@ -11,8 +11,9 @@ import { StatusBar, Style } from "@capacitor/status-bar";
   try {
     const platform = Capacitor.getPlatform();
     if (platform === "ios") {
-      // On iOS, let content extend under the status bar and use safe-area padding
-      await StatusBar.setOverlaysWebView({ overlay: true });
+      // On iOS, use a solid status bar background matching the app to avoid any banding
+      await StatusBar.setOverlaysWebView({ overlay: false });
+      await StatusBar.setBackgroundColor({ color: "#F0F8FF" });
       await StatusBar.setStyle({ style: Style.Dark });
     } else if (platform === "android") {
       // On Android, use a solid status bar background matching the app
