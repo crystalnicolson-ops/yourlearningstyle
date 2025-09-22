@@ -50,28 +50,6 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Learning Style Options */}
-        <div className="flex justify-center gap-4 mb-16 max-w-lg mx-auto">
-          <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Eye className="h-4 w-4 text-white" />
-            </div>
-            <h3 className="text-sm font-medium text-white mb-1">Visual Learning</h3>
-            <p className="text-xs text-white/70">
-              Flashcards & diagrams
-            </p>
-          </div>
-
-          <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-2">
-              <Headphones className="h-4 w-4 text-white" />
-            </div>
-            <h3 className="text-sm font-medium text-white mb-1">Auditory Learning</h3>
-            <p className="text-xs text-white/70">
-              Voice recordings
-            </p>
-          </div>
-        </div>
 
         {/* Feature Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
