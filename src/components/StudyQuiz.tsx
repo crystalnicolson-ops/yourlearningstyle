@@ -256,7 +256,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
       {/* Progress: fixed on mobile, sticky on desktop */}
       {/* Mobile fixed top bar */}
-      <div className="fixed top-0 inset-x-0 z-50 sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
+      <div className="fixed top-0 inset-x-0 z-[60] sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
         <div className="mx-auto w-full max-w-4xl">
           <div className="flex justify-between text-white/90 text-xs mb-1">
             <span>Question {currentQuestion + 1} of {questions.length}</span>

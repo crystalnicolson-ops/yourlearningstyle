@@ -82,7 +82,7 @@ const Quiz = () => {
 
         {/* Progress: fixed on mobile, sticky on desktop */}
         {/* Mobile fixed top bar */}
-        <div className="fixed top-0 inset-x-0 z-50 sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
+        <div className="fixed top-0 inset-x-0 z-[60] sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
           <div className="mx-auto w-full max-w-4xl">
             <div className="flex justify-between text-white/90 text-xs mb-1">
               <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
@@ -111,7 +111,7 @@ const Quiz = () => {
               <Button
                 key={index}
                 variant="outline"
-                className="w-full p-3 sm:p-6 h-auto text-left justify-start hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                className="w-full p-2 sm:p-6 h-auto text-left justify-start hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
                 onClick={() => handleAnswer(option.style)}
               >
                 <div className="flex items-center justify-between w-full min-w-0">

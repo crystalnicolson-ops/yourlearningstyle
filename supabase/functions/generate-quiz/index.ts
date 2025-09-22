@@ -88,7 +88,7 @@ ${content}`;
     const data = await response.json();
     const generatedContent = data.choices[0].message.content;
 
-    let quizQuestions;
+    let quizQuestions: Array<{ question: string; options: Record<string,string>; correctAnswer: string }> = [];
     try {
       // Clean the response to ensure it's valid JSON
       const cleanContent = generatedContent.replace(/```json\n?|\n?```/g, '').trim();
@@ -96,6 +96,49 @@ ${content}`;
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', generatedContent);
       throw new Error('Failed to generate valid quiz format');
+    }
+
+    // If fewer than requested, try one more pass for the remainder
+    if (quizQuestions.length < count) {
+      const need = count - quizQuestions.length;
+      const excludeQuestionsAll = [...excludeQuestions, ...quizQuestions.map(q => q.question)];
+      const extraPrompt = `Create exactly ${need} additional multiple-choice questions (A, B, C, D) with one correct answer based on the same study material. Do NOT duplicate or closely rephrase any of these existing questions:\n- ${excludeQuestionsAll.join("\n- ")}\n\nReturn ONLY valid JSON array in the same schema.`;
+
+      const response2 = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'You are an educational quiz generator. Always return valid JSON.' },
+            { role: 'user', content: extraPrompt + "\n\nStudy Material:\n" + content }
+          ],
+          temperature: 0.6,
+          max_tokens: 2000,
+        }),
+      });
+
+      if (response2.ok) {
+        const data2 = await response2.json();
+        const generatedContent2 = data2.choices[0].message.content;
+        try {
+          const clean2 = generatedContent2.replace(/```json\n?|\n?```/g, '').trim();
+          const more = JSON.parse(clean2);
+          const combined = [...quizQuestions, ...more];
+          // Deduplicate by question text
+          const seen = new Set<string>();
+          quizQuestions = combined.filter(q => {
+            if (seen.has(q.question)) return false;
+            seen.add(q.question);
+            return true;
+          }).slice(0, count);
+        } catch (e) {
+          console.warn('Second pass parse failed:', generatedContent2);
+        }
+      }
     }
 
     return new Response(JSON.stringify({ 
