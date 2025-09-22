@@ -8,6 +8,10 @@ const config: CapacitorConfig = {
     url: 'https://be928a6a-2809-4e87-9afb-600aa9894e39.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
+  ios: {
+    // Ensure native iOS view (status bar/safe area) matches app background
+    backgroundColor: '#F0F8FF'
+  },
   bundledWebRuntime: false
 };
 
