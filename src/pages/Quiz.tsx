@@ -63,6 +63,9 @@ const Quiz = () => {
   return (
     <div className="min-h-screen bg-gradient-primary overflow-x-hidden">
       <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 pt-3 pb-24 sm:pt-8 sm:pb-8">
+        {/* Mobile spacer for fixed progress bar */}
+        <div className="h-10 sm:hidden" />
+
         {/* Header */}
         <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
           <Link to="/">
@@ -77,9 +80,20 @@ const Quiz = () => {
           </div>
         </div>
 
-        {/* Progress (sticky on mobile) */}
-        <div className="sticky top-0 z-40 -mx-3 sm:mx-0 mb-3 sm:mb-8 bg-gradient-primary/90 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-white/10">
-          <div className="flex justify-between text-white/90 text-xs sm:text-sm mb-2">
+        {/* Progress: fixed on mobile, sticky on desktop */}
+        {/* Mobile fixed top bar */}
+        <div className="fixed top-0 inset-x-0 z-50 sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
+          <div className="mx-auto w-full max-w-4xl">
+            <div className="flex justify-between text-white/90 text-xs mb-1">
+              <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
+              <span>{Math.round(progress)}% Complete</span>
+            </div>
+            <Progress value={progress} className="h-1" />
+          </div>
+        </div>
+        {/* Desktop sticky bar */}
+        <div className="hidden sm:block sticky top-0 z-40 -mx-6 mb-8 bg-gradient-primary/90 backdrop-blur-sm px-6 pt-2 pb-2 border-b border-white/10">
+          <div className="flex justify-between text-white/90 text-sm mb-2">
             <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
             <span>{Math.round(progress)}% Complete</span>
           </div>

@@ -165,27 +165,47 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     setEnhancedNotes('');
     setFlashcards([]);
     setAudioBase64('');
-    
+
+    const requestedCount = 20;
+
     try {
-      const { data, error } = await supabase.functions.invoke('generate-quiz', {
+      // First request
+      const { data: firstData, error: firstError } = await supabase.functions.invoke('generate-quiz', {
         body: { 
           content,
-          count: 20
+          count: requestedCount
         }
       });
-
-      if (error) {
-        console.error('Quiz generation error:', error);
-        throw new Error(error.message || 'Failed to generate quiz');
+      
+      if (firstError) {
+        console.error('Quiz generation error:', firstError);
+        throw new Error(firstError.message || 'Failed to generate quiz');
       }
 
-      if (data?.questions && Array.isArray(data.questions)) {
-        setQuizQuestions(data.questions);
+      let collected = Array.isArray(firstData?.questions) ? firstData.questions : [];
+
+      // If we got fewer than requested, try once more for the remainder
+      if (collected.length < requestedCount) {
+        const remaining = requestedCount - collected.length;
+        const { data: secondData, error: secondError } = await supabase.functions.invoke('generate-quiz', {
+          body: {
+            content,
+            count: remaining,
+            excludeQuestions: collected.map((q: any) => q.question)
+          }
+        });
+        if (!secondError && Array.isArray(secondData?.questions)) {
+          collected = [...collected, ...secondData.questions];
+        }
+      }
+
+      if (collected.length > 0) {
+        setQuizQuestions(collected);
         setShowQuiz(true);
         onTransformed("Quiz generated successfully", "quiz");
         toast({
           title: "Quiz generated!",
-          description: `${data.questions.length} questions ready.`,
+          description: `${collected.length} questions ready.`,
         });
       } else {
         throw new Error('Invalid quiz format received');

@@ -219,6 +219,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
 
   return (
     <div className="space-y-6 relative">
+      {/* Mobile spacer for fixed progress bar */}
+      <div className="h-10 sm:hidden -mx-3" />
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10 text-xs sm:text-sm">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -252,9 +254,20 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         </div>
       </div>
 
-      {/* Progress (sticky on mobile) */}
-      <div className="sticky top-0 z-40 -mx-3 sm:mx-0 mb-3 sm:mb-8 bg-gradient-primary/90 backdrop-blur-sm px-3 pt-2 pb-2 border-b border-white/10">
-        <div className="flex justify-between text-white/90 text-xs sm:text-sm mb-2">
+      {/* Progress: fixed on mobile, sticky on desktop */}
+      {/* Mobile fixed top bar */}
+      <div className="fixed top-0 inset-x-0 z-50 sm:hidden bg-gradient-primary/95 backdrop-blur px-3 py-2 border-b border-white/10">
+        <div className="mx-auto w-full max-w-4xl">
+          <div className="flex justify-between text-white/90 text-xs mb-1">
+            <span>Question {currentQuestion + 1} of {questions.length}</span>
+            <span>{Math.round(progress)}% Complete</span>
+          </div>
+          <Progress value={progress} className="h-1" />
+        </div>
+      </div>
+      {/* Desktop sticky bar */}
+      <div className="hidden sm:block sticky top-0 z-40 -mx-6 mb-8 bg-gradient-primary/90 backdrop-blur-sm px-6 pt-2 pb-2 border-b border-white/10">
+        <div className="flex justify-between text-white/90 text-sm mb-2">
           <span>Question {currentQuestion + 1} of {questions.length}</span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
