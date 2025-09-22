@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +13,10 @@ const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, LearningStyle>>({});
   const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    console.info('[Quiz] questions count:', quizQuestions.length);
+  }, []);
 
   const handleAnswer = (style: LearningStyle) => {
     setAnswers(prev => ({
@@ -106,6 +110,13 @@ const Quiz = () => {
 
           <div className="mt-4 sm:mt-8 text-center text-xs sm:text-sm text-gray-600">
             Choose the option that best describes your preference
+          </div>
+
+          {/* Mobile in-card fallback counter */}
+          <div className="mt-3 text-center sm:hidden">
+            <span className="inline-block rounded-full bg-gray-50 text-gray-700 text-xs px-3 py-1 border border-gray-200">
+              Completed {Object.keys(answers).length} of {quizQuestions.length}
+            </span>
           </div>
 
         </Card>

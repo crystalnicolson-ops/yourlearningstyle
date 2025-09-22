@@ -287,4 +287,24 @@ export const quizQuestions: Question[] = [
       { text: 'Change code and test iteratively', style: 'kinesthetic' },
     ],
   },
+  {
+    id: 29,
+    question: 'When trying to memorize a process, I:',
+    options: [
+      { text: 'Draw a diagram of the steps', style: 'visual' },
+      { text: 'Repeat the steps out loud', style: 'auditory' },
+      { text: 'Write the steps down as a list', style: 'reading' },
+      { text: 'Perform the process physically', style: 'kinesthetic' },
+    ],
+  },
+  {
+    id: 30,
+    question: 'When learning geometry or shapes, I prefer to:',
+    options: [
+      { text: 'See models and illustrations', style: 'visual' },
+      { text: 'Listen to explanations of properties', style: 'auditory' },
+      { text: 'Read definitions and theorems', style: 'reading' },
+      { text: 'Build or manipulate objects', style: 'kinesthetic' },
+    ],
+  },
 ];
