@@ -142,13 +142,13 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         </div>
 
         <Card className="p-8 bg-white/95 backdrop-blur-sm">
-          <div className="text-center space-y-6">
-            <div className="text-6xl font-bold text-primary">
-              {score.percentage}%
-            </div>
-            <div className="text-xl text-gray-600">
-              You scored {score.correct} out of {score.total} questions correctly
-            </div>
+      <div className="text-center space-y-6">
+        <div className="text-5xl sm:text-6xl font-bold text-primary">
+          {score.percentage}%
+        </div>
+        <div className="text-base sm:text-xl text-gray-600">
+          You scored {score.correct} out of {score.total} questions correctly
+        </div>
             
             <div className="flex gap-4 justify-center">
               <Button onClick={resetQuiz} variant="outline">
@@ -205,15 +205,15 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
   const selectedAnswer = selectedAnswers[currentQuestion];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
-        <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10">
+    <div className="space-y-6 relative">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <Button variant="ghost" onClick={onBack} className="text-white hover:bg-white/10 text-xs sm:text-sm">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white">Study Quiz</h2>
-          <p className="text-white/80">Test your knowledge • {questions.length} questions</p>
+          <h2 className="text-lg sm:text-2xl font-bold text-white">Study Quiz</h2>
+          <p className="text-white/80 text-xs sm:text-sm">Test your knowledge • {questions.length} questions</p>
         </div>
         <div className="flex gap-2">
           <Button 
@@ -240,8 +240,8 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       </div>
 
       {/* Progress */}
-      <div className="mb-8">
-        <div className="flex justify-between text-white/80 text-sm mb-2">
+      <div className="mb-4 sm:mb-8">
+        <div className="flex justify-between text-white/80 text-xs sm:text-sm mb-2">
           <span>Question {currentQuestion + 1} of {questions.length}</span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
@@ -249,14 +249,14 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       </div>
 
       {/* Question */}
-      <Card className="p-8 bg-white/95 backdrop-blur-sm">
-        <h3 className="text-2xl font-semibold text-gray-800 mb-6">
+      <Card className="p-4 sm:p-8 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
+        <h3 className="text-base sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">
           {question.question}
         </h3>
 
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           {Object.entries(question.options).map(([option, text]) => {
-            let buttonClass = "w-full p-4 text-left justify-start border-2 transition-all duration-200";
+            let buttonClass = "w-full p-3 sm:p-4 text-left justify-start border-2 transition-all duration-200";
             
             if (showAnswer) {
               if (option === question.correctAnswer) {
@@ -280,17 +280,17 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
                 onClick={() => handleAnswer(option)}
                 disabled={showAnswer}
               >
-                <span className="font-semibold mr-3">{option}.</span>
-                {text}
+                <span className="font-semibold mr-3 flex-shrink-0">{option}.</span>
+                <span className="text-sm sm:text-base break-words">{text}</span>
               </Button>
             );
           })}
         </div>
 
         {showAnswer && (
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+          <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-sm sm:text-base">
                 {selectedAnswer === question.correctAnswer ? (
                   <>
                     <CheckCircle className="h-5 w-5 text-green-500" />
@@ -305,13 +305,22 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
                   </>
                 )}
               </div>
-              <Button onClick={handleNext}>
+              <Button onClick={handleNext} className="text-sm sm:text-base">
                 {currentQuestion < questions.length - 1 ? "Next Question" : "View Results"}
               </Button>
             </div>
           </div>
         )}
       </Card>
+
+      {/* Sticky bottom counter */}
+      <div className="fixed inset-x-0 bottom-0 z-50">
+        <div className="mx-auto w-full max-w-4xl px-3 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
+          <div className="mx-3 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-sm sm:text-base py-2 text-center">
+            Question {currentQuestion + 1} / {questions.length}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

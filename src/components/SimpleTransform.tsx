@@ -168,7 +168,9 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     
     try {
       const { data, error } = await supabase.functions.invoke('generate-quiz', {
-        body: { content }
+        body: { 
+          content: content + "\n\n[Generate 25-30 unique multiple-choice questions (A–D) with one correct answer. Do not repeat questions.]"
+        }
       });
 
       if (error) {
@@ -182,7 +184,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
         onTransformed("Quiz generated successfully", "quiz");
         toast({
           title: "Quiz generated!",
-          description: "Test your knowledge with the new quiz.",
+          description: `${data.questions.length} questions ready.`,
         });
       } else {
         throw new Error('Invalid quiz format received');
