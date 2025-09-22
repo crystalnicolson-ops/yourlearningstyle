@@ -30,12 +30,6 @@ const Hero = () => {
               Learning<span className="text-pink-200">Style</span>
             </h1>
           </div>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-6">
-            <strong>Step 1:</strong> Choose your learning style below (Visual or Auditory recommended)
-          </p>
-          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-            <strong>Step 2:</strong> Click "Upload Documents" to transform your notes into personalized learning materials
-          </p>
         </header>
 
         {/* CTA Buttons */}
