@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-primary flex flex-col">
       {/* Header with Home Button */}
-      <header className="sticky top-0 z-50 bg-background/95 border-b border-border">
+      <header className="sticky top-0 z-50 bg-transparent">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Button
             variant="ghost"
@@ -31,14 +31,14 @@ const Index = () => {
               setRefreshTrigger(0);
               setHasNotes(false);
             }}
-            className="flex items-center gap-2 h-11 px-4 text-base sm:text-sm"
+            className="text-white hover:bg-white/20 flex items-center gap-2 h-11 px-4 text-base sm:text-sm"
           >
             <Home className="h-5 w-5 sm:h-4 sm:w-4" />
             <span className="font-medium">LearningStyle</span>
           </Button>
           
           <Link to="/landing">
-            <Button variant="outline" className="h-11 px-4 text-base sm:text-sm">
+            <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 h-11 px-4 text-base sm:text-sm">
               About
             </Button>
           </Link>
