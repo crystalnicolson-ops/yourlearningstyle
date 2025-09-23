@@ -40,9 +40,11 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
     setShowQuiz(false);
     
     try {
-      const { data, error } = await supabase.functions.invoke('gemini-text-manipulator', {
+      const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
         body: { 
-          prompt: `You are an expert note-taking assistant and educational content enhancer. Transform the provided content into comprehensive, well-structured notes that are both informative and easy to study from.
+          content,
+          learningStyle: 'enhanced',
+          customPrompt: `You are an expert note-taking assistant and educational content enhancer. Transform the provided content into comprehensive, well-structured notes that are both informative and easy to study from.
 
 ENHANCEMENT OBJECTIVES:
 • Expand on key concepts with clear explanations and context
@@ -93,18 +95,14 @@ Brief introduction and context
 • Practical applications
 • Next steps or further considerations
 
-Transform this content following the above guidelines:
-
-${content}
-
-Make the enhanced notes comprehensive, well-organized, and significantly more valuable than the original content while maintaining accuracy.` 
+Make the enhanced notes comprehensive, well-organized, and significantly more valuable than the original content while maintaining accuracy.`
         }
       });
 
       if (error) throw error;
 
-      setEnhancedNotes(data.transformedText);
-      onTransformed(data.transformedText, 'enhanced');
+      setEnhancedNotes(data.transformedContent);
+      onTransformed(data.transformedContent, 'enhanced');
       
       toast({
         title: "Enhanced notes created!",
