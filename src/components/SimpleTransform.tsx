@@ -29,6 +29,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   const selectedVoice = 'alloy'; // Use single reliable voice
   const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [quizProgress, setQuizProgress] = useState<string>('');
   const [activeMode, setActiveMode] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -125,6 +126,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
 
     setIsProcessing('quiz');
     setActiveMode('quiz');
+    setQuizProgress('Creating quiz questions...');
     // Clear other results
     setEnhancedNotes('');
     setFlashcards([]);
@@ -155,6 +157,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
       // If we got fewer than requested, try once more for the remainder
       if (collected.length < requestedCount) {
         const remaining = requestedCount - collected.length;
+        setQuizProgress(`Generating ${remaining} additional questions...`);
         console.log('Requesting additional questions:', remaining);
         
         const { data: secondData, error: secondError } = await supabase.functions.invoke('generate-quiz', {
@@ -191,6 +194,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
       });
     } finally {
       setIsProcessing(null);
+      setQuizProgress('');
     }
   };
 
@@ -454,7 +458,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
       case 'audio':
         return 'Converting your notes into high-quality audio narration...';
       case 'quiz':
-        return 'Creating personalized quiz questions from your content...';
+        return quizProgress || 'Creating personalized quiz questions from your content...';
       case 'more-flashcards':
         return 'Generating additional flashcards to expand your study set...';
       default:
