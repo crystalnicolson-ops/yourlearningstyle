@@ -40,62 +40,10 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
     setShowQuiz(false);
     
     try {
-      const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
+      const { data, error } = await supabase.functions.invoke('transform-with-openai', {
         body: { 
           content,
-          learningStyle: 'enhanced',
-          customPrompt: `You are an expert note-taking assistant and educational content enhancer. Transform the provided content into comprehensive, well-structured notes that are both informative and easy to study from.
-
-ENHANCEMENT OBJECTIVES:
-• Expand on key concepts with clear explanations and context
-• Add relevant background information where helpful
-• Create logical flow and organization
-• Ensure professional formatting and readability
-• Make content more comprehensive but still concise
-
-FORMATTING REQUIREMENTS:
-• Use clear hierarchical headings (# ## ###)
-• Organize information with bullet points and numbered lists
-• Add bold text for **key terms** and *italics* for emphasis
-• Include summary sections and takeaway points
-• Use proper spacing and line breaks for readability
-• Add context boxes or notes where appropriate
-
-CONTENT ENHANCEMENT:
-• Explain technical terms and concepts
-• Add relevant examples or applications
-• Connect related ideas and show relationships
-• Include important background context
-• Provide practical insights and implications
-• Ensure accuracy while making content more accessible
-
-STRUCTURE TEMPLATE:
-# [Main Topic/Title]
-
-## Overview
-Brief introduction and context
-
-## Key Concepts
-### [Concept 1]
-- Detailed explanation
-- Relevant context
-- **Important terms** highlighted
-
-### [Concept 2]
-- Clear breakdown
-- Examples where helpful
-
-## Important Details
-• Critical information organized clearly
-• Supporting facts and data
-• Relevant background
-
-## Summary & Key Takeaways
-• Main points to remember
-• Practical applications
-• Next steps or further considerations
-
-Make the enhanced notes comprehensive, well-organized, and significantly more valuable than the original content while maintaining accuracy.`
+          learningStyle: 'enhanced'
         }
       });
 
@@ -128,7 +76,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     setShowQuiz(false);
     
     try {
-      const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
+      const { data, error } = await supabase.functions.invoke('transform-with-openai', {
         body: { content, learningStyle: 'visual' }
       });
 
@@ -142,6 +90,8 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           title: "Flashcards created!",
           description: `Generated ${data.transformedContent.length} flashcards`,
         });
+      } else {
+        throw new Error('Invalid flashcard format received');
       }
     } catch (error: any) {
       toast({
@@ -226,7 +176,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     setIsProcessing('more-flashcards');
     
     try {
-      const { data, error } = await supabase.functions.invoke('transform-with-gemini', {
+      const { data, error } = await supabase.functions.invoke('transform-with-openai', {
         body: { 
           content: content + "\n\n[Generate different flashcards focusing on other aspects, details, and concepts not covered in previous cards]", 
           learningStyle: 'visual' 
@@ -243,6 +193,8 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
           title: "More flashcards added!",
           description: `Generated ${data.transformedContent.length} additional flashcards`,
         });
+      } else {
+        throw new Error('Invalid flashcard format received');
       }
     } catch (error: any) {
       toast({
@@ -265,7 +217,7 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
     
     try {
       // First transform for auditory learning
-      const { data: transformData, error: transformError } = await supabase.functions.invoke('transform-with-gemini', {
+      const { data: transformData, error: transformError } = await supabase.functions.invoke('transform-with-openai', {
         body: { content, learningStyle: 'auditory' }
       });
 
