@@ -117,6 +117,8 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
     const requestedCount = 30;
 
     try {
+      console.log('Starting quiz generation with content length:', content.length);
+      
       // First request
       const { data: firstData, error: firstError } = await supabase.functions.invoke('generate-quiz', {
         body: { 
@@ -130,11 +132,15 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
         throw new Error(firstError.message || 'Failed to generate quiz');
       }
 
+      console.log('Quiz API response:', firstData);
       let collected = Array.isArray(firstData?.questions) ? firstData.questions : [];
+      console.log('Collected questions count:', collected.length);
 
       // If we got fewer than requested, try once more for the remainder
       if (collected.length < requestedCount) {
         const remaining = requestedCount - collected.length;
+        console.log('Requesting additional questions:', remaining);
+        
         const { data: secondData, error: secondError } = await supabase.functions.invoke('generate-quiz', {
           body: {
             content,
@@ -144,10 +150,12 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
         });
         if (!secondError && Array.isArray(secondData?.questions)) {
           collected = [...collected, ...secondData.questions];
+          console.log('Total questions after second request:', collected.length);
         }
       }
 
       if (collected.length > 0) {
+        console.log('Setting quiz questions:', collected.length);
         setQuizQuestions(collected);
         setShowQuiz(true);
         onTransformed("Quiz generated successfully", "quiz");
@@ -156,7 +164,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
           description: `${collected.length} questions ready.`,
         });
       } else {
-        throw new Error('Invalid quiz format received');
+        throw new Error('No quiz questions were generated');
       }
     } catch (error: any) {
       console.error('Error generating quiz:', error);

@@ -102,7 +102,26 @@ ${content}`;
     if (quizQuestions.length < count) {
       const need = count - quizQuestions.length;
       const excludeQuestionsAll = [...excludeQuestions, ...quizQuestions.map(q => q.question)];
-      const extraPrompt = `Create exactly ${need} additional multiple-choice questions (A, B, C, D) with one correct answer based on the same study material. Do NOT duplicate or closely rephrase any of these existing questions:\n- ${excludeQuestionsAll.join("\n- ")}\n\nReturn ONLY valid JSON array in the same schema.`;
+      const extraPrompt = `Create exactly ${need} additional multiple-choice questions based on the same study material. Each question must have 4 options (A, B, C, D) with only one correct answer. 
+
+Return the response as a JSON array with this EXACT format:
+[
+  {
+    "question": "What is the main concept discussed?",
+    "options": {
+      "A": "Option 1",
+      "B": "Option 2", 
+      "C": "Option 3",
+      "D": "Option 4"
+    },
+    "correctAnswer": "B"
+  }
+]
+
+Do NOT duplicate or closely rephrase any of these existing questions:
+- ${excludeQuestionsAll.join("\n- ")}
+
+Return ONLY valid JSON array in the same schema.`;
 
       const response2 = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -113,7 +132,7 @@ ${content}`;
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: 'You are an educational quiz generator. Always return valid JSON.' },
+            { role: 'system', content: 'You are an educational quiz generator. Create clear, accurate multiple-choice questions based on study material. Always respond with valid JSON only using "correctAnswer" field.' },
             { role: 'user', content: extraPrompt + "\n\nStudy Material:\n" + content }
           ],
           temperature: 0.6,
@@ -126,7 +145,14 @@ ${content}`;
         const generatedContent2 = data2.choices[0].message.content;
         try {
           const clean2 = generatedContent2.replace(/```json\n?|\n?```/g, '').trim();
-          const more = JSON.parse(clean2);
+          let more = JSON.parse(clean2);
+          
+          // Normalize the correctAnswer field in case it uses different naming
+          more = more.map((q: any) => ({
+            ...q,
+            correctAnswer: q.correctAnswer || q.correct_answer
+          }));
+          
           const combined = [...quizQuestions, ...more];
           // Deduplicate by question text
           const seen = new Set<string>();
@@ -140,6 +166,12 @@ ${content}`;
         }
       }
     }
+
+    // Final normalization to ensure consistent format
+    quizQuestions = quizQuestions.map(q => ({
+      ...q,
+      correctAnswer: q.correctAnswer || (q as any).correct_answer
+    }));
 
     return new Response(JSON.stringify({ 
       questions: quizQuestions,
