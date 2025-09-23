@@ -9,6 +9,9 @@ verify_jwt = false
 [functions.transform-with-gemini]
 verify_jwt = false
 
+[functions.transform-with-openai]
+verify_jwt = false
+
 [functions.text-to-speech]
 verify_jwt = false
 

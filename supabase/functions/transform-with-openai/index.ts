@@ -1,5 +1,5 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -105,6 +105,7 @@ Content to enhance: ${content}`;
 
     if (!response.ok) {
       const error = await response.json();
+      console.error('OpenAI API error:', error);
       throw new Error(error.error?.message || 'OpenAI API request failed');
     }
 
@@ -125,6 +126,7 @@ Content to enhance: ${content}`;
           throw new Error('Invalid flashcard format');
         }
       } catch (parseError) {
+        console.error('JSON parsing error for flashcards:', parseError);
         // If JSON parsing fails, return as text
         result = {
           type: 'text',
