@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { addGuestNote } from "@/lib/guestNotes";
+import ThinkingOverlay from "./ThinkingOverlay";
 
 const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -226,7 +227,14 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   };
 
   return (
-    <Card className="p-3 sm:p-6 bg-gradient-card shadow-card border-0">
+    <>
+      <ThinkingOverlay 
+        isVisible={isUploading} 
+        message="Uploading and processing your file..."
+        type="processing"
+      />
+      
+      <Card className="p-3 sm:p-6 bg-gradient-card shadow-card border-0">
       <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
         <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
         Upload Your Notes
@@ -301,6 +309,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         </p>
       </form>
     </Card>
+    </>
   );
 };
 

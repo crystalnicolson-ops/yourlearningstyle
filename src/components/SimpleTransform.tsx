@@ -8,6 +8,7 @@ import Flashcards from "./Flashcards";
 import VoicePlayer from "./VoicePlayer";
 import StudyQuiz from "./StudyQuiz";
 import SmartDownloadButton from "./SmartDownloadButton";
+import ThinkingOverlay from "./ThinkingOverlay";
 
 interface SimpleTransformProps {
   content: string;
@@ -444,8 +445,31 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
   };
 
 
+  const getThinkingMessage = () => {
+    switch (isProcessing) {
+      case 'enhanced':
+        return 'Analyzing your content and creating enhanced, organized notes...';
+      case 'flashcards':
+        return 'Generating interactive flashcards for effective studying...';
+      case 'audio':
+        return 'Converting your notes into high-quality audio narration...';
+      case 'quiz':
+        return 'Creating personalized quiz questions from your content...';
+      case 'more-flashcards':
+        return 'Generating additional flashcards to expand your study set...';
+      default:
+        return 'Processing your request...';
+    }
+  };
+
   return (
     <div className="space-y-4">
+      <ThinkingOverlay 
+        isVisible={isProcessing !== null} 
+        message={getThinkingMessage()}
+        type={(isProcessing as any) || 'processing'}
+      />
+      
       {/* Active Mode Header */}
       {activeMode && (
         <Card className="p-4 bg-white/95 backdrop-blur-sm border-2 border-primary/20">

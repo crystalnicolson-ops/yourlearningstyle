@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ThinkingOverlay from "./ThinkingOverlay";
 
 interface GeminiTextManipulatorProps {
   content: string;
@@ -115,8 +116,22 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
     });
   };
 
+  const getThinkingMessage = () => {
+    if (customPrompt) {
+      return 'Processing your custom transformation request with Gemini AI...';
+    }
+    const option = manipulationOptions.find(opt => opt.value === selectedOption);
+    return `${option?.description || 'Transforming your content'} using Gemini AI...`;
+  };
+
   return (
     <div className="space-y-6">
+      <ThinkingOverlay 
+        isVisible={isProcessing} 
+        message={getThinkingMessage()}
+        type="processing"
+      />
+      
       <Card className="p-4 bg-gradient-subtle border border-primary/20">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="h-5 w-5 text-primary" />

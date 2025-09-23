@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
 import VoicePlayer from "./VoicePlayer";
 import SmartDownloadButton from "./SmartDownloadButton";
+import ThinkingOverlay from "./ThinkingOverlay";
 
 interface LearningStyleTransformProps {
   content: string;
@@ -187,8 +188,19 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
   };
 
 
+  const getThinkingMessage = () => {
+    const styleLabel = learningStyles.find(s => s.value === selectedStyle)?.label;
+    return `Transforming your content for ${styleLabel} learning style...`;
+  };
+
   return (
     <div className="space-y-6">
+      <ThinkingOverlay 
+        isVisible={isTransforming} 
+        message={getThinkingMessage()}
+        type={selectedStyle as any || 'processing'}
+      />
+      
       <Card className="p-4 bg-gradient-subtle border border-primary/20">
         <div className="flex items-center gap-2 mb-4">
           <Brain className="h-5 w-5 text-primary" />
