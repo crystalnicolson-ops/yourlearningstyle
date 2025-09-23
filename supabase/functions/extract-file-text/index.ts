@@ -66,9 +66,25 @@ serve(async (req) => {
     const effectiveType = sniffType(fileType, fileName);
     console.log(`Extracting text: name=${fileName} type=${effectiveType} path=${filePath || 'n/a'}`);
 
-    // Prefer downloading directly by storage path when provided
+    // Handle data URLs specially
     let blob: Blob | null = null;
-    if (filePath && supabase) {
+    if (fileUrl && fileUrl.startsWith('data:')) {
+      console.log('Processing data URL');
+      try {
+        const response = await fetch(fileUrl);
+        if (response.ok) {
+          blob = await response.blob();
+          console.log(`Successfully processed data URL, blob size: ${blob.size} bytes`);
+        } else {
+          throw new Error(`Failed to process data URL: ${response.status}`);
+        }
+      } catch (dataError) {
+        console.error('Data URL processing error:', dataError);
+        throw new Error(`Failed to process uploaded file: ${dataError.message}`);
+      }
+    }
+    // Handle regular file URLs
+    else if (filePath && supabase) {
       console.log('Attempting direct storage download for:', filePath);
       const { data, error } = await supabase.storage.from('notes').download(filePath);
       if (error) {
@@ -102,6 +118,10 @@ serve(async (req) => {
         throw new Error(`Failed to fetch file: ${resp.status}`);
       }
       blob = await resp.blob();
+    }
+
+    if (!blob) {
+      throw new Error(`Unable to retrieve file data. Please try uploading the file again.`);
     }
 
     let extractedText = '';
