@@ -143,11 +143,25 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
               }
             });
 
-          if (extractError) throw extractError;
+          if (extractError) {
+            console.error('Extract function error:', extractError);
+            throw extractError;
+          }
+          
           if (extractData?.extractedText) {
             const autoExtracted = extractData.extractedText;
-            // Combine manual content with extracted content if both exist
-             extractedContent = autoExtracted;
+            extractedContent = autoExtracted;
+            
+            toast({
+              title: "Text extracted successfully",
+              description: `Extracted ${extractedContent.length} characters from ${file.name}`,
+            });
+          } else {
+            toast({
+              title: "No text content found",
+              description: `${file.name} was processed but no text content was found.`,
+              variant: "default",
+            });
           }
         } catch (error) {
           console.error('Text extraction failed:', error);
@@ -163,8 +177,8 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           } else {
             toast({
               title: "Text extraction failed", 
-              description: `Uploaded ${file.name} but couldn't extract text content.`,
-              variant: "default",
+              description: `Uploaded ${file.name} but couldn't extract text content: ${errorMsg}`,
+              variant: "destructive",
             });
           }
           // Continue without extracted text - user will see the file but no content
