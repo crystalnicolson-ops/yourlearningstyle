@@ -118,10 +118,10 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
 
   const getThinkingMessage = () => {
     if (customPrompt) {
-      return 'Processing your custom transformation request with Gemini AI...';
+      return 'Processing your custom transformation request...';
     }
     const option = manipulationOptions.find(opt => opt.value === selectedOption);
-    return `${option?.description || 'Transforming your content'} using Gemini AI...`;
+    return `${option?.description || 'Transforming your content'}...`;
   };
 
   return (
@@ -187,7 +187,7 @@ const GeminiTextManipulator = ({ content, onTransformed }: GeminiTextManipulator
           {isProcessing ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Processing with Gemini...
+              Processing...
             </>
           ) : (
             <>

@@ -69,7 +69,7 @@ const ThinkingOverlay = ({ isVisible, message, type = 'processing' }: ThinkingOv
           <div className="space-y-3">
             <h3 className="text-xl font-semibold text-foreground flex items-center justify-center gap-2">
               <Loader2 className="h-5 w-5 animate-spin" />
-              AI is thinking...
+              Processing...
             </h3>
             <p className="text-muted-foreground font-medium">{message}</p>
           </div>
