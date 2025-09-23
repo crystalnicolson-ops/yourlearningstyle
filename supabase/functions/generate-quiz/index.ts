@@ -39,7 +39,9 @@ serve(async (req) => {
     const excludeBlock = excludeQuestions.length
       ? `\nDo NOT include any questions that match or closely rephrase any of these existing questions:\n- ${excludeQuestions.join("\n- ")}`
       : "";
-    const prompt = `Based on the following study material, create exactly ${count} multiple-choice questions. Each question must have 4 options (A, B, C, D) with only one correct answer. Focus on key concepts, important facts, and main ideas from the material. Keep questions and options concise.
+    // Request extra questions to account for potential duplicates/filtering
+    const requestCount = Math.min(30, count + 5);
+    const prompt = `Based on the following study material, create exactly ${requestCount} multiple-choice questions. Each question must have 4 options (A, B, C, D) with only one correct answer. Focus on key concepts, important facts, and main ideas from the material. Keep questions and options concise.
 
 Return the response as a JSON array with this exact format:
 [
@@ -92,7 +94,15 @@ ${content}`;
     try {
       // Clean the response to ensure it's valid JSON
       const cleanContent = generatedContent.replace(/```json\n?|\n?```/g, '').trim();
-      quizQuestions = JSON.parse(cleanContent);
+      const allQuestions = JSON.parse(cleanContent);
+      
+      // Deduplicate and limit to exact count needed
+      const seen = new Set<string>();
+      quizQuestions = allQuestions.filter((q: any) => {
+        if (seen.has(q.question)) return false;
+        seen.add(q.question);
+        return true;
+      }).slice(0, count);
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', generatedContent);
       throw new Error('Failed to generate valid quiz format');
