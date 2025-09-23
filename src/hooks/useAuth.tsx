@@ -26,6 +26,16 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // Add safety check for React context
+  if (!React || typeof React.useState !== 'function') {
+    console.error('React context not available');
+    return (
+      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
+        <div className="text-white text-center">Loading...</div>
+      </div>
+    );
+  }
+
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
