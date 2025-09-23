@@ -209,25 +209,83 @@ const SmartDownloadButton = ({
         });
         
       } else if (quiz && quiz.length > 0) {
-        // Download as JSON
-        const quizData = {
-          title: "Study Quiz",
-          questions: quiz.map((q, index) => ({
-            number: index + 1,
-            question: q.question,
-            options: q.options,
-            correctAnswer: q.correctAnswer
-          })),
-          totalQuestions: quiz.length,
-          exportedAt: new Date().toISOString()
-        };
-        
-        const jsonContent = JSON.stringify(quizData, null, 2);
-        const blob = new Blob([jsonContent], { type: 'application/json' });
+        // Create a properly formatted Word document for the quiz
+        const children = [
+          new Paragraph({
+            text: "Study Quiz",
+            heading: HeadingLevel.HEADING_1,
+          }),
+          new Paragraph({
+            text: `Generated on ${new Date().toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}`,
+            spacing: { after: 400 }
+          }),
+          new Paragraph({
+            text: `Total Questions: ${quiz.length}`,
+            spacing: { after: 600 }
+          }),
+          new Paragraph({
+            text: "Instructions: Choose the best answer for each question.",
+            spacing: { after: 800 }
+          }),
+        ];
+
+        // Add each question with options
+        quiz.forEach((q, index) => {
+          children.push(
+            new Paragraph({
+              text: `${index + 1}. ${q.question}`,
+              spacing: { before: 400, after: 200 },
+              numbering: undefined
+            })
+          );
+          
+          // Add options A, B, C, D
+          Object.entries(q.options).forEach(([letter, option]) => {
+            children.push(
+              new Paragraph({
+                text: `   ${letter}) ${option}`,
+                spacing: { after: 100 }
+              })
+            );
+          });
+        });
+
+        // Add answer key section
+        children.push(
+          new Paragraph({
+            text: "Answer Key",
+            heading: HeadingLevel.HEADING_2,
+            spacing: { before: 800, after: 400 }
+          })
+        );
+
+        quiz.forEach((q, index) => {
+          children.push(
+            new Paragraph({
+              text: `${index + 1}. ${q.correctAnswer}) ${q.options[q.correctAnswer as keyof typeof q.options]}`,
+              spacing: { after: 100 }
+            })
+          );
+        });
+
+        const doc = new Document({
+          sections: [
+            {
+              properties: {},
+              children: children,
+            },
+          ],
+        });
+
+        const blob = await Packer.toBlob(doc);
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `quiz-${Date.now()}.json`;
+        a.download = `quiz-${Date.now()}.docx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -235,7 +293,7 @@ const SmartDownloadButton = ({
         
         toast({
           title: "✅ Quiz downloaded!",
-          description: `Downloaded ${quiz.length} questions as JSON`,
+          description: `Downloaded ${quiz.length} questions as formatted Word document`,
         });
         
       } else {
