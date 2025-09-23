@@ -270,7 +270,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       {/* Question */}
       <Card className="p-2 sm:p-6 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
         <div className="flex items-start justify-between mb-2 sm:mb-4">
-          <span className="inline-flex sm:hidden items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] px-2 py-1 border border-gray-200">Question {currentQuestion + 1} of {questions.length}</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs px-2 py-1 border border-gray-200">Q {currentQuestion + 1}/{questions.length}</span>
         </div>
         <h3 className="text-sm sm:text-2xl font-semibold text-gray-800 mb-2.5 sm:mb-6 leading-snug">
           {question.question}
@@ -335,14 +335,6 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
         )}
       </Card>
 
-      {/* Sticky bottom counter */}
-      <div className="fixed left-0 right-0 bottom-0 z-50">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 pb-[calc(env(safe-area-inset-bottom)+0.5rem)]">
-          <div className="mx-2 sm:mx-0 mb-3 rounded-full bg-white/95 backdrop-blur border border-gray-200 shadow-md text-gray-700 text-xs sm:text-sm py-1.5 text-center">
-            Q {currentQuestion + 1} / {questions.length}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
