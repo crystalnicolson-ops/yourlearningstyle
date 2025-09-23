@@ -37,30 +37,61 @@ async function setupNativeFeatures() {
 // Safer app resume handler
 function setupResumeHandler() {
   try {
+    const platform = Capacitor.getPlatform();
+
+    // Prevent reload loops by throttling reloads
+    const shouldReloadOnResume = () => {
+      try {
+        const now = Date.now();
+        const last = Number(sessionStorage.getItem('lastResumeReload') || '0');
+        if (now - last < 2000) return false; // 2s guard
+        sessionStorage.setItem('lastResumeReload', String(now));
+        return true;
+      } catch {
+        return true;
+      }
+    };
+
+    // Fires when app state changes (native)
     CapApp.addListener('appStateChange', async ({ isActive }) => {
       if (!isActive) return;
-      
-      // Re-apply native settings
+
+      console.log('[Resume] appStateChange -> active');
       await setupNativeFeatures();
-      
-      // Check if React root is empty and reload if needed
+
+      if (platform !== 'web' && shouldReloadOnResume()) {
+        console.log('[Resume] Forcing full reload after resume');
+        window.location.reload();
+        return;
+      }
+
+      // Web fallback: if React tree disappeared, reload
       setTimeout(() => {
         const root = document.getElementById('root');
         if (root && root.childElementCount === 0) {
-          console.log('React root empty, reloading...');
+          console.log('[Resume] React root empty, reloading...');
           window.location.reload();
         }
-      }, 100);
+      }, 120);
     });
 
-    // Handle tab visibility changes (web)
+    // Explicit resume event (native)
+    CapApp.addListener('resume', async () => {
+      console.log('[Resume] resume event');
+      await setupNativeFeatures();
+      if (platform !== 'web' && shouldReloadOnResume()) {
+        window.location.reload();
+      }
+    });
+
+    // Handle tab visibility changes (web only)
     document.addEventListener('visibilitychange', async () => {
       if (document.visibilityState === 'visible') {
         await setupNativeFeatures();
       }
     });
   } catch (err) {
-    console.warn("Resume handler setup failed:", err);
+    console.warn('Resume handler setup failed:', err);
   }
 }
 
