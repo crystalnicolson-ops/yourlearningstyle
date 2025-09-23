@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, FileText, Volume2, Loader2, Brain } from "lucide-react";
+import { Sparkles, FileText, Volume2, Loader2, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -461,7 +461,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
               {activeMode === 'enhanced' && <Sparkles className="h-5 w-5 text-primary" />}
               {activeMode === 'flashcards' && <FileText className="h-5 w-5 text-secondary" />}
               {activeMode === 'audio' && <Volume2 className="h-5 w-5 text-accent" />}
-              {activeMode === 'quiz' && <Brain className="h-5 w-5 text-quiz" />}
+              {activeMode === 'quiz' && <Target className="h-5 w-5 text-quiz" />}
               <span className="font-semibold text-foreground">
                 {activeMode === 'enhanced' && 'Enhanced Notes Mode'}
                 {activeMode === 'flashcards' && 'Flashcards Mode'}
@@ -551,7 +551,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
           {isProcessing === 'quiz' ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
-            <Brain className="h-4 w-4 mr-2" />
+            <Target className="h-4 w-4 mr-2" />
           )}
           Take Quiz
         </Button>
