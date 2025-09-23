@@ -74,17 +74,6 @@ const ThinkingOverlay = ({ isVisible, message, type = 'processing' }: ThinkingOv
             <p className="text-muted-foreground font-medium">{message}</p>
           </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-primary/60 to-primary rounded-full animate-pulse"
-              style={{
-                width: '100%',
-                animation: 'loading 2s ease-in-out infinite'
-              }}
-            />
-          </div>
-
           <p className="text-xs text-muted-foreground">
             This may take a few moments...
           </p>
