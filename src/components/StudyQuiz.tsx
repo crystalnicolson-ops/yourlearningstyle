@@ -270,7 +270,7 @@ const StudyQuiz = ({ questions, onBack, onAddQuestions, originalContent }: Study
       {/* Question */}
       <Card className="p-2 sm:p-6 bg-white/95 backdrop-blur-sm max-w-full relative z-10">
         <div className="flex items-start justify-between mb-2 sm:mb-4">
-          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs px-2 py-1 border border-gray-200">Q {currentQuestion + 1}/{questions.length}</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 text-gray-700 text-[10px] sm:text-xs px-2 py-1 border border-gray-200">Question {currentQuestion + 1} of {questions.length}</span>
         </div>
         <h3 className="text-sm sm:text-2xl font-semibold text-gray-800 mb-2.5 sm:mb-6 leading-snug">
           {question.question}
