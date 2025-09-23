@@ -437,7 +437,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
       case 'audio':
         return 'Converting your notes into high-quality audio narration...';
       case 'quiz':
-        return quizProgress || 'Creating personalized quiz questions from your content...';
+        return quizProgress || 'Generating high-quality quiz questions from your material. This may take a few seconds to deliver the best results...';
       case 'more-flashcards':
         return 'Generating additional flashcards to expand your study set...';
       default:
