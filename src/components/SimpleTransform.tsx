@@ -137,50 +137,29 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
     try {
       console.log('Starting quiz generation with content length:', content.length);
       
-      // First request
-      const { data: firstData, error: firstError } = await supabase.functions.invoke('generate-quiz', {
+      const { data, error } = await supabase.functions.invoke('generate-quiz', {
         body: { 
           content,
           count: requestedCount
         }
       });
       
-      if (firstError) {
-        console.error('Quiz generation error:', firstError);
-        throw new Error(firstError.message || 'Failed to generate quiz');
+      if (error) {
+        console.error('Quiz generation error:', error);
+        throw new Error(error.message || 'Failed to generate quiz');
       }
 
-      console.log('Quiz API response:', firstData);
-      let collected = Array.isArray(firstData?.questions) ? firstData.questions : [];
-      console.log('Collected questions count:', collected.length);
+      console.log('Quiz API response:', data);
+      const questions = Array.isArray(data?.questions) ? data.questions : [];
+      console.log('Generated questions count:', questions.length);
 
-      // If we got fewer than requested, try once more for the remainder
-      if (collected.length < requestedCount) {
-        const remaining = requestedCount - collected.length;
-        setQuizProgress(`Generating ${remaining} additional questions...`);
-        console.log('Requesting additional questions:', remaining);
-        
-        const { data: secondData, error: secondError } = await supabase.functions.invoke('generate-quiz', {
-          body: {
-            content,
-            count: remaining,
-            excludeQuestions: collected.map((q: any) => q.question)
-          }
-        });
-        if (!secondError && Array.isArray(secondData?.questions)) {
-          collected = [...collected, ...secondData.questions];
-          console.log('Total questions after second request:', collected.length);
-        }
-      }
-
-      if (collected.length > 0) {
-        console.log('Setting quiz questions:', collected.length);
-        setQuizQuestions(collected);
+      if (questions.length > 0) {
+        setQuizQuestions(questions);
         setShowQuiz(true);
         onTransformed("Quiz generated successfully", "quiz");
         toast({
           title: "Quiz generated!",
-          description: `${collected.length} questions ready.`,
+          description: `${questions.length} questions ready.`,
         });
       } else {
         throw new Error('No quiz questions were generated');
