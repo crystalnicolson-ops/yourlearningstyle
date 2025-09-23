@@ -62,6 +62,47 @@ const LearningStyleTransform = ({ content, onTransformed }: LearningStyleTransfo
           title: "Flashcards created!",
           description: `Generated ${Array.isArray(transformData.transformedContent) ? transformData.transformedContent.length : 0} flashcards for visual learning`,
         });
+      } else if (selectedStyle === 'visual') {
+        // Handle visual learning style with JSON parsing fallback
+        let flashcardData = [];
+        if (transformData.transformedContent) {
+          try {
+            // Handle JSON string wrapped in markdown code blocks
+            const content = transformData.transformedContent.replace(/```json\n?|\n?```/g, '').trim();
+            flashcardData = JSON.parse(content);
+          } catch (parseError) {
+            console.error('Failed to parse flashcard JSON:', parseError);
+            // Try alternative parsing
+            try {
+              const jsonMatch = transformData.transformedContent.match(/\[(.*?)\]/s);
+              if (jsonMatch) {
+                flashcardData = JSON.parse('[' + jsonMatch[1] + ']');
+              }
+            } catch (secondParseError) {
+              console.error('Alternative parsing also failed:', secondParseError);
+            }
+          }
+        }
+        
+        if (flashcardData.length > 0) {
+          setFlashcards(flashcardData);
+          setTransformedResult({ ...transformData, transformedContent: flashcardData });
+          onTransformed('Flashcards generated', selectedStyle);
+          
+          toast({
+            title: "Flashcards created!",
+            description: `Generated ${flashcardData.length} flashcards for visual learning`,
+          });
+        } else {
+          // Fallback to regular text display
+          setTransformedResult(transformData);
+          onTransformed(transformData.transformedContent, selectedStyle);
+          
+          toast({
+            title: "Content transformed!",
+            description: `Adapted for visual learning style`,
+          });
+        }
       } else if (selectedStyle === 'auditory') {
         // Handle text-to-speech for auditory learners
         const transformedText = transformData.transformedContent;

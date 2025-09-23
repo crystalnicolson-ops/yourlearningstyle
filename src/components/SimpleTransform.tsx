@@ -82,16 +82,31 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
 
       if (error) throw error;
 
+      // Parse flashcards from the response
+      let flashcardData = [];
       if (data.type === 'flashcards' && Array.isArray(data.transformedContent)) {
-        setFlashcards(data.transformedContent);
+        flashcardData = data.transformedContent;
+      } else if (data.transformedContent) {
+        // Handle JSON string wrapped in markdown code blocks
+        const content = data.transformedContent.replace(/```json\n?|\n?```/g, '').trim();
+        try {
+          flashcardData = JSON.parse(content);
+        } catch (parseError) {
+          console.error('Failed to parse flashcard JSON:', parseError);
+          throw new Error('Invalid flashcard format received');
+        }
+      }
+      
+      if (Array.isArray(flashcardData) && flashcardData.length > 0) {
+        setFlashcards(flashcardData);
         onTransformed('Flashcards generated', 'flashcards');
         
         toast({
           title: "Flashcards created!",
-          description: `Generated ${data.transformedContent.length} flashcards`,
+          description: `Generated ${flashcardData.length} flashcards`,
         });
       } else {
-        throw new Error('Invalid flashcard format received');
+        throw new Error('No valid flashcards found in response');
       }
     } catch (error: any) {
       toast({
