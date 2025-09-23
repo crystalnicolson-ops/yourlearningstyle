@@ -16,14 +16,14 @@ const ThinkingOverlay = ({ isVisible, message, type = 'processing' }: ThinkingOv
         return <Sparkles className="h-8 w-8 text-primary animate-pulse" />;
       case 'flashcards':
       case 'visual':
-        return <Brain className="h-8 w-8 text-secondary animate-pulse" />;
+        return <Sparkles className="h-8 w-8 text-secondary animate-pulse" />;
       case 'audio':
       case 'auditory':
         return <div className="h-8 w-8 text-accent animate-pulse">🎵</div>;
       case 'quiz':
-        return <Brain className="h-8 w-8 text-quiz animate-pulse" />;
+        return <Sparkles className="h-8 w-8 text-quiz animate-pulse" />;
       default:
-        return <Brain className="h-8 w-8 text-primary animate-pulse" />;
+        return <Sparkles className="h-8 w-8 text-primary animate-pulse" />;
     }
   };
 
