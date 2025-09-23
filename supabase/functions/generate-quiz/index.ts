@@ -61,6 +61,7 @@ ${excludeBlock}
 Study Material:
 ${content}`;
 
+    const tFirstStart = Date.now();
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -77,7 +78,7 @@ ${content}`;
           { role: 'user', content: prompt }
         ],
         temperature: 0.6,
-        max_tokens: 2500,
+        max_tokens: 3200,
       }),
     });
 
@@ -103,6 +104,9 @@ ${content}`;
         seen.add(q.question);
         return true;
       }).slice(0, count);
+
+      const firstDuration = Date.now() - tFirstStart;
+      console.log('generate-quiz: first pass unique =', quizQuestions.length, '/', count, 'of requested', requestCount, 'in', firstDuration, 'ms');
     } catch (parseError) {
       console.error('Failed to parse OpenAI response as JSON:', generatedContent);
       throw new Error('Failed to generate valid quiz format');
@@ -112,6 +116,7 @@ ${content}`;
     if (quizQuestions.length < count) {
       const need = count - quizQuestions.length;
       const excludeQuestionsAll = [...excludeQuestions, ...quizQuestions.map(q => q.question)];
+      console.log('generate-quiz: triggering second pass, need =', need);
       const extraPrompt = `Create exactly ${need} additional multiple-choice questions based on the same study material. Each question must have 4 options (A, B, C, D) with only one correct answer. 
 
 Return the response as a JSON array with this EXACT format:
@@ -133,6 +138,7 @@ Do NOT duplicate or closely rephrase any of these existing questions:
 
 Return ONLY valid JSON array in the same schema.`;
 
+      const tSecondStart = Date.now();
       const response2 = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -171,6 +177,9 @@ Return ONLY valid JSON array in the same schema.`;
             seen.add(q.question);
             return true;
           }).slice(0, count);
+
+          const secondDuration = Date.now() - tSecondStart;
+          console.log('generate-quiz: second pass completed; total unique =', quizQuestions.length, '/', count, 'in', secondDuration, 'ms');
         } catch (e) {
           console.warn('Second pass parse failed:', generatedContent2);
         }
