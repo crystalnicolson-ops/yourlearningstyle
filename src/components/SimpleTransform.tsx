@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Sparkles, FileText, Volume2, Loader2, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Flashcards from "./Flashcards";
@@ -588,7 +588,27 @@ Make the enhanced notes comprehensive, well-organized, and significantly more va
         />
       ) : (
         <>
-          {/* Enhanced notes display removed to avoid showing full content */}
+          {enhancedNotes && (
+            <Card className="border-enhanced bg-enhanced/5">
+              <CardContent className="p-6">
+                <div className="prose prose-sm max-w-none dark:prose-invert">
+                  <div dangerouslySetInnerHTML={{
+                    __html: enhancedNotes
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                      .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-enhanced">$1</h1>')
+                      .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 text-enhanced">$1</h2>')
+                      .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2 text-enhanced">$1</h3>')
+                      .replace(/^\• (.*$)/gm, '<li class="mb-1">$1</li>')
+                      .replace(/^- (.*$)/gm, '<li class="mb-1">$1</li>')
+                      .replace(/\n\n/g, '</p><p class="mb-4">')
+                      .replace(/^(?!<[h|l])/gm, '<p class="mb-4">')
+                      .replace(/<p class="mb-4"><\/p>/g, '')
+                  }} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {flashcards.length > 0 && (
             <Flashcards 
