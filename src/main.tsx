@@ -39,16 +39,23 @@ function setupResumeHandler() {
   try {
     const platform = Capacitor.getPlatform();
 
-    // Prevent reload loops by throttling reloads
+    // Only reload if the app is actually broken, not just on every resume
     const shouldReloadOnResume = () => {
       try {
+        // Check if React root is actually empty or broken
+        const root = document.getElementById('root');
+        if (!root || root.childElementCount === 0) {
+          return true;
+        }
+        
+        // Throttle reloads to prevent loops
         const now = Date.now();
         const last = Number(sessionStorage.getItem('lastResumeReload') || '0');
-        if (now - last < 2000) return false; // 2s guard
-        sessionStorage.setItem('lastResumeReload', String(now));
-        return true;
+        if (now - last < 5000) return false; // 5s guard instead of 2s
+        
+        return false; // Don't auto-reload unless necessary
       } catch {
-        return true;
+        return false; // Safer default
       }
     };
 
@@ -59,35 +66,44 @@ function setupResumeHandler() {
       console.log('[Resume] appStateChange -> active');
       await setupNativeFeatures();
 
-      if (platform !== 'web' && shouldReloadOnResume()) {
-        console.log('[Resume] Forcing full reload after resume');
-        window.location.reload();
-        return;
-      }
-
-      // Web fallback: if React tree disappeared, reload
+      // Only reload if the React tree is actually broken
       setTimeout(() => {
-        const root = document.getElementById('root');
-        if (root && root.childElementCount === 0) {
-          console.log('[Resume] React root empty, reloading...');
+        if (shouldReloadOnResume()) {
+          console.log('[Resume] React root broken, reloading...');
+          sessionStorage.setItem('lastResumeReload', String(Date.now()));
           window.location.reload();
         }
-      }, 120);
+      }, 500); // Give React time to render
     });
 
-    // Explicit resume event (native)
+    // Explicit resume event (native) - just setup native features, don't reload
     CapApp.addListener('resume', async () => {
       console.log('[Resume] resume event');
       await setupNativeFeatures();
-      if (platform !== 'web' && shouldReloadOnResume()) {
-        window.location.reload();
-      }
+      
+      // Only reload if absolutely necessary
+      setTimeout(() => {
+        if (shouldReloadOnResume()) {
+          console.log('[Resume] React root broken on resume, reloading...');
+          sessionStorage.setItem('lastResumeReload', String(Date.now()));
+          window.location.reload();
+        }
+      }, 500);
     });
 
     // Handle tab visibility changes (web only)
     document.addEventListener('visibilitychange', async () => {
       if (document.visibilityState === 'visible') {
         await setupNativeFeatures();
+        
+        // Check if page needs reload after being hidden
+        setTimeout(() => {
+          if (shouldReloadOnResume()) {
+            console.log('[Resume] React root broken after visibility change, reloading...');
+            sessionStorage.setItem('lastResumeReload', String(Date.now()));
+            window.location.reload();
+          }
+        }, 300);
       }
     });
   } catch (err) {
