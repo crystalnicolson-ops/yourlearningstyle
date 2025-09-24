@@ -267,15 +267,6 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               )}
               <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDelete(note.id, note.file_url)}
-                  className="flex items-center gap-2 text-destructive hover:text-destructive h-11 px-4 text-base sm:text-sm justify-center"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete
-                </Button>
               </div>
             </Card>
           );
