@@ -211,14 +211,33 @@ const extractTextForNote = async (note: Note) => {
     return null;
   }
 
+  // Get the combined content from all notes that have content
+  const allContent = notes.filter(note => note.content && note.content.trim().length > 0)
+    .map(note => note.content).join('\n\n');
+  const hasAnyContent = allContent.length > 0;
+
   return (
     <div className="space-y-6">
-      {/* Notes with Learning Transformation */}
+      {/* Transform Options at Top */}
+      {hasAnyContent && (
+        <Card className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
+          <SimpleTransform
+            content={allContent}
+            onTransformed={(content, type) => {
+              // Handle transformation for the first note with content
+              const firstNoteWithContent = notes.find(note => note.content && note.content.trim().length > 0);
+              if (firstNoteWithContent) {
+                handleTransformed(firstNoteWithContent.id, content, type);
+              }
+            }}
+          />
+        </Card>
+      )}
+
+      {/* File Cards Below */}
       <div className="space-y-4">
         {notes.map((note) => {
-          const isExpanded = expandedNotes.has(note.id);
           const hasContent = note.content && note.content.trim().length > 0;
-          const transformed = transformedContent[note.id];
           
           return (
             <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
@@ -255,17 +274,6 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               </div>
 
-              {/* Expanded content section - removed */}
-
-              {/* Simple Transform Options */}
-              {hasContent && (
-                <div className="mt-4">
-                  <SimpleTransform
-                    content={note.content || ""}
-                    onTransformed={(content, type) => handleTransformed(note.id, content, type)}
-                  />
-                </div>
-              )}
               <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
                 <Button
                   variant="outline"
@@ -281,7 +289,6 @@ const extractTextForNote = async (note: Note) => {
           );
         })}
       </div>
-
     </div>
   );
 };
