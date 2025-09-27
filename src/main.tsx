@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Native status bar fix for Capacitor (removes green band on Android/iOS)
 // Ensures the WebView doesn't underlap a colored native status bar
@@ -128,7 +129,11 @@ async function initializeApp() {
 
     // Create and render React app
     const root = createRoot(rootElement);
-    root.render(<App />);
+    root.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
     
   } catch (error) {
     console.error("App initialization failed:", error);
