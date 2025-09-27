@@ -30,8 +30,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   if (!React || typeof React.useState !== 'function') {
     console.error('React context not available');
     return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
-        <div className="text-white text-center">Loading...</div>
+      <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 max-w-md w-full text-center">
+          <div className="text-white text-lg font-medium">Initializing app...</div>
+          <div className="text-white/80 text-sm mt-2">Please wait while we set up your learning environment</div>
+        </div>
       </div>
     );
   }
