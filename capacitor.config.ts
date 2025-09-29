@@ -10,11 +10,11 @@ const config: CapacitorConfig = {
   },
   ios: {
     // Configure launch screen background to match app
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#6366F1',
     // Configure splash screen
-    splashBackgroundColor: '#F0F8FF',
+    splashBackgroundColor: '#6366F1',
     // Configure status bar
-    statusBarStyle: 'dark',
+    statusBarStyle: 'light',
     // Hide the offload text by using proper splash screen
     splashFadeOutDuration: 300,
     hideLogs: true

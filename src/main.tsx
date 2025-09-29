@@ -23,12 +23,12 @@ async function setupNativeFeatures() {
     const platform = Capacitor.getPlatform();
     if (platform === "ios") {
       await StatusBar.setOverlaysWebView({ overlay: false });
-      await StatusBar.setBackgroundColor({ color: "#F0F8FF" });
-      await StatusBar.setStyle({ style: Style.Dark });
+      await StatusBar.setBackgroundColor({ color: "#6366F1" });
+      await StatusBar.setStyle({ style: Style.Light });
     } else if (platform === "android") {
       await StatusBar.setOverlaysWebView({ overlay: false });
-      await StatusBar.setBackgroundColor({ color: "#F0F8FF" });
-      await StatusBar.setStyle({ style: Style.Dark });
+      await StatusBar.setBackgroundColor({ color: "#6366F1" });
+      await StatusBar.setStyle({ style: Style.Light });
     }
   } catch (err) {
     console.warn("StatusBar setup skipped:", err);
