@@ -42,12 +42,12 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
+	<false/>
 	<key>UIStatusBarHidden</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
-	<!-- Launch Screen Background Color -->
+	<!-- Launch Screen Configuration -->
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
@@ -61,7 +61,7 @@
 		<key>UILaunchScreenSize</key>
 		<string>{414, 896}</string>
 	</dict>
-	<!-- Disable "Off Loads" text -->
+	<!-- Disable offload behavior and encryption questions -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSAppTransportSecurity</key>
@@ -69,5 +69,11 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<!-- Prevent app offloading -->
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<!-- Disable automatic offloading -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
 </dict>
 </plist>
