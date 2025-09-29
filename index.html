@@ -49,7 +49,8 @@
         right: 0;
         height: constant(safe-area-inset-top);
         height: env(safe-area-inset-top);
-        background: hsl(208, 100%, 97%);
+        /* Match native StatusBar color to avoid a visible strip */
+        background: #6366F1;
         z-index: 2147483647;
         pointer-events: none;
       }
