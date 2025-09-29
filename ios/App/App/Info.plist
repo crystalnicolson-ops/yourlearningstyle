@@ -46,7 +46,7 @@
 	<key>UIStatusBarHidden</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleDarkContent</string>
+	<string>UIStatusBarStyleLightContent</string>
 	<!-- Launch Screen Background Color -->
 	<key>UILaunchScreen</key>
 	<dict>
@@ -55,7 +55,19 @@
 		<key>UIImageName</key>
 		<string></string>
 		<key>UILaunchScreenBackgroundColor</key>
-		<string>#F0F8FF</string>
+		<string>#6366f1</string>
+		<key>UILaunchScreenMinimumSize</key>
+		<string>{320, 568}</string>
+		<key>UILaunchScreenSize</key>
+		<string>{414, 896}</string>
+	</dict>
+	<!-- Disable "Off Loads" text -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 	</dict>
 </dict>
 </plist>

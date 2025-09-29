@@ -14,7 +14,10 @@ const config: CapacitorConfig = {
     // Configure splash screen
     splashBackgroundColor: '#F0F8FF',
     // Configure status bar
-    statusBarStyle: 'dark'
+    statusBarStyle: 'dark',
+    // Hide the offload text by using proper splash screen
+    splashFadeOutDuration: 300,
+    hideLogs: true
   },
   bundledWebRuntime: false
 };
