@@ -48,6 +48,8 @@
 	<!-- Launch Screen Configuration -->
 	<key>UILaunchScreen</key>
 	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
 		<key>UILaunchScreenBackgroundColor</key>
 		<string>#6366f1</string>
 	</dict>
