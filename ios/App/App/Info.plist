@@ -22,8 +22,6 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -50,16 +48,8 @@
 	<!-- Launch Screen Configuration -->
 	<key>UILaunchScreen</key>
 	<dict>
-		<key>UIColorName</key>
-		<string></string>
-		<key>UIImageName</key>
-		<string></string>
 		<key>UILaunchScreenBackgroundColor</key>
 		<string>#6366f1</string>
-		<key>UILaunchScreenMinimumSize</key>
-		<string>{320, 568}</string>
-		<key>UILaunchScreenSize</key>
-		<string>{414, 896}</string>
 	</dict>
 	<!-- Disable offload behavior and encryption questions -->
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -69,11 +59,18 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<!-- Prevent app offloading -->
+	<!-- Prevent app offloading completely -->
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- Disable automatic offloading -->
 	<key>UIRequiresFullScreen</key>
 	<true/>
+	<!-- Additional offload prevention -->
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<!-- Remove main storyboard to prevent offload text -->
+	<key>UILaunchStoryboardName</key>
+	<string></string>
 </dict>
 </plist>
