@@ -1,13 +1,12 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
+const liveReloadUrl = process.env.CAP_SERVER_URL;
+
 const config: CapacitorConfig = {
   appId: 'app.lovable.be928a6a28094e879afb600aa9894e39',
   appName: 'yourlearningstyle',
   webDir: 'dist',
-  server: {
-    url: 'https://be928a6a-2809-4e87-9afb-600aa9894e39.lovableproject.com?forceHideBadge=true',
-    cleartext: true
-  },
+  server: liveReloadUrl ? { url: liveReloadUrl, cleartext: true } : { cleartext: true },
   ios: {
     // Configure launch screen background to match app
     backgroundColor: '#6366F1',
