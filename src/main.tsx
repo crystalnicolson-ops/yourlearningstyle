@@ -39,6 +39,7 @@ async function setupNativeFeatures() {
 function setupResumeHandler() {
   try {
     const platform = Capacitor.getPlatform();
+    let lastBackgroundAt = 0;
 
     // Only reload if the app is actually broken, not just on every resume
     const shouldReloadOnResume = () => {
@@ -62,19 +63,32 @@ function setupResumeHandler() {
 
     // Fires when app state changes (native)
     CapApp.addListener('appStateChange', async ({ isActive }) => {
-      if (!isActive) return;
+      if (isActive) {
+        console.log('[Resume] appStateChange -> active');
+        await setupNativeFeatures();
 
-      console.log('[Resume] appStateChange -> active');
-      await setupNativeFeatures();
-
-      // Only reload if the React tree is actually broken
-      setTimeout(() => {
-        if (shouldReloadOnResume()) {
-          console.log('[Resume] React root broken, reloading...');
+        const idleMs = Date.now() - (lastBackgroundAt || Date.now());
+        // iOS sometimes purges the WKWebView after long background; hard-reload to recover
+        if (platform === 'ios' && idleMs > 30000) {
+          console.log('[Resume] iOS idle > 30s, forcing reload');
           sessionStorage.setItem('lastResumeReload', String(Date.now()));
           window.location.reload();
+          return;
         }
-      }, 500); // Give React time to render
+
+        // Only reload if the React tree is actually broken
+        setTimeout(() => {
+          if (shouldReloadOnResume()) {
+            console.log('[Resume] React root broken, reloading...');
+            sessionStorage.setItem('lastResumeReload', String(Date.now()));
+            window.location.reload();
+          }
+        }, 500); // Give React time to render
+      } else {
+        // App going to background
+        lastBackgroundAt = Date.now();
+        console.log('[Background] appStateChange -> inactive');
+      }
     });
 
     // Explicit resume event (native) - just setup native features, don't reload
