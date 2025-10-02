@@ -110,7 +110,6 @@ function setupResumeHandler() {
     document.addEventListener('visibilitychange', async () => {
       if (document.visibilityState === 'visible') {
         await setupNativeFeatures();
-        
         // Check if page needs reload after being hidden
         setTimeout(() => {
           if (shouldReloadOnResume()) {
@@ -119,10 +118,48 @@ function setupResumeHandler() {
             window.location.reload();
           }
         }, 300);
+      } else {
+        // going hidden
+        lastBackgroundAt = Date.now();
+      }
+    });
+
+    // Handle bfcache restores on iOS Safari/WKWebView
+    window.addEventListener('pageshow', (ev: any) => {
+      if (ev && ev.persisted) {
+        console.log('[Resume] pageshow from bfcache, forcing reload');
+        window.location.reload();
       }
     });
   } catch (err) {
     console.warn('Resume handler setup failed:', err);
+  }
+}
+
+// Root blank-screen watchdog (iOS/WebKit resilience)
+function startRootWatchdog() {
+  try {
+    let attempts = 0;
+    const maxAttempts = 10; // check for ~10s total
+    const interval = setInterval(() => {
+      const root = document.getElementById('root');
+      const isBlank = !root || root.childElementCount === 0 || ((root.textContent || '').trim() === '' && root.children.length === 0);
+      if (document.visibilityState === 'visible' && isBlank) {
+        const now = Date.now();
+        const lastHeal = Number(sessionStorage.getItem('lastAutoHeal') || '0');
+        if (now - lastHeal > 10000) { // throttle to avoid loops
+          console.log('[Watchdog] Empty root detected, forcing reload');
+          sessionStorage.setItem('lastAutoHeal', String(now));
+          clearInterval(interval);
+          window.location.reload();
+          return;
+        }
+      }
+      attempts++;
+      if (attempts >= maxAttempts) clearInterval(interval);
+    }, 1000);
+  } catch (e) {
+    console.warn('Watchdog init failed:', e);
   }
 }
 
@@ -148,6 +185,9 @@ async function initializeApp() {
         <App />
       </ErrorBoundary>
     );
+
+    // Start watchdog after initial render
+    startRootWatchdog();
     
   } catch (error) {
     console.error("App initialization failed:", error);
