@@ -154,10 +154,7 @@ serve(async (req) => {
           disableFontFace: true,
           disableRange: true,
           disableAutoFetch: true,
-          disableStream: true,
-          cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-          cMapPacked: true,
-          standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/'
+          disableStream: true
         });
         const pdf = await loadingTask.promise;
         const parts: string[] = [];
@@ -184,9 +181,6 @@ serve(async (req) => {
               data: uint8,
               isEvalSupported: false,
               disableWorker: true,
-              cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-              cMapPacked: true,
-              standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
               disableFontFace: false,
               disableRange: true,
               disableAutoFetch: true,
