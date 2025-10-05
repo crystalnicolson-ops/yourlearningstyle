@@ -146,17 +146,36 @@ serve(async (req) => {
       try {
         const arrayBuffer = await (blob as Blob).arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        const loadingTask = pdfjsLib.getDocument({ data: uint8, isEvalSupported: false, disableWorker: true, useWorkerFetch: false, disableFontFace: true, disableRange: true, disableAutoFetch: true, disableStream: true });
+        const loadingTask = pdfjsLib.getDocument({
+          data: uint8,
+          isEvalSupported: false,
+          disableWorker: true,
+          useWorkerFetch: false,
+          disableFontFace: true,
+          disableRange: true,
+          disableAutoFetch: true,
+          disableStream: true,
+          cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/'
+        });
         const pdf = await loadingTask.promise;
         const parts: string[] = [];
         const limit = Math.min(pdf.numPages, 100);
         for (let i = 1; i <= limit; i++) {
           const page = await pdf.getPage(i);
-          const content: any = await page.getTextContent();
-          const text = (content.items as any[])
-            .map((item: any) => (typeof item?.str === 'string' ? item.str : ''))
-            .join(' ');
-          parts.push(text);
+          const content: any = await page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
+          const items = (content.items as any[]) || [];
+          let pageText = '';
+          for (const it of items) {
+            if (typeof it?.str === 'string') {
+              pageText += it.str;
+              if ((it as any).hasEOL) pageText += '\n';
+              else pageText += ' ';
+            }
+          }
+          parts.push(pageText);
+        }
         }
         extractedText = parts.join('\n\n').replace(/\s+/g, ' ').trim();
         if (!extractedText) {
