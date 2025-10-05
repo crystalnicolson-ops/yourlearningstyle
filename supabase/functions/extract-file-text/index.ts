@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import mammoth from 'https://esm.sh/mammoth@1.6.0';
-import pdfParse from 'npm:pdf-parse@1.1.1';
+import * as pdfjsLib from 'https://esm.sh/pdfjs-dist@3.11.174/build/pdf.js';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -145,8 +145,20 @@ serve(async (req) => {
     } else if (effectiveType.includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
       try {
         const arrayBuffer = await (blob as Blob).arrayBuffer();
-        const data = await pdfParse(Buffer.from(arrayBuffer));
-        extractedText = data.text.trim();
+        const uint8 = new Uint8Array(arrayBuffer);
+        const loadingTask = pdfjsLib.getDocument({ data: uint8, isEvalSupported: false });
+        const pdf = await loadingTask.promise;
+        const parts: string[] = [];
+        const limit = Math.min(pdf.numPages, 100);
+        for (let i = 1; i <= limit; i++) {
+          const page = await pdf.getPage(i);
+          const content: any = await page.getTextContent();
+          const text = (content.items as any[])
+            .map((item: any) => (typeof item?.str === 'string' ? item.str : ''))
+            .join(' ');
+          parts.push(text);
+        }
+        extractedText = parts.join('\n\n').replace(/\s+/g, ' ').trim();
         if (!extractedText) {
           extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
         }
