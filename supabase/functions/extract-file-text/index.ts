@@ -176,7 +176,6 @@ serve(async (req) => {
           }
           parts.push(pageText);
         }
-        }
         extractedText = parts.join('\n\n').replace(/\s+/g, ' ').trim();
         if (!extractedText) {
           extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
