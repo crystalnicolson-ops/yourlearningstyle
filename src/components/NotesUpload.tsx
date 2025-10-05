@@ -150,13 +150,22 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           }
           
           if (extractData?.extractedText) {
-            const autoExtracted = extractData.extractedText;
-            extractedContent = autoExtracted;
-            
-            toast({
-              title: "Text extracted successfully",
-              description: `Extracted ${extractedContent.length} characters from ${file.name}`,
-            });
+            const autoExtracted = String(extractData.extractedText).trim();
+            const lower = autoExtracted.toLowerCase();
+            const unusable = lower.startsWith('[error extracting text from pdf') || lower.startsWith('[unable to extract text');
+            if (!unusable && autoExtracted.length > 0) {
+              extractedContent = autoExtracted;
+              toast({
+                title: "Text extracted successfully",
+                description: `Extracted ${autoExtracted.length} characters from ${file.name}`,
+              });
+            } else {
+              extractedContent = '';
+              toast({
+                title: "PDF appears scanned — no selectable text",
+                description: `Try re-uploading as DOCX or paste the text manually for ${file.name}.`,
+              });
+            }
           } else {
             toast({
               title: "No text content found",

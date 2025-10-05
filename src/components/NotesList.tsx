@@ -167,6 +167,12 @@ const isExtractableType = (note: Note) => {
   );
 };
 
+const isExtractionErrorContent = (txt?: string | null) => {
+  if (!txt) return false;
+  const t = txt.trim().toLowerCase();
+  return t.startsWith('[error extracting text from pdf') || t.startsWith('[unable to extract text');
+};
+
 const extractTextForNote = async (note: Note) => {
     try {
       toast({ title: 'Extracting text...', description: note.file_name || undefined });
@@ -213,10 +219,12 @@ const extractTextForNote = async (note: Note) => {
     return null;
   }
 
-  // Get the combined content from all notes that have content
-  const allContent = notes.filter(note => note.content && note.content.trim().length > 0)
-    .map(note => note.content).join('\n\n');
-  const hasAnyContent = allContent.length > 0;
+  // Get the combined content from all notes that have usable content
+  const allContent = notes
+    .filter(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content))
+    .map(note => (note.content as string))
+    .join('\n\n');
+  const hasAnyContent = allContent.trim().length > 0;
 
   return (
     <div className="space-y-6">
@@ -227,7 +235,7 @@ const extractTextForNote = async (note: Note) => {
             content={allContent}
             onTransformed={(content, type) => {
               // Handle transformation for the first note with content
-              const firstNoteWithContent = notes.find(note => note.content && note.content.trim().length > 0);
+              const firstNoteWithContent = notes.find(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
               if (firstNoteWithContent) {
                 handleTransformed(firstNoteWithContent.id, content, type);
               }
@@ -239,7 +247,7 @@ const extractTextForNote = async (note: Note) => {
       {/* File Cards Below */}
       <div className="space-y-4">
         {notes.map((note) => {
-          const hasContent = note.content && note.content.trim().length > 0;
+          const hasContent = !!(note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
           
           return (
             <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
@@ -260,7 +268,9 @@ const extractTextForNote = async (note: Note) => {
                   {!hasContent && note.file_url && (
                     <div className="flex items-center justify-between gap-3 text-xs mb-3">
                       <span className="text-muted-foreground">
-                        {note.file_name?.toLowerCase().endsWith('.pdf')
+                        {isExtractionErrorContent(note.content)
+                          ? 'PDF appears scanned — unable to extract text. Try DOCX or paste the text.'
+                          : note.file_name?.toLowerCase().endsWith('.pdf')
                           ? (extractingNotes.has(note.id) ? 'PDF detected — extracting text…' : 'PDF detected — processing automatically')
                           : note.file_name?.toLowerCase().endsWith('.doc')
                           ? 'Legacy .doc is not supported — please re-save as .docx'
