@@ -178,6 +178,42 @@ serve(async (req) => {
         }
         extractedText = parts.join('\n\n').replace(/\s+/g, ' ').trim();
         if (!extractedText) {
+          // Fallback pass with different settings to handle tricky embedded fonts
+          try {
+            const loadingTask2 = pdfjsLib.getDocument({
+              data: uint8,
+              isEvalSupported: false,
+              disableWorker: true,
+              cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+              cMapPacked: true,
+              standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/standard_fonts/',
+              disableFontFace: false,
+              disableRange: true,
+              disableAutoFetch: true,
+              disableStream: true,
+            });
+            const pdf2 = await loadingTask2.promise;
+            const parts2: string[] = [];
+            const limit2 = Math.min(pdf2.numPages, 100);
+            for (let i = 1; i <= limit2; i++) {
+              const page2 = await pdf2.getPage(i);
+              const content2: any = await page2.getTextContent({ normalizeWhitespace: false, disableCombineTextItems: true, includeMarkedContent: true as any });
+              const items2 = (content2.items as any[]) || [];
+              let pageText2 = '';
+              for (const it of items2) {
+                if (typeof it?.str === 'string') {
+                  pageText2 += it.str + ' ';
+                }
+              }
+              parts2.push(pageText2);
+            }
+            extractedText = parts2.join('\n\n').replace(/\s+/g, ' ').trim();
+          } catch (fallbackErr) {
+            console.warn('PDF fallback parsing failed:', fallbackErr);
+          }
+        }
+
+        if (!extractedText) {
           extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
         }
       } catch (pdfError) {
