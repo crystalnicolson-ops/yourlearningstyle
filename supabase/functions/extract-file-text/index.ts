@@ -218,7 +218,47 @@ serve(async (req) => {
         }
       } catch (pdfError) {
         console.error('PDF parsing error:', pdfError);
-        extractedText = '[Error extracting text from PDF. Please try another file or copy/paste the text.]';
+        extractedText = '';
+      }
+
+      // Final naive fallback: parse PDF content streams for (text) Tj/TJ operators
+      if (!extractedText) {
+        try {
+          const arrayBuffer = await (blob as Blob).arrayBuffer();
+          const bytes = new Uint8Array(arrayBuffer);
+          const raw = new TextDecoder('latin1').decode(bytes);
+
+          const pieces: string[] = [];
+          const unescape = (s: string) => s
+            .replace(/\\\)/g, ')')
+            .replace(/\\\(/g, '(')
+            .replace(/\\n/g, '\n')
+            .replace(/\\r/g, '\r')
+            .replace(/\\t/g, '\t')
+            .replace(/\\\\/g, '\\');
+
+          const tjRegex = /\(([^)]*)\)\s*Tj/gm;
+          let m: RegExpExecArray | null;
+          while ((m = tjRegex.exec(raw)) !== null) {
+            pieces.push(unescape(m[1]));
+          }
+
+          const tjArrayRegex = /TJ\s*\[([^\]]+)\]/gm;
+          while ((m = tjArrayRegex.exec(raw)) !== null) {
+            const arr = m[1];
+            const strPieces = [...arr.matchAll(/\(([^)]*)\)/g)].map(x => unescape(x[1]));
+            if (strPieces.length) pieces.push(strPieces.join(''));
+          }
+
+          const naive = pieces.join(' ').replace(/\s+/g, ' ').trim();
+          if (naive) extractedText = naive;
+        } catch (naiveErr) {
+          console.warn('Naive PDF parsing failed:', naiveErr);
+        }
+      }
+
+      if (!extractedText) {
+        extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
       }
     } else if (effectiveType.includes('json')) {
       const txt = await (blob as Blob).text();
