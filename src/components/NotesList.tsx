@@ -159,8 +159,10 @@ const isExtractableType = (note: Note) => {
   const type = (note.file_type || '').toLowerCase();
   return (
     name.endsWith('.docx') ||
+    name.endsWith('.pdf') ||
     name.endsWith('.json') ||
     type.includes('officedocument.wordprocessingml.document') ||
+    type.includes('pdf') ||
     type.includes('json')
   );
 };
@@ -259,7 +261,7 @@ const extractTextForNote = async (note: Note) => {
                     <div className="flex items-center justify-between gap-3 text-xs mb-3">
                       <span className="text-muted-foreground">
                         {note.file_name?.toLowerCase().endsWith('.pdf')
-                          ? 'PDF uploaded — text extraction not supported yet'
+                          ? (extractingNotes.has(note.id) ? 'PDF detected — extracting text…' : 'PDF detected — processing automatically')
                           : note.file_name?.toLowerCase().endsWith('.doc')
                           ? 'Legacy .doc is not supported — please re-save as .docx'
                           : note.file_name?.toLowerCase().endsWith('.docx')

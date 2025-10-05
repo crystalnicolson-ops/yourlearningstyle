@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import mammoth from 'https://esm.sh/mammoth@1.6.0';
-import * as pdfjsLib from 'https://esm.sh/pdfjs-dist@3.11.174/build/pdf.js';
+import * as pdfjsLib from 'https://esm.sh/pdfjs-dist@3.11.174/legacy/build/pdf.mjs';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -146,7 +146,7 @@ serve(async (req) => {
       try {
         const arrayBuffer = await (blob as Blob).arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        const loadingTask = pdfjsLib.getDocument({ data: uint8, isEvalSupported: false });
+        const loadingTask = pdfjsLib.getDocument({ data: uint8, isEvalSupported: false, disableWorker: true, useWorkerFetch: false, disableFontFace: true, disableRange: true, disableAutoFetch: true, disableStream: true });
         const pdf = await loadingTask.promise;
         const parts: string[] = [];
         const limit = Math.min(pdf.numPages, 100);
