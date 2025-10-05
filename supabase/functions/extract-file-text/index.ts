@@ -2,6 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import mammoth from 'https://esm.sh/mammoth@1.6.0';
+import pdfParse from 'npm:pdf-parse@1.1.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -142,8 +143,17 @@ serve(async (req) => {
     } else if (effectiveType.includes('msword') || (fileName || '').toLowerCase().endsWith('.doc')) {
       extractedText = '[Legacy .doc files are not supported. Please resave your document as .docx and re-upload.]';
     } else if (effectiveType.includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
-      // TODO: Implement PDF parsing (pdfjs-dist). For now, placeholder.
-      extractedText = '[PDF text extraction will be added soon. Please copy/paste text for now.]';
+      try {
+        const arrayBuffer = await (blob as Blob).arrayBuffer();
+        const data = await pdfParse(Buffer.from(arrayBuffer));
+        extractedText = data.text.trim();
+        if (!extractedText) {
+          extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
+        }
+      } catch (pdfError) {
+        console.error('PDF parsing error:', pdfError);
+        extractedText = '[Error extracting text from PDF. Please try another file or copy/paste the text.]';
+      }
     } else if (effectiveType.includes('json')) {
       const txt = await (blob as Blob).text();
       try {
