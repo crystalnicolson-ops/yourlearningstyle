@@ -8,6 +8,35 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { addGuestNote } from "@/lib/guestNotes";
 import ThinkingOverlay from "./ThinkingOverlay";
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+
+async function extractPdfInBrowser(file: File): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+  const loadingTask = (pdfjsLib as any).getDocument({
+    data: uint8,
+    disableWorker: true,
+    useWorkerFetch: false,
+    isEvalSupported: false,
+  });
+  const pdf = await loadingTask.promise;
+  const parts: string[] = [];
+  const limit = Math.min((pdf as any).numPages, 100);
+  for (let i = 1; i <= limit; i++) {
+    const page = await (pdf as any).getPage(i);
+    const content: any = await page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
+    const items = (content.items as any[]) || [];
+    let pageText = '';
+    for (const it of items) {
+      if (typeof (it as any)?.str === 'string') {
+        pageText += (it as any).str;
+        pageText += (it as any).hasEOL ? '\n' : ' ';
+      }
+    }
+    parts.push(pageText);
+  }
+  return parts.join('\n\n').replace(/\s+/g, ' ').trim();
+}
 
 const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -134,8 +163,24 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
             title: "Extracting text...",
             description: `Processing ${file.name}`,
           });
-          
-          const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
+
+          // Try local PDF extraction first (more reliable in browser)
+          if ((file.type || '').toLowerCase().includes('pdf') || (file.name || '').toLowerCase().endsWith('.pdf')) {
+            try {
+              toast({ title: 'Extracting text (local)', description: file.name });
+              const localText = await extractPdfInBrowser(file);
+              if (localText && localText.length > 0) {
+                extractedContent = localText;
+                toast({ title: 'Text extracted (local)', description: `Extracted ${localText.length} characters` });
+              }
+            } catch (e) {
+              console.warn('Local PDF extraction failed, falling back to server:', e);
+            }
+          }
+
+          // If local extraction didn't produce content, call server function
+          if (!extractedContent) {
+            const { data: extractData, error: extractError } = await supabase.functions.invoke('extract-file-text', {
               body: {
                 fileUrl: fileUrl,
                 fileType: file.type,
@@ -144,33 +189,27 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
               }
             });
 
-          if (extractError) {
-            console.error('Extract function error:', extractError);
-            throw extractError;
-          }
-          
-          if (extractData?.extractedText) {
-            const autoExtracted = String(extractData.extractedText).trim();
-            const lower = autoExtracted.toLowerCase();
-            const unusable = lower.startsWith('[error extracting text from pdf') || lower.startsWith('[unable to extract text');
-            if (!unusable && autoExtracted.length > 0) {
-              extractedContent = autoExtracted;
-              toast({
-                title: "Text extracted successfully",
-                description: `Extracted ${autoExtracted.length} characters from ${file.name}`,
-              });
-            } else {
-              extractedContent = '';
-              toast({
-                title: "PDF appears scanned — no selectable text",
-                description: `Try re-uploading as DOCX or paste the text manually for ${file.name}.`,
-              });
+            if (extractError) {
+              console.error('Extract function error:', extractError);
+              throw extractError;
             }
-          } else {
+
+            if (extractData?.extractedText) {
+              const autoExtracted = String(extractData.extractedText).trim();
+              const lower = autoExtracted.toLowerCase();
+              const unusable = lower.startsWith('[error extracting text from pdf') || lower.startsWith('[unable to extract text');
+              if (!unusable && autoExtracted.length > 0) {
+                extractedContent = autoExtracted;
+                toast({ title: 'Text extracted successfully', description: `Extracted ${autoExtracted.length} characters from ${file.name}` });
+              }
+            }
+          }
+
+          if (!extractedContent) {
             toast({
-              title: "No text content found",
+              title: 'No text content found',
               description: `${file.name} was processed but no text content was found.`,
-              variant: "default",
+              variant: 'default',
             });
           }
         } catch (error) {
