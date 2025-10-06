@@ -121,10 +121,20 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
           fileType = file.type;
         }
 
+        // Try local extraction for PDFs in guest mode
+        let guestContent: string | null = null;
+        if ((fileType || '').toLowerCase().includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
+          try {
+            guestContent = await extractPdfInBrowser(file as File);
+          } catch (e) {
+            console.warn('Guest local PDF extraction failed:', e);
+          }
+        }
+
         addGuestNote({
           id: crypto.randomUUID(),
           title: title.trim() || file?.name || "Untitled Note",
-          content: null,
+          content: guestContent,
           file_data_url: fileUrl,
           file_name: fileName,
           file_type: fileType,
