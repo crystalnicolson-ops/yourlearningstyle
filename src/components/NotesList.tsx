@@ -299,7 +299,8 @@ const extractTextForNote = async (note: Note) => {
       <div className="space-y-4">
         {notes.map((note) => {
           const hasContent = !!(note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
-          
+          const isExpanded = expandedNotes.has(note.id);
+          const preview = hasContent ? (note.content as string) : '';
           return (
             <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
               <div className="flex items-start justify-between flex-wrap">
@@ -316,23 +317,41 @@ const extractTextForNote = async (note: Note) => {
                     <span>{new Date(note.created_at).toLocaleDateString()}</span>
                   </div>
 
-                  {!hasContent && note.file_url && (
-                    <div className="flex items-center justify-between gap-3 text-xs mb-3">
-                      <span className="text-muted-foreground">
-                        {isExtractionErrorContent(note.content)
-                          ? 'PDF appears scanned — unable to extract text. Try DOCX or paste the text.'
-                          : note.file_name?.toLowerCase().endsWith('.pdf')
-                          ? (extractingNotes.has(note.id) ? 'PDF detected — extracting text…' : 'PDF detected — processing automatically')
-                          : note.file_name?.toLowerCase().endsWith('.doc')
-                          ? 'Legacy .doc is not supported — please re-save as .docx'
-                          : note.file_name?.toLowerCase().endsWith('.docx')
-                          ? (extractingNotes.has(note.id) ? 'DOCX detected — extracting text…' : 'DOCX detected — processing automatically')
-                          : (extractingNotes.has(note.id) ? 'Processing file…' : 'File uploaded — processing automatically')}
-                      </span>
-                      {extractingNotes.has(note.id) && (
-                        <span className="text-primary">Processing…</span>
+                  {hasContent ? (
+                    <div className="mb-3 space-y-2">
+                      <div className="text-sm text-foreground whitespace-pre-wrap">
+                        {isExpanded ? preview : (preview.length > 220 ? preview.slice(0, 220) + '…' : preview)}
+                      </div>
+                      {preview.length > 220 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleExpanded(note.id)}
+                          className="h-8 px-2 text-xs text-primary"
+                        >
+                          {isExpanded ? 'Hide' : 'View more'}
+                        </Button>
                       )}
                     </div>
+                  ) : (
+                    note.file_url && (
+                      <div className="flex items-center justify-between gap-3 text-xs mb-3">
+                        <span className="text-muted-foreground">
+                          {isExtractionErrorContent(note.content)
+                            ? 'PDF appears scanned — unable to extract text. Try DOCX or paste the text.'
+                            : note.file_name?.toLowerCase().endsWith('.pdf')
+                            ? (extractingNotes.has(note.id) ? 'PDF detected — extracting text…' : 'PDF detected — processing automatically')
+                            : note.file_name?.toLowerCase().endsWith('.doc')
+                            ? 'Legacy .doc is not supported — please re-save as .docx'
+                            : note.file_name?.toLowerCase().endsWith('.docx')
+                            ? (extractingNotes.has(note.id) ? 'DOCX detected — extracting text…' : 'DOCX detected — processing automatically')
+                            : (extractingNotes.has(note.id) ? 'Processing file…' : 'File uploaded — processing automatically')}
+                        </span>
+                        {extractingNotes.has(note.id) && (
+                          <span className="text-primary">Processing…</span>
+                        )}
+                      </div>
+                    )
                   )}
                 </div>
               </div>

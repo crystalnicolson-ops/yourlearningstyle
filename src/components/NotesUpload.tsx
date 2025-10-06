@@ -144,7 +144,7 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
 
         toast({
           title: "Saved locally (guest mode)",
-          description: "Your note is stored in this browser.",
+          description: guestContent && guestContent.length > 0 ? `Text extracted (local): ${Math.min(guestContent.length, 200)} chars preview saved.` : "Your note is stored in this browser.",
         });
 
         // Reset form
