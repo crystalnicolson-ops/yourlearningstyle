@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { addGuestNote } from "@/lib/guestNotes";
 import ThinkingOverlay from "./ThinkingOverlay";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import Tesseract from 'tesseract.js';
 
 async function extractPdfInBrowser(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
@@ -36,6 +37,32 @@ async function extractPdfInBrowser(file: File): Promise<string> {
     parts.push(pageText);
   }
   return parts.join('\n\n').replace(/\s+/g, ' ').trim();
+}
+
+async function ocrPdfInBrowser(file: File, maxPages = 3): Promise<string> {
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+  const loadingTask = (pdfjsLib as any).getDocument({
+    data: uint8,
+    disableWorker: true,
+    useWorkerFetch: false,
+    isEvalSupported: false,
+  });
+  const pdf = await loadingTask.promise;
+  const limit = Math.min((pdf as any).numPages, maxPages);
+  let out = '';
+  for (let i = 1; i <= limit; i++) {
+    const page = await (pdf as any).getPage(i);
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    await page.render({ canvasContext: ctx as any, viewport }).promise;
+    const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
+    out += (text || '') + '\n\n';
+  }
+  return out.replace(/\s+/g, ' ').trim();
 }
 
 const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
@@ -126,8 +153,18 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
         if ((fileType || '').toLowerCase().includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
           try {
             guestContent = await extractPdfInBrowser(file as File);
+            if (!guestContent || guestContent.length < 10) {
+              toast({ title: 'Running OCR (local)…', description: 'This may take ~10-20s for a few pages.' });
+              guestContent = await ocrPdfInBrowser(file as File, 3);
+            }
           } catch (e) {
-            console.warn('Guest local PDF extraction failed:', e);
+            console.warn('Guest local extraction failed, trying OCR:', e);
+            try {
+              toast({ title: 'Running OCR (local)…', description: 'This may take ~10-20s for a few pages.' });
+              guestContent = await ocrPdfInBrowser(file as File, 3);
+            } catch (e2) {
+              console.warn('Guest OCR failed:', e2);
+            }
           }
         }
 
@@ -212,6 +249,20 @@ const NotesUpload = ({ onNoteAdded }: { onNoteAdded: () => void }) => {
                 extractedContent = autoExtracted;
                 toast({ title: 'Text extracted successfully', description: `Extracted ${autoExtracted.length} characters from ${file.name}` });
               }
+            }
+          }
+
+          // If still no text, try local OCR fallback
+          if (!extractedContent && (file.type || '').toLowerCase().includes('pdf')) {
+            try {
+              toast({ title: 'Running OCR (local)…', description: 'This may take ~10-20s for a few pages.' });
+              const ocrText = await ocrPdfInBrowser(file, 3);
+              if (ocrText && ocrText.length > 0) {
+                extractedContent = ocrText;
+                toast({ title: 'Text extracted (OCR)', description: `Extracted ${ocrText.length} characters` });
+              }
+            } catch (e) {
+              console.warn('Local OCR failed:', e);
             }
           }
 
