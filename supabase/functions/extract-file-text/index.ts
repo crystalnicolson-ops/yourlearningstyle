@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import mammoth from 'https://esm.sh/mammoth@1.6.0';
-import { getDocument } from 'https://esm.sh/pdfjs-dist@3.11.174/build/pdf.mjs';
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -144,115 +144,43 @@ serve(async (req) => {
       extractedText = '[Legacy .doc files are not supported. Please resave your document as .docx and re-upload.]';
     } else if (effectiveType.includes('pdf') || (fileName || '').toLowerCase().endsWith('.pdf')) {
       try {
+        // Naive PDF text extraction by scanning for text-showing operators (Tj/TJ)
         const arrayBuffer = await (blob as Blob).arrayBuffer();
-        const uint8 = new Uint8Array(arrayBuffer);
-        const loadingTask = getDocument({
-          data: uint8,
-          isEvalSupported: false,
-          disableWorker: true,
-          useWorkerFetch: false,
-          disableFontFace: true,
-          disableRange: true,
-          disableAutoFetch: true,
-          disableStream: true
-        });
-        const pdf = await loadingTask.promise;
-        const parts: string[] = [];
-        const limit = Math.min(pdf.numPages, 100);
-        for (let i = 1; i <= limit; i++) {
-          const page = await pdf.getPage(i);
-          const content: any = await page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
-          const items = (content.items as any[]) || [];
-          let pageText = '';
-          for (const it of items) {
-            if (typeof it?.str === 'string') {
-              pageText += it.str;
-              if ((it as any).hasEOL) pageText += '\n';
-              else pageText += ' ';
-            }
-          }
-          parts.push(pageText);
-        }
-        extractedText = parts.join('\n\n').replace(/\s+/g, ' ').trim();
-        if (!extractedText) {
-          // Fallback pass with different settings to handle tricky embedded fonts
-          try {
-            const loadingTask2 = getDocument({
-              data: uint8,
-              isEvalSupported: false,
-              disableWorker: true,
-              disableFontFace: false,
-              disableRange: true,
-              disableAutoFetch: true,
-              disableStream: true,
-            });
-            const pdf2 = await loadingTask2.promise;
-            const parts2: string[] = [];
-            const limit2 = Math.min(pdf2.numPages, 100);
-            for (let i = 1; i <= limit2; i++) {
-              const page2 = await pdf2.getPage(i);
-              const content2: any = await page2.getTextContent({ normalizeWhitespace: false, disableCombineTextItems: true, includeMarkedContent: true as any });
-              const items2 = (content2.items as any[]) || [];
-              let pageText2 = '';
-              for (const it of items2) {
-                if (typeof it?.str === 'string') {
-                  pageText2 += it.str + ' ';
-                }
-              }
-              parts2.push(pageText2);
-            }
-            extractedText = parts2.join('\n\n').replace(/\s+/g, ' ').trim();
-          } catch (fallbackErr) {
-            console.warn('PDF fallback parsing failed:', fallbackErr);
-          }
+        const bytes = new Uint8Array(arrayBuffer);
+        const raw = new TextDecoder('latin1').decode(bytes);
+
+        const pieces: string[] = [];
+        const unescape = (s: string) => s
+          .replace(/\\\)/g, ')')
+          .replace(/\\\(/g, '(')
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\\\/g, '\\');
+
+        // (string) Tj
+        const tjRegex = /\(([^)]*)\)\s*Tj/gm;
+        let m: RegExpExecArray | null;
+        while ((m = tjRegex.exec(raw)) !== null) {
+          pieces.push(unescape(m[1]));
         }
 
-        if (!extractedText) {
-          extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
+        // TJ [ (str) number (str) ... ]
+        const tjArrayRegex = /TJ\s*\[([^\]]+)\]/gm;
+        while ((m = tjArrayRegex.exec(raw)) !== null) {
+          const arr = m[1];
+          const strPieces = [...arr.matchAll(/\(([^)]*)\)/g)].map(x => unescape(x[1]));
+          if (strPieces.length) pieces.push(strPieces.join(''));
         }
+
+        extractedText = pieces.join(' ').replace(/\s+/g, ' ').trim();
       } catch (pdfError) {
-        console.error('PDF parsing error:', pdfError);
+        console.error('PDF naive parsing error:', pdfError);
         extractedText = '';
       }
 
-      // Final naive fallback: parse PDF content streams for (text) Tj/TJ operators
       if (!extractedText) {
-        try {
-          const arrayBuffer = await (blob as Blob).arrayBuffer();
-          const bytes = new Uint8Array(arrayBuffer);
-          const raw = new TextDecoder('latin1').decode(bytes);
-
-          const pieces: string[] = [];
-          const unescape = (s: string) => s
-            .replace(/\\\)/g, ')')
-            .replace(/\\\(/g, '(')
-            .replace(/\\n/g, '\n')
-            .replace(/\\r/g, '\r')
-            .replace(/\\t/g, '\t')
-            .replace(/\\\\/g, '\\');
-
-          const tjRegex = /\(([^)]*)\)\s*Tj/gm;
-          let m: RegExpExecArray | null;
-          while ((m = tjRegex.exec(raw)) !== null) {
-            pieces.push(unescape(m[1]));
-          }
-
-          const tjArrayRegex = /TJ\s*\[([^\]]+)\]/gm;
-          while ((m = tjArrayRegex.exec(raw)) !== null) {
-            const arr = m[1];
-            const strPieces = [...arr.matchAll(/\(([^)]*)\)/g)].map(x => unescape(x[1]));
-            if (strPieces.length) pieces.push(strPieces.join(''));
-          }
-
-          const naive = pieces.join(' ').replace(/\s+/g, ' ').trim();
-          if (naive) extractedText = naive;
-        } catch (naiveErr) {
-          console.warn('Naive PDF parsing failed:', naiveErr);
-        }
-      }
-
-      if (!extractedText) {
-        extractedText = '[Unable to extract text from this PDF. It may be image-based or encrypted.]';
+        extractedText = '[Unable to extract text from this PDF. It may be image-based or encoded in a non-text form.]';
       }
     } else if (effectiveType.includes('json')) {
       const txt = await (blob as Blob).text();

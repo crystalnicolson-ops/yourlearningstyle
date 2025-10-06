@@ -8,6 +8,39 @@ import { getGuestNotes, deleteGuestNote, updateGuestNote } from "@/lib/guestNote
 import LearningStyleTransform from "./LearningStyleTransform";
 import GeminiTextManipulator from "./GeminiTextManipulator";
 import SimpleTransform from "./SimpleTransform";
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+
+// Local PDF extractor for data URLs (guest mode)
+const extractPdfTextFromDataUrl = async (dataUrl: string): Promise<string> => {
+  const resp = await fetch(dataUrl);
+  if (!resp.ok) throw new Error('Failed to fetch data URL');
+  const blob = await resp.blob();
+  const arrayBuffer = await blob.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+  const loadingTask = (pdfjsLib as any).getDocument({
+    data: uint8,
+    disableWorker: true,
+    useWorkerFetch: false,
+    isEvalSupported: false,
+  });
+  const pdf = await loadingTask.promise;
+  const parts: string[] = [];
+  const limit = Math.min((pdf as any).numPages, 100);
+  for (let i = 1; i <= limit; i++) {
+    const page = await (pdf as any).getPage(i);
+    const content: any = await page.getTextContent({ normalizeWhitespace: true, disableCombineTextItems: false });
+    const items = (content.items as any[]) || [];
+    let pageText = '';
+    for (const it of items) {
+      if (typeof (it as any)?.str === 'string') {
+        pageText += (it as any).str;
+        pageText += (it as any).hasEOL ? '\n' : ' ';
+      }
+    }
+    parts.push(pageText);
+  }
+  return parts.join('\n\n').replace(/\s+/g, ' ').trim();
+};
 
 interface Note {
   id: string;
@@ -176,6 +209,24 @@ const isExtractionErrorContent = (txt?: string | null) => {
 const extractTextForNote = async (note: Note) => {
     try {
       toast({ title: 'Extracting text...', description: note.file_name || undefined });
+
+      // Guest mode with data URL PDF: extract locally in-browser first
+      const isPdf = (note.file_type || '').toLowerCase().includes('pdf') || (note.file_name || '').toLowerCase().endsWith('.pdf');
+      if (isGuest && isPdf && (note.file_url || '').startsWith('data:')) {
+        try {
+          const localText = await extractPdfTextFromDataUrl(note.file_url as string);
+          if (localText && localText.length > 0) {
+            updateGuestNote(note.id, { content: localText });
+            setNotes(prev => prev.map(n => (n.id === note.id ? { ...n, content: localText } : n)));
+            toast({ title: 'Text extracted', description: 'You can now transform this note.' });
+            return;
+          }
+        } catch (e) {
+          console.warn('Local PDF extraction failed, falling back to server:', e);
+        }
+      }
+
+      // Server extraction fallback
       const { data, error } = await supabase.functions.invoke('extract-file-text', {
         body: {
           fileUrl: note.file_url,
