@@ -9,6 +9,7 @@ import LearningStyleTransform from "./LearningStyleTransform";
 import GeminiTextManipulator from "./GeminiTextManipulator";
 import SimpleTransform from "./SimpleTransform";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import Tesseract from 'tesseract.js';
 
 // Local PDF extractor for data URLs (guest mode)
 const extractPdfTextFromDataUrl = async (dataUrl: string): Promise<string> => {
@@ -41,6 +42,43 @@ const extractPdfTextFromDataUrl = async (dataUrl: string): Promise<string> => {
   }
   return parts.join('\n\n').replace(/\s+/g, ' ').trim();
 };
+
+// OCR helpers
+const ocrPdfFromArrayBuffer = async (arrayBuffer: ArrayBuffer, maxPages = 3): Promise<string> => {
+  const uint8 = new Uint8Array(arrayBuffer);
+  const loadingTask = (pdfjsLib as any).getDocument({ data: uint8, disableWorker: true, useWorkerFetch: false, isEvalSupported: false });
+  const pdf = await loadingTask.promise;
+  const limit = Math.min((pdf as any).numPages, maxPages);
+  let out = '';
+  for (let i = 1; i <= limit; i++) {
+    const page = await (pdf as any).getPage(i);
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
+    await page.render({ canvasContext: ctx as any, viewport }).promise;
+    const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
+    out += (text || '') + '\n\n';
+  }
+  return out.replace(/\s+/g, ' ').trim();
+};
+
+const ocrPdfFromDataUrl = async (dataUrl: string, maxPages = 3): Promise<string> => {
+  const resp = await fetch(dataUrl);
+  if (!resp.ok) throw new Error('Failed to fetch data URL');
+  const blob = await resp.blob();
+  const buf = await blob.arrayBuffer();
+  return ocrPdfFromArrayBuffer(buf, maxPages);
+};
+
+const ocrPdfFromUrl = async (url: string, maxPages = 3): Promise<string> => {
+  const resp = await fetch(url, { credentials: 'omit' });
+  if (!resp.ok) throw new Error(`Failed to fetch PDF (${resp.status})`);
+  const buf = await resp.arrayBuffer();
+  return ocrPdfFromArrayBuffer(buf, maxPages);
+};
+
 
 interface Note {
   id: string;
@@ -235,7 +273,22 @@ const extractTextForNote = async (note: Note) => {
         },
       });
       if (error) throw error;
-      const extracted = (data?.extractedText || '').trim();
+      let extracted = (data?.extractedText || '').trim();
+
+      // If server returned an unusable placeholder, try OCR
+      if (!extracted || isExtractionErrorContent(extracted) || extracted.length < 10) {
+        const isDataUrl = (note.file_url || '').startsWith('data:');
+        try {
+          toast({ title: 'Running OCR (local)…', description: 'This may take ~10-20s for a few pages.' });
+          extracted = isDataUrl
+            ? await ocrPdfFromDataUrl(note.file_url as string, 3)
+            : await ocrPdfFromUrl(note.file_url as string, 3);
+        } catch (e) {
+          console.warn('OCR fallback failed:', e);
+        }
+      }
+
+      extracted = (extracted || '').trim();
       if (!extracted) {
         toast({ title: 'No text found', description: 'Could not extract text from the file.', variant: 'destructive' });
         return;
@@ -353,6 +406,26 @@ const extractTextForNote = async (note: Note) => {
                       </div>
                     )
                   )}
+
+                  {/* Retry extraction button when no content */}
+                  {!hasContent && note.file_url && (
+                    <div className="flex justify-end">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => {
+                          setExtractingNotes(prev => new Set(prev).add(note.id));
+                          extractTextForNote(note).finally(() => {
+                            setExtractingNotes(prev => { const s = new Set(prev); s.delete(note.id); return s; });
+                          });
+                        }}
+                        className="h-8 px-2 text-xs"
+                      >
+                        Retry extraction
+                      </Button>
+                    </div>
+                  )}
+
                 </div>
               </div>
 
