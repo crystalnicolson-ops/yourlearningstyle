@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { addGuestNote } from "@/lib/guestNotes";
 import ThinkingOverlay from "./ThinkingOverlay";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/legacy/build/pdf.worker.min.js?url';
+(pdfjsLib as any).GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import Tesseract from 'tesseract.js';
 
 async function extractPdfInBrowser(file: File): Promise<string> {

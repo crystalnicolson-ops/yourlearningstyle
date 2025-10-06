@@ -9,6 +9,8 @@ import LearningStyleTransform from "./LearningStyleTransform";
 import GeminiTextManipulator from "./GeminiTextManipulator";
 import SimpleTransform from "./SimpleTransform";
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/legacy/build/pdf.worker.min.js?url';
+(pdfjsLib as any).GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import Tesseract from 'tesseract.js';
 
 // Local PDF extractor for data URLs (guest mode)
