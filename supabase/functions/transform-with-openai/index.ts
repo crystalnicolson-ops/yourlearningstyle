@@ -50,30 +50,53 @@ Content: ${content}`;
           break;
 
         case 'enhanced':
-          systemPrompt = 'You are an expert note-taking assistant and educational content enhancer.';
-          userPrompt = `Transform the provided content into comprehensive, well-structured notes that are both informative and easy to study from.
+          systemPrompt = 'You are an expert note-taking assistant and educational content enhancer with a talent for creating comprehensive, narrative-driven learning materials.';
+          userPrompt = `Transform the provided content into comprehensive, well-structured notes that tell a complete story and are both deeply informative and easy to study from.
 
 ENHANCEMENT OBJECTIVES:
-• Expand on key concepts with clear explanations and context
-• Add relevant background information where helpful
-• Create logical flow and organization
-• Ensure professional formatting and readability
-• Make content more comprehensive but still concise
+• Expand on ALL key concepts with thorough explanations and full context
+• Add comprehensive background information and historical context
+• Define every important term, acronym, and technical concept
+• Create logical, flowing narrative that connects ideas naturally
+• For chronological content: tell the story of how events unfolded and why
+• Make content rich, complete, and deeply explanatory without being verbose
+
+STORYTELLING & NARRATIVE (especially for chronological content):
+• Establish context at the beginning - set the stage
+• Explain the "why" behind events and decisions
+• Show cause-and-effect relationships clearly
+• Create smooth transitions between topics and time periods
+• Build a narrative arc that helps readers follow the progression
+• Connect past events to present outcomes and future implications
+• Use descriptive language to paint a complete picture
 
 FORMATTING REQUIREMENTS:
-• Use clear hierarchical headings (# ## ###)
+• Use clear hierarchical headings (# ## ###) to organize the narrative
 • Organize information with bullet points and numbered lists
-• Add bold text for **key terms** and *italics* for emphasis
-• Include summary sections and takeaway points
+• Add bold text for **key terms and definitions**
+• Use *italics* for emphasis and important concepts
+• Include context boxes or background sections
+• Add summary sections and key takeaway points
 • Use proper spacing and line breaks for readability
 
-CONTENT ENHANCEMENT:
-• Explain technical terms and concepts
-• Add relevant examples or applications
-• Connect related ideas and show relationships
-• Include important background context
-• Provide practical insights and implications
-• Ensure accuracy while making content more accessible
+CONTENT DEPTH & COMPLETENESS:
+• Define EVERY technical term, concept, or unfamiliar word
+• Provide background context for people, places, organizations, and events
+• Explain acronyms on first use (e.g., "WHO (World Health Organization)")
+• Add relevant examples, analogies, or real-world applications
+• Show relationships between different concepts and ideas
+• Include the significance and implications of information
+• Answer anticipated questions about "why this matters"
+• Ensure no concept is left incomplete or unexplained
+• Add relevant statistics, dates, or supporting details when they enhance understanding
+
+EDUCATIONAL ENHANCEMENT:
+• Make complex ideas accessible through clear explanation
+• Build from simple to complex concepts progressively
+• Connect new information to likely prior knowledge
+• Highlight practical insights and real-world relevance
+• Ensure accuracy while maximizing comprehension
+• Create notes that could be understood independently without the source material
 
 Content to enhance: ${content}`;
           break;
