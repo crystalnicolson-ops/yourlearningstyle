@@ -425,6 +425,64 @@ const extractTextForNote = async (note: Note) => {
   const notesWithContent = notes.filter(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
   const canMerge = selectedNotes.size >= 2;
 
+  // Handle transformation with optional consolidation
+  const handleTransformWithConsolidation = async (transformationType: string) => {
+    const selectedNotesArray = notes.filter(n => selectedNotes.has(n.id) && n.content && n.content.trim().length > 0 && !isExtractionErrorContent(n.content));
+    
+    // If multiple notes are selected, consolidate first
+    if (selectedNotesArray.length >= 2) {
+      setMerging(true);
+      try {
+        toast({ title: "Consolidating notes...", description: `Preparing to apply ${transformationType}` });
+        
+        const { data, error } = await supabase.functions.invoke('consolidate-notes', {
+          body: {
+            notes: selectedNotesArray.map(n => ({
+              title: n.title,
+              content: n.content,
+            })),
+          },
+        });
+
+        if (error) throw error;
+
+        const mergedTitle = `Merged: ${selectedNotesArray.map(n => n.title).join(', ')}`;
+        const mergedContent = data.consolidatedContent;
+
+        // Create a temporary note with the merged content for transformation
+        const tempNote: Note = {
+          id: 'temp-merged',
+          title: mergedTitle,
+          content: mergedContent,
+          file_url: null,
+          file_name: null,
+          file_type: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        // Add temp note to state so transformation can use it
+        setNotes(prev => [tempNote, ...prev]);
+        setSelectedNotes(new Set());
+        
+        toast({
+          title: "Notes consolidated",
+          description: `Now applying ${transformationType} transformation...`,
+        });
+        
+      } catch (error: any) {
+        console.error('Consolidation error:', error);
+        toast({
+          title: "Consolidation failed",
+          description: error.message || "Failed to consolidate notes",
+          variant: "destructive",
+        });
+      } finally {
+        setMerging(false);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Merge Button */}
@@ -432,7 +490,9 @@ const extractTextForNote = async (note: Note) => {
         <Card className="p-4 bg-gradient-card shadow-card border-0">
           <div className="flex items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground">
-              {selectedNotes.size > 0 ? `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected` : 'Select notes to merge'}
+              {selectedNotes.size > 0 
+                ? `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform button to consolidate & transform` 
+                : 'Select notes to merge or transform together'}
             </div>
             <Button
               onClick={handleMergeSelected}
@@ -440,7 +500,7 @@ const extractTextForNote = async (note: Note) => {
               className="flex items-center gap-2"
             >
               <Merge className="h-4 w-4" />
-              {merging ? "Merging..." : "Merge Selected"}
+              {merging ? "Merging..." : "Merge Only"}
             </Button>
           </div>
         </Card>
@@ -450,12 +510,28 @@ const extractTextForNote = async (note: Note) => {
       {hasAnyContent && (
         <Card className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
           <SimpleTransform
-            content={allContent}
-            onTransformed={(content, type) => {
-              // Handle transformation for the first note with content
-              const firstNoteWithContent = notes.find(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
-              if (firstNoteWithContent) {
-                handleTransformed(firstNoteWithContent.id, content, type);
+            content={selectedNotes.size > 0 
+              ? notes
+                  .filter(n => selectedNotes.has(n.id) && n.content && n.content.trim().length > 0 && !isExtractionErrorContent(n.content))
+                  .map(n => n.content as string)
+                  .join('\n\n')
+              : allContent
+            }
+            onTransformed={async (content, type) => {
+              // If multiple notes selected, consolidate them first
+              if (selectedNotes.size >= 2) {
+                await handleTransformWithConsolidation(type);
+                // The transformation will be applied to the consolidated note automatically
+                return;
+              }
+              
+              // Single note or no selection - use existing behavior
+              const targetNote = selectedNotes.size === 1
+                ? notes.find(n => selectedNotes.has(n.id))
+                : notes.find(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
+              
+              if (targetNote) {
+                handleTransformed(targetNote.id, content, type);
               }
             }}
           />
