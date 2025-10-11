@@ -485,16 +485,6 @@ const extractTextForNote = async (note: Note) => {
 
   return (
     <div className="space-y-6">
-      {/* Instructions for multi-select */}
-      {notesWithContent.length >= 2 && (
-        <div className="text-sm text-muted-foreground text-center py-2">
-          {selectedNotes.size === 0 
-            ? "Select notes below to consolidate and transform them together, or transform all notes at once"
-            : `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform to consolidate and enhance`
-          }
-        </div>
-      )}
-
       {/* Transform Options at Top */}
       {hasAnyContent && (
         <Card className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
@@ -525,6 +515,16 @@ const extractTextForNote = async (note: Note) => {
             }}
           />
         </Card>
+      )}
+
+      {/* Instructions for multi-select */}
+      {notesWithContent.length >= 2 && (
+        <div className="text-sm text-foreground/80 text-center py-2">
+          {selectedNotes.size === 0 
+            ? "Select notes below to consolidate and transform them together, or transform all notes at once"
+            : `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform to consolidate and enhance`
+          }
+        </div>
       )}
 
       {/* File Cards Below */}
