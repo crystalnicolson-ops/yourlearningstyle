@@ -519,7 +519,7 @@ const extractTextForNote = async (note: Note) => {
 
       {/* Instructions for multi-select */}
       {notesWithContent.length >= 2 && (
-        <div className="text-sm text-foreground/80 text-center py-2">
+        <div className="text-sm text-foreground/80 text-left font-bold py-2">
           {selectedNotes.size === 0 
             ? "Select notes/documents you wish to include"
             : `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform to consolidate and enhance`
