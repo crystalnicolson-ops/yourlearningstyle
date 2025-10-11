@@ -485,27 +485,6 @@ const extractTextForNote = async (note: Note) => {
 
   return (
     <div className="space-y-6">
-      {/* Merge Button */}
-      {notesWithContent.length >= 2 && (
-        <Card className="p-4 bg-gradient-card shadow-card border-0">
-          <div className="flex items-center justify-between gap-4">
-            <div className="text-sm text-muted-foreground">
-              {selectedNotes.size > 0 
-                ? `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform button to consolidate & transform` 
-                : 'Select notes to merge or transform together'}
-            </div>
-            <Button
-              onClick={handleMergeSelected}
-              disabled={!canMerge || merging}
-              className="flex items-center gap-2"
-            >
-              <Merge className="h-4 w-4" />
-              {merging ? "Merging..." : "Merge Only"}
-            </Button>
-          </div>
-        </Card>
-      )}
-
       {/* Transform Options at Top */}
       {hasAnyContent && (
         <Card className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
