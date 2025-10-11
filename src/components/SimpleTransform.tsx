@@ -9,6 +9,7 @@ import VoicePlayer from "./VoicePlayer";
 import StudyQuiz from "./StudyQuiz";
 import SmartDownloadButton from "./SmartDownloadButton";
 import ThinkingOverlay from "./ThinkingOverlay";
+import ReactMarkdown from 'react-markdown';
 
 interface SimpleTransformProps {
   content: string;
@@ -572,19 +573,7 @@ const SimpleTransform = ({ content, onTransformed }: SimpleTransformProps) => {
             <Card className="border-enhanced bg-enhanced/5">
               <CardContent className="p-6">
                 <div className="prose prose-sm max-w-none dark:prose-invert">
-                  <div dangerouslySetInnerHTML={{
-                    __html: enhancedNotes
-                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                      .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-enhanced">$1</h1>')
-                      .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 text-enhanced">$1</h2>')
-                      .replace(/^### (.*$)/gm, '<h3 class="text-lg font-medium mb-2 text-enhanced">$1</h3>')
-                      .replace(/^\• (.*$)/gm, '<li class="mb-1">$1</li>')
-                      .replace(/^- (.*$)/gm, '<li class="mb-1">$1</li>')
-                      .replace(/\n\n/g, '</p><p class="mb-4">')
-                      .replace(/^(?!<[h|l])/gm, '<p class="mb-4">')
-                      .replace(/<p class="mb-4"><\/p>/g, '')
-                  }} />
+                  <ReactMarkdown>{enhancedNotes}</ReactMarkdown>
                 </div>
               </CardContent>
             </Card>
