@@ -521,7 +521,7 @@ const extractTextForNote = async (note: Note) => {
       {notesWithContent.length >= 2 && (
         <div className="text-sm text-foreground/80 text-center py-2">
           {selectedNotes.size === 0 
-            ? "Select notes below to consolidate and transform them together, or transform all notes at once"
+            ? "Select notes/documents you wish to include"
             : `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected — click any transform to consolidate and enhance`
           }
         </div>
