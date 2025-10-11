@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FileText, Trash2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, Trash2, Calendar, ChevronDown, ChevronUp, Merge } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -100,6 +101,8 @@ const NotesList = ({ refreshTrigger, onNotesLoaded }: { refreshTrigger: number; 
   const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
   const [transformedContent, setTransformedContent] = useState<Record<string, { content: string; style: string }>>({});
   const [extractingNotes, setExtractingNotes] = useState<Set<string>>(new Set());
+  const [selectedNotes, setSelectedNotes] = useState<Set<string>>(new Set());
+  const [merging, setMerging] = useState(false);
   const { toast } = useToast();
 
   const fetchNotes = async () => {
@@ -246,6 +249,93 @@ const isExtractionErrorContent = (txt?: string | null) => {
   return t.startsWith('[error extracting text from pdf') || t.startsWith('[unable to extract text');
 };
 
+const handleMergeSelected = async () => {
+  const selectedNotesArray = notes.filter(n => selectedNotes.has(n.id) && n.content && n.content.trim().length > 0 && !isExtractionErrorContent(n.content));
+  
+  if (selectedNotesArray.length < 2) {
+    toast({
+      title: "Select at least 2 notes",
+      description: "You need to select at least 2 notes with content to merge",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setMerging(true);
+  try {
+    toast({ title: "Merging notes...", description: "AI is consolidating your documents" });
+    
+    const { data, error } = await supabase.functions.invoke('consolidate-notes', {
+      body: {
+        notes: selectedNotesArray.map(n => ({
+          title: n.title,
+          content: n.content,
+        })),
+      },
+    });
+
+    if (error) throw error;
+
+    const mergedTitle = `Merged: ${selectedNotesArray.map(n => n.title).join(', ')}`;
+    const mergedContent = data.consolidatedContent;
+
+    if (isGuest) {
+      const newNote = {
+        id: crypto.randomUUID(),
+        title: mergedTitle,
+        content: mergedContent,
+        file_url: null,
+        file_name: null,
+        file_type: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      const guestNotes = getGuestNotes();
+      guestNotes.push({
+        id: newNote.id,
+        title: newNote.title,
+        content: newNote.content,
+        file_data_url: null,
+        file_name: null,
+        file_type: null,
+        created_at: newNote.created_at,
+        updated_at: newNote.updated_at,
+      });
+      localStorage.setItem('guestNotes', JSON.stringify(guestNotes));
+      await fetchNotes();
+    } else {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      const { error: insertError } = await supabase
+        .from('notes')
+        .insert({
+          title: mergedTitle,
+          content: mergedContent,
+          user_id: user.id,
+        });
+
+      if (insertError) throw insertError;
+      await fetchNotes();
+    }
+
+    setSelectedNotes(new Set());
+    toast({
+      title: "Notes merged successfully",
+      description: "Your documents have been consolidated into one note",
+    });
+  } catch (error: any) {
+    console.error('Merge error:', error);
+    toast({
+      title: "Merge failed",
+      description: error.message || "Failed to merge notes",
+      variant: "destructive",
+    });
+  } finally {
+    setMerging(false);
+  }
+};
+
 const extractTextForNote = async (note: Note) => {
     try {
       toast({ title: 'Extracting text...', description: note.file_name || undefined });
@@ -331,9 +421,31 @@ const extractTextForNote = async (note: Note) => {
     .map(note => (note.content as string))
     .join('\n\n');
   const hasAnyContent = allContent.trim().length > 0;
+  
+  const notesWithContent = notes.filter(note => note.content && note.content.trim().length > 0 && !isExtractionErrorContent(note.content));
+  const canMerge = selectedNotes.size >= 2;
 
   return (
     <div className="space-y-6">
+      {/* Merge Button */}
+      {notesWithContent.length >= 2 && (
+        <Card className="p-4 bg-gradient-card shadow-card border-0">
+          <div className="flex items-center justify-between gap-4">
+            <div className="text-sm text-muted-foreground">
+              {selectedNotes.size > 0 ? `${selectedNotes.size} note${selectedNotes.size !== 1 ? 's' : ''} selected` : 'Select notes to merge'}
+            </div>
+            <Button
+              onClick={handleMergeSelected}
+              disabled={!canMerge || merging}
+              className="flex items-center gap-2"
+            >
+              <Merge className="h-4 w-4" />
+              {merging ? "Merging..." : "Merge Selected"}
+            </Button>
+          </div>
+        </Card>
+      )}
+
       {/* Transform Options at Top */}
       {hasAnyContent && (
         <Card className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
@@ -358,7 +470,27 @@ const extractTextForNote = async (note: Note) => {
           const preview = hasContent ? (note.content as string) : '';
           return (
             <Card key={note.id} className="p-4 sm:p-4 bg-gradient-card shadow-card border-0">
-              <div className="flex items-start justify-between flex-wrap">
+              <div className="flex items-start gap-3">
+                {/* Checkbox for selection */}
+                {hasContent && (
+                  <div className="pt-1">
+                    <Checkbox
+                      checked={selectedNotes.has(note.id)}
+                      onCheckedChange={(checked) => {
+                        setSelectedNotes(prev => {
+                          const next = new Set(prev);
+                          if (checked) {
+                            next.add(note.id);
+                          } else {
+                            next.delete(note.id);
+                          }
+                          return next;
+                        });
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex-1">
                   {note.file_name && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -431,7 +563,7 @@ const extractTextForNote = async (note: Note) => {
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end">
+              <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 sm:justify-end" style={{ marginLeft: hasContent ? '36px' : '0' }}>
                 <Button
                   variant="outline"
                   size="sm"
