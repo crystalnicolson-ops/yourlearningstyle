@@ -19,37 +19,23 @@ const NotesHero = () => {
             Upload your notes and see them transform into personalized learning experiences
           </p>
 
-          {/* Learning Styles Information */}
-          <div className="max-w-4xl mx-auto px-4 mb-8">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-              <div className="flex items-center justify-center gap-2">
-                <Eye className="h-4 w-4 text-white/80" />
-                <div className="text-center">
-                  <div className="text-white font-medium mb-1">Visual Learning</div>
-                  <div className="text-white/70">Interactive flashcards and diagrams</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Headphones className="h-4 w-4 text-white/80" />
-                <div className="text-center">
-                  <div className="text-white font-medium mb-1">Auditory Learning</div>
-                  <div className="text-white/70">Voice recordings and audio content</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <BookOpen className="h-4 w-4 text-white/80" />
-                <div className="text-center">
-                  <div className="text-white font-medium mb-1">Reading/Writing</div>
-                  <div className="text-white/70">Enhanced notes and summaries</div>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Hand className="h-4 w-4 text-white/80" />
-                <div className="text-center">
-                  <div className="text-white font-medium mb-1">Kinesthetic</div>
-                  <div className="text-white/70">Interactive quizzes and activities</div>
-                </div>
-              </div>
+          {/* Learning Styles */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+              <Eye className="h-4 w-4 text-white" />
+              <span className="text-white text-sm font-medium">Visual</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+              <Headphones className="h-4 w-4 text-white" />
+              <span className="text-white text-sm font-medium">Auditory</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+              <BookOpen className="h-4 w-4 text-white" />
+              <span className="text-white text-sm font-medium">Reading/Writing</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+              <Hand className="h-4 w-4 text-white" />
+              <span className="text-white text-sm font-medium">Kinesthetic</span>
             </div>
           </div>
         </header>
