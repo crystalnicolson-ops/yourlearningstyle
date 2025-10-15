@@ -58,55 +58,24 @@ const Hero = () => {
         </div>
 
 
-        {/* Feature Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Eye className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Visual</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Learning through seeing
-              </p>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Headphones className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Auditory</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Learning through hearing
-              </p>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Reading/Writing</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Learning through text
-              </p>
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-gradient-card shadow-card hover:shadow-soft transition-all duration-300 hover:scale-105 border-0">
-            <div className="text-center">
-              <div className="w-14 h-14 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Hand className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Kinesthetic</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Learning through doing/movement
-              </p>
-            </div>
-          </Card>
+        {/* Learning Styles */}
+        <div className="flex flex-wrap justify-center gap-6 mb-16">
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+            <Eye className="h-5 w-5 text-white" />
+            <span className="text-white font-medium">Visual</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+            <Headphones className="h-5 w-5 text-white" />
+            <span className="text-white font-medium">Auditory</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+            <BookOpen className="h-5 w-5 text-white" />
+            <span className="text-white font-medium">Reading/Writing</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
+            <Hand className="h-5 w-5 text-white" />
+            <span className="text-white font-medium">Kinesthetic</span>
+          </div>
         </div>
 
         {/* Stats Section */}
