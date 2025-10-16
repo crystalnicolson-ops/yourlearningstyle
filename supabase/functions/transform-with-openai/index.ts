@@ -54,12 +54,12 @@ Content: ${content}`;
           userPrompt = `Transform the provided content into comprehensive enhanced notes with clear structure and organization.
 
 📐 STRUCTURE (Mandatory Hierarchy):
-Organize content into this EXACT structure with BOLD headings:
-• **# MAIN TITLE** - Top-level overview
-• **### Topic** - Main topics and divisions (use descriptive names)
-• **#### Detail** - Specific information and details
+Organize content into this EXACT structure with bold headings ONLY (no #, ##, ### symbols):
+• **MAIN TITLE** - Top-level overview
+• **Topic** - Main topics and divisions (use descriptive names)
+• **Detail** - Specific information and details
 
-CRITICAL: Add blank lines before and after each heading for clear separation.
+CRITICAL: Do NOT include any leading # characters. Start each heading line directly with bold text (e.g., **Topic**). Add blank lines before and after each heading for clear separation.
 
 🎯 ORGANIZATION PRINCIPLES:
 • Group related concepts by THEME under clear topic headings
@@ -84,7 +84,7 @@ ONLY when a concept has clear causal relationships, show:
 Use this sparingly - only for the most important causal relationships.
 
 📚 SECTION ENDINGS (Required for major topics):
-Each **### Topic** should end with:
+Each **Topic** should end with:
 
 **📋 Key Takeaways**
 - [2-4 bullet points with the most important insights]
@@ -104,7 +104,7 @@ Tag concepts with difficulty where helpful:
 • Ensure logical flow between sections
 
 ✨ FORMATTING STANDARDS:
-• **Bold ALL headings** (# ### ####)
+• Bold ALL headings (no # symbols)
 • Use **bold** for key terms and definitions
 • Use *italics* for emphasis
 • Use > blockquotes for critical takeaways
