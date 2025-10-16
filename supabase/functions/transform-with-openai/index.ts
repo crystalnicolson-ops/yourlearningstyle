@@ -50,23 +50,23 @@ Content: ${content}`;
           break;
 
         case 'enhanced':
-          systemPrompt = 'You are an expert educational content architect specializing in creating deeply structured, adaptive learning materials using the Luvable Note Logic Framework.';
-          userPrompt = `Transform the provided content into comprehensive enhanced notes following the Luvable Note Logic Framework.
+          systemPrompt = 'You are an expert educational content architect specializing in creating clear, well-organized learning materials.';
+          userPrompt = `Transform the provided content into comprehensive enhanced notes with clear structure and organization.
 
-📐 STRUCTURE AUTO-DETECTION (Mandatory Hierarchy):
-Analyze the content and organize it into this EXACT structure:
-• # Title (Main Topic) - Top-level overview
-• ## Subtopic - Major divisions of the topic
-• ### Section - Specific areas within subtopics
-• #### Detail - Granular information and specifics
+📐 STRUCTURE (Mandatory Hierarchy):
+Organize content into this EXACT structure with BOLD headings:
+• **# MAIN TITLE** - Top-level overview
+• **## MAJOR TOPIC** - Main divisions (use descriptive names)
+• **### Subtopic** - Specific areas within major topics
+• **#### Detail** - Granular information
 
-Auto-detect the natural structure of the content and impose this hierarchy strictly for maximum clarity.
+CRITICAL: Add blank lines before and after each heading for clear separation.
 
-🎯 CLUSTERING PRINCIPLES:
-• Group related concepts by THEME (e.g., all definitions together, all processes together)
-• Maintain CHRONOLOGICAL ORDER within themes when applicable
-• Ensure clear logical flow between sections
-• Use visual tags to mark categories:
+🎯 ORGANIZATION PRINCIPLES:
+• Group related concepts by THEME under clear topic headings
+• Each section should have ONE clear focus
+• Use descriptive heading names that tell what the section is about
+• Add visual tags to mark categories:
   - 📖 Definition
   - 🔄 Process/Methodology
   - 💡 Key Insight
@@ -75,47 +75,43 @@ Auto-detect the natural structure of the content and impose this hierarchy stric
   - ⚠️ Critical Point
   - 📊 Data/Statistics
 
-⚙️ CAUSE-EFFECT-RESULT FRAMEWORK (CRITICAL - Use Extensively):
-For EVERY major concept, event, or process, explicitly show causal relationships:
+⚙️ CAUSE-EFFECT RELATIONSHIPS (Use Selectively):
+ONLY when a concept has clear causal relationships, show:
 
-**Cause → Effect → Result**
-- **Cause:** What led to this? What were the conditions?
-- **Effect:** What happened as a direct result?
-- **Result:** What were the longer-term outcomes?
+**Cause → Effect**
+- **Cause:** What led to this?
+- **Effect:** What was the result?
 
-Apply this framework liberally throughout the notes - not just occasionally. Every important point should include its causal chain when applicable.
+Use this sparingly - only for the most important causal relationships.
 
-📚 SECTION ENDINGS (Required for EVERY section):
-Each ### Section and ## Subtopic MUST end with:
+📚 SECTION ENDINGS (Required for major sections):
+Each **## MAJOR TOPIC** should end with:
 
-**📋 Summary**
-[3-5 bullet points capturing the core insights and key takeaways from the section]
+**📋 Key Takeaways**
+- [2-4 bullet points with the most important insights]
 
-🎓 DIFFICULTY LEVELS (Assign to each concept):
-Tag every major concept/detail with difficulty:
-- 🟢 **Beginner:** Basic facts and definitions
-- 🟡 **Intermediate:** Connections and applications
-- 🔴 **Advanced:** Complex analysis and synthesis
+🎓 DIFFICULTY LEVELS:
+Tag concepts with difficulty where helpful:
+- 🟢 **Beginner:** Basic concepts
+- 🟡 **Intermediate:** Applied knowledge
+- 🔴 **Advanced:** Complex analysis
 
-This enables adaptive flashcard generation later.
-
-📝 COMPLETE CONTENT REQUIREMENTS:
-• Define ALL technical terms and acronyms on first use
-• Provide context for people, places, events, organizations
-• Explain the "why" and "so what" for every major point
-• Add real-world examples and applications
-• Show relationships between concepts explicitly using cause-effect chains
-• Include relevant dates, statistics, supporting details
-• Make content self-contained (understandable without source)
-• Organize information in clear, digestible sections with logical progression
+📝 CONTENT REQUIREMENTS:
+• Define technical terms clearly
+• Provide context when needed
+• Add examples where helpful
+• Keep sections focused and digestible
+• Use clear, descriptive headings
+• Ensure logical flow between sections
 
 ✨ FORMATTING STANDARDS:
+• **Bold ALL headings** (# ## ### ####)
 • Use **bold** for key terms and definitions
 • Use *italics* for emphasis
-• Use > blockquotes for important takeaways
-• Use horizontal rules (---) between major sections
-• Ensure proper spacing and readability
-• Use clear headings that describe content accurately
+• Use > blockquotes for critical takeaways
+• Add horizontal rules (---) between MAJOR TOPICS only
+• Ensure generous spacing between sections
+• Make headings descriptive (not generic)
 
 Content to enhance: ${content}`;
           break;
