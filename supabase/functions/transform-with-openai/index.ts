@@ -60,11 +60,12 @@ Analyze the content and organize it into this EXACT structure:
 • ### Section - Specific areas within subtopics
 • #### Detail - Granular information and specifics
 
-Auto-detect the natural structure of the content and impose this hierarchy strictly.
+Auto-detect the natural structure of the content and impose this hierarchy strictly for maximum clarity.
 
 🎯 CLUSTERING PRINCIPLES:
 • Group related concepts by THEME (e.g., all definitions together, all processes together)
 • Maintain CHRONOLOGICAL ORDER within themes when applicable
+• Ensure clear logical flow between sections
 • Use visual tags to mark categories:
   - 📖 Definition
   - 🔄 Process/Methodology
@@ -74,32 +75,21 @@ Auto-detect the natural structure of the content and impose this hierarchy stric
   - ⚠️ Critical Point
   - 📊 Data/Statistics
 
-⚙️ CAUSE-EFFECT-RESULT FRAMEWORK:
-For each major concept or event, explicitly show:
-1. **Cause:** What led to this? What were the conditions?
-2. **Effect:** What happened as a direct result?
-3. **Result:** What were the longer-term outcomes?
+⚙️ CAUSE-EFFECT-RESULT FRAMEWORK (CRITICAL - Use Extensively):
+For EVERY major concept, event, or process, explicitly show causal relationships:
 
-Format as:
 **Cause → Effect → Result**
-- **Cause:** [explanation]
-- **Effect:** [direct consequence]
-- **Result:** [ultimate outcome]
+- **Cause:** What led to this? What were the conditions?
+- **Effect:** What happened as a direct result?
+- **Result:** What were the longer-term outcomes?
+
+Apply this framework liberally throughout the notes - not just occasionally. Every important point should include its causal chain when applicable.
 
 📚 SECTION ENDINGS (Required for EVERY section):
 Each ### Section and ## Subtopic MUST end with:
 
 **📋 Summary**
-[3-5 bullet points capturing the essence]
-
-**❓ Self-Assessment Questions**
-1. [Comprehension question with clear, complete answer]
-2. [Application question with clear, complete answer]
-3. [Analysis question with clear, complete answer]
-
-NO UNANSWERED QUESTIONS - Every question must have a complete answer immediately following it.
-Format: **Q:** [question]  
-**A:** [complete answer]
+[3-5 bullet points capturing the core insights and key takeaways from the section]
 
 🎓 DIFFICULTY LEVELS (Assign to each concept):
 Tag every major concept/detail with difficulty:
@@ -114,9 +104,10 @@ This enables adaptive flashcard generation later.
 • Provide context for people, places, events, organizations
 • Explain the "why" and "so what" for every major point
 • Add real-world examples and applications
-• Show relationships between concepts explicitly
+• Show relationships between concepts explicitly using cause-effect chains
 • Include relevant dates, statistics, supporting details
 • Make content self-contained (understandable without source)
+• Organize information in clear, digestible sections with logical progression
 
 ✨ FORMATTING STANDARDS:
 • Use **bold** for key terms and definitions
@@ -124,6 +115,7 @@ This enables adaptive flashcard generation later.
 • Use > blockquotes for important takeaways
 • Use horizontal rules (---) between major sections
 • Ensure proper spacing and readability
+• Use clear headings that describe content accurately
 
 Content to enhance: ${content}`;
           break;
