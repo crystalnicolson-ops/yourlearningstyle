@@ -57,9 +57,9 @@ Content: ${content}`;
 Organize content into this EXACT structure with bold headings ONLY (no #, ##, ### symbols):
 • **MAIN TITLE** - Top-level overview
 • **Topic** - Main topics and divisions (use descriptive names)
-• **Detail** - Specific information and details
+• **Detail** - Specific information and details (ONLY use if there's actual detailed content - DO NOT create empty Detail sections)
 
-CRITICAL: Do NOT include any leading # characters. Start each heading line directly with bold text (e.g., **Topic**). Add blank lines before and after each heading for clear separation.
+CRITICAL: Do NOT include any leading # characters. Start each heading line directly with bold text (e.g., **Topic**). Add blank lines before and after each heading for clear separation. NEVER create a **Detail** heading unless you have substantial detailed content to put under it.
 
 🎯 ORGANIZATION PRINCIPLES:
 • Group related concepts by THEME under clear topic headings
