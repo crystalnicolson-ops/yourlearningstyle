@@ -56,9 +56,8 @@ Content: ${content}`;
 📐 STRUCTURE (Mandatory Hierarchy):
 Organize content into this EXACT structure with BOLD headings:
 • **# MAIN TITLE** - Top-level overview
-• **## MAJOR TOPIC** - Main divisions (use descriptive names)
-• **### Subtopic** - Specific areas within major topics
-• **#### Detail** - Granular information
+• **### Topic** - Main topics and divisions (use descriptive names)
+• **#### Detail** - Specific information and details
 
 CRITICAL: Add blank lines before and after each heading for clear separation.
 
@@ -84,8 +83,8 @@ ONLY when a concept has clear causal relationships, show:
 
 Use this sparingly - only for the most important causal relationships.
 
-📚 SECTION ENDINGS (Required for major sections):
-Each **## MAJOR TOPIC** should end with:
+📚 SECTION ENDINGS (Required for major topics):
+Each **### Topic** should end with:
 
 **📋 Key Takeaways**
 - [2-4 bullet points with the most important insights]
@@ -105,11 +104,11 @@ Tag concepts with difficulty where helpful:
 • Ensure logical flow between sections
 
 ✨ FORMATTING STANDARDS:
-• **Bold ALL headings** (# ## ### ####)
+• **Bold ALL headings** (# ### ####)
 • Use **bold** for key terms and definitions
 • Use *italics* for emphasis
 • Use > blockquotes for critical takeaways
-• Add horizontal rules (---) between MAJOR TOPICS only
+• Add horizontal rules (---) between major topics only
 • Ensure generous spacing between sections
 • Make headings descriptive (not generic)
 
