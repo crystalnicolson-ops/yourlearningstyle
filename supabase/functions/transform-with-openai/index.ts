@@ -50,53 +50,80 @@ Content: ${content}`;
           break;
 
         case 'enhanced':
-          systemPrompt = 'You are an expert note-taking assistant and educational content enhancer with a talent for creating comprehensive, narrative-driven learning materials.';
-          userPrompt = `Transform the provided content into comprehensive, well-structured notes that tell a complete story and are both deeply informative and easy to study from.
+          systemPrompt = 'You are an expert educational content architect specializing in creating deeply structured, adaptive learning materials using the Luvable Note Logic Framework.';
+          userPrompt = `Transform the provided content into comprehensive enhanced notes following the Luvable Note Logic Framework.
 
-ENHANCEMENT OBJECTIVES:
-• Expand on ALL key concepts with thorough explanations and full context
-• Add comprehensive background information and historical context
-• Define every important term, acronym, and technical concept
-• Create logical, flowing narrative that connects ideas naturally
-• For chronological content: tell the story of how events unfolded and why
-• Make content rich, complete, and deeply explanatory without being verbose
+📐 STRUCTURE AUTO-DETECTION (Mandatory Hierarchy):
+Analyze the content and organize it into this EXACT structure:
+• # Title (Main Topic) - Top-level overview
+• ## Subtopic - Major divisions of the topic
+• ### Section - Specific areas within subtopics
+• #### Detail - Granular information and specifics
 
-STORYTELLING & NARRATIVE (especially for chronological content):
-• Establish context at the beginning - set the stage
-• Explain the "why" behind events and decisions
-• Show cause-and-effect relationships clearly
-• Create smooth transitions between topics and time periods
-• Build a narrative arc that helps readers follow the progression
-• Connect past events to present outcomes and future implications
-• Use descriptive language to paint a complete picture
+Auto-detect the natural structure of the content and impose this hierarchy strictly.
 
-FORMATTING REQUIREMENTS:
-• Use clear hierarchical headings (# ## ###) to organize the narrative
-• Organize information with bullet points and numbered lists
-• Add bold text for **key terms and definitions**
-• Use *italics* for emphasis and important concepts
-• Include context boxes or background sections
-• Add summary sections and key takeaway points
-• Use proper spacing and line breaks for readability
+🎯 CLUSTERING PRINCIPLES:
+• Group related concepts by THEME (e.g., all definitions together, all processes together)
+• Maintain CHRONOLOGICAL ORDER within themes when applicable
+• Use visual tags to mark categories:
+  - 📖 Definition
+  - 🔄 Process/Methodology
+  - 💡 Key Insight
+  - ⚡ Important Fact
+  - 🔗 Connection/Relationship
+  - ⚠️ Critical Point
+  - 📊 Data/Statistics
 
-CONTENT DEPTH & COMPLETENESS:
-• Define EVERY technical term, concept, or unfamiliar word
-• Provide background context for people, places, organizations, and events
-• Explain acronyms on first use (e.g., "WHO (World Health Organization)")
-• Add relevant examples, analogies, or real-world applications
-• Show relationships between different concepts and ideas
-• Include the significance and implications of information
-• Answer anticipated questions about "why this matters"
-• Ensure no concept is left incomplete or unexplained
-• Add relevant statistics, dates, or supporting details when they enhance understanding
+⚙️ CAUSE-EFFECT-RESULT FRAMEWORK:
+For each major concept or event, explicitly show:
+1. **Cause:** What led to this? What were the conditions?
+2. **Effect:** What happened as a direct result?
+3. **Result:** What were the longer-term outcomes?
 
-EDUCATIONAL ENHANCEMENT:
-• Make complex ideas accessible through clear explanation
-• Build from simple to complex concepts progressively
-• Connect new information to likely prior knowledge
-• Highlight practical insights and real-world relevance
-• Ensure accuracy while maximizing comprehension
-• Create notes that could be understood independently without the source material
+Format as:
+**Cause → Effect → Result**
+- **Cause:** [explanation]
+- **Effect:** [direct consequence]
+- **Result:** [ultimate outcome]
+
+📚 SECTION ENDINGS (Required for EVERY section):
+Each ### Section and ## Subtopic MUST end with:
+
+**📋 Summary**
+[3-5 bullet points capturing the essence]
+
+**❓ Self-Assessment Questions**
+1. [Comprehension question with clear, complete answer]
+2. [Application question with clear, complete answer]
+3. [Analysis question with clear, complete answer]
+
+NO UNANSWERED QUESTIONS - Every question must have a complete answer immediately following it.
+Format: **Q:** [question]  
+**A:** [complete answer]
+
+🎓 DIFFICULTY LEVELS (Assign to each concept):
+Tag every major concept/detail with difficulty:
+- 🟢 **Beginner:** Basic facts and definitions
+- 🟡 **Intermediate:** Connections and applications
+- 🔴 **Advanced:** Complex analysis and synthesis
+
+This enables adaptive flashcard generation later.
+
+📝 COMPLETE CONTENT REQUIREMENTS:
+• Define ALL technical terms and acronyms on first use
+• Provide context for people, places, events, organizations
+• Explain the "why" and "so what" for every major point
+• Add real-world examples and applications
+• Show relationships between concepts explicitly
+• Include relevant dates, statistics, supporting details
+• Make content self-contained (understandable without source)
+
+✨ FORMATTING STANDARDS:
+• Use **bold** for key terms and definitions
+• Use *italics* for emphasis
+• Use > blockquotes for important takeaways
+• Use horizontal rules (---) between major sections
+• Ensure proper spacing and readability
 
 Content to enhance: ${content}`;
           break;
