@@ -65,14 +65,16 @@ CRITICAL: Do NOT include any leading # characters. Start each heading line direc
 • Group related concepts by THEME under clear topic headings
 • Each section should have ONE clear focus
 • Use descriptive heading names that tell what the section is about
-• Add visual tags to mark categories:
-  - 📖 Definition
-  - 🔄 Process/Methodology
-  - 💡 Key Insight
-  - ⚡ Important Fact
-  - 🔗 Connection/Relationship
-  - ⚠️ Critical Point
-  - 📊 Data/Statistics
+• Add visual tags to mark categories ONLY when you have content for them (DO NOT create empty sections):
+  - 📖 Definition (only if you have a definition to provide)
+  - 🔄 Process/Methodology (only if describing a process)
+  - 💡 Key Insight (only if there's an insight to share)
+  - ⚡ Important Fact (only if there's a fact to present)
+  - 🔗 Connection/Relationship (only if showing connections)
+  - ⚠️ Critical Point (only if there's a critical point)
+  - 📊 Data/Statistics (only if you have data to show)
+
+CRITICAL: Never create a section heading for a visual tag category unless you have actual content to put under it.
 
 ⚙️ CAUSE-EFFECT RELATIONSHIPS (Use Selectively):
 ONLY when a concept has clear causal relationships, show:
